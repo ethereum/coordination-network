@@ -82,10 +82,11 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _setUpGovernance(5);
 
         uint256 memberCount = safe.getOwners().length;
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(NetworkMemberGovernance.OnlyGovernanceSafe.selector);
         vm.prank(makeAddr("attacker"));
-        governance.removeMember(memberNetworkId, new uint256[](0), memberCount);
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCount);
     }
 
     function test_AdmitMember_RevertsWhen_KeyIsNotOnTheCurve() public {
@@ -196,11 +197,12 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
     function test_RemoveMember_TakesTheMemberOutOfAllThreePlaces() public {
         _setUpGovernance(5);
         _admitThroughGovernance();
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         _execFromSafe(
             address(governance),
             abi.encodeCall(
-                NetworkMemberGovernance.removeMember, (memberNetworkId, new uint256[](0), safe.getOwners().length)
+                NetworkMemberGovernance.removeMember, (memberNetworkId, merkleProofSiblings, safe.getOwners().length)
             ),
             safe.getThreshold()
         );
@@ -217,10 +219,11 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _setUpGovernance(5);
 
         uint256 memberCount = safe.getOwners().length;
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.NotApproved.selector, memberNetworkId));
         vm.prank(address(safe));
-        governance.removeMember(memberNetworkId, new uint256[](0), memberCount);
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCount);
     }
 
     /// @dev A member whose seat is already gone reports that, rather than whatever the floor check
@@ -240,10 +243,11 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         assertFalse(safe.isOwner(governanceSigner));
 
         uint256 memberCount = safe.getOwners().length;
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.NotASafeOwner.selector, governanceSigner));
         vm.prank(address(safe));
-        governance.removeMember(memberNetworkId, new uint256[](0), memberCount);
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCount);
     }
 
     /// @dev A set may shrink back to a single member. Growth is reversible, so a network that reached
@@ -257,8 +261,9 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         // Pranked as the Safe: the quorum here is the founding member plus the member being removed,
         // and only the founder's key exists in this fixture.
         uint256 memberCount = safe.getOwners().length;
+        uint256[] memory merkleProofSiblings = new uint256[](0);
         vm.prank(address(safe));
-        governance.removeMember(memberNetworkId, new uint256[](0), memberCount);
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCount);
 
         // Back to the founding member alone, who now signs for itself.
         assertEq(safe.getOwners().length, 1);
@@ -285,11 +290,12 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
             safe.getThreshold()
         );
         assertEq(safe.getOwners().length, 1);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         // The sole member cannot leave: there would be nobody left to admit anyone ever again.
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.MemberSetTooSmall.selector, 0));
         vm.prank(foundingSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         assertTrue(governedRegistry.isApproved(memberNetworkId));
         assertTrue(safe.isOwner(foundingSigner));
@@ -300,11 +306,12 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _setUpGovernance(2);
         _admitThroughGovernance();
         assertEq(safe.getOwners().length, 3);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         _execFromSafe(
             address(governance),
             abi.encodeCall(
-                NetworkMemberGovernance.removeMember, (memberNetworkId, new uint256[](0), safe.getOwners().length)
+                NetworkMemberGovernance.removeMember, (memberNetworkId, merkleProofSiblings, safe.getOwners().length)
             ),
             safe.getThreshold()
         );
@@ -320,12 +327,13 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _admitThroughGovernance();
         assertEq(safe.getOwners().length, 6);
         assertEq(safe.getThreshold(), 4);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         // One transaction, from the member's own governance signer. No quorum, nothing to approve.
         vm.expectEmit();
         emit NetworkMemberGovernance.NetworkMemberExited(memberNetworkId, governanceSigner, 3);
         vm.prank(governanceSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         assertFalse(governedRegistry.isApproved(memberNetworkId));
         assertFalse(governedGroup.hasNetworkMember(semaphoreCommitment));
@@ -358,10 +366,11 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
             ),
             safe.getThreshold()
         );
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.OnlyGovernanceSigner.selector, memberNetworkId));
         vm.prank(secondSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         assertTrue(governedRegistry.isApproved(memberNetworkId));
         assertTrue(safe.isOwner(governanceSigner));
@@ -370,23 +379,25 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
     function test_ExitNetwork_RevertsWhen_CallerIsTheAuthKeyOrAStranger() public {
         _setUpGovernance(5);
         _admitThroughGovernance();
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         // The auth key is a hot server key, and deliberately cannot destroy the membership.
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.OnlyGovernanceSigner.selector, memberNetworkId));
         vm.prank(networkMember.addr);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.OnlyGovernanceSigner.selector, memberNetworkId));
         vm.prank(makeAddr("attacker"));
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
     }
 
     function test_ExitNetwork_RevertsWhen_NotApproved() public {
         _setUpGovernance(5);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.NotApproved.selector, memberNetworkId));
         vm.prank(governanceSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
     }
 
     /// @dev Leaving a pair is allowed, and hands the remaining member a threshold of one rather than
@@ -395,11 +406,12 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _setUpGovernance(1);
         _admitThroughGovernance();
         assertEq(safe.getOwners().length, 2);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectEmit();
         emit NetworkMemberGovernance.NetworkMemberExited(memberNetworkId, governanceSigner, 1);
         vm.prank(governanceSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         assertEq(safe.getOwners().length, 1);
         assertEq(safe.getThreshold(), 1);
@@ -446,10 +458,11 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _admitThroughGovernance();
         vm.prank(address(safe));
         safe.changeThreshold(6);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.expectRevert(abi.encodeWithSelector(NetworkMemberGovernance.ThresholdMismatch.selector, 4, 6));
         vm.prank(address(safe));
-        governance.removeMember(memberNetworkId, new uint256[](0), 6);
+        governance.removeMember(memberNetworkId, merkleProofSiblings, 6);
     }
 
     /// @dev The repair is one direct `changeThreshold` back to the majority.
@@ -473,11 +486,107 @@ contract NetworkMemberGovernanceUnitTest is NetworkMemberRegistryTestBase {
         _admitThroughGovernance();
         vm.prank(address(safe));
         safe.changeThreshold(1);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
 
         vm.prank(governanceSigner);
-        governance.exitNetwork(memberNetworkId, new uint256[](0));
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
 
         assertEq(safe.getThreshold(), 3);
+    }
+
+    function test_AdmitMember_RevertsWhen_AMemberJoinedSinceTheTransactionWasBuilt() public {
+        _setUpGovernance(5);
+        Vm.Wallet memory seventhMember = vm.createWallet("seventhMember");
+        address seventhMemberSigner = makeAddr("seventhMemberGovernanceSigner");
+        uint256 seventhMemberCommitment = _semaphoreCommitment("seventhMember");
+        uint256 memberCountBeforeJoining = safe.getOwners().length;
+        _admitThroughGovernance();
+        uint256 memberCountAfterJoining = safe.getOwners().length;
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                NetworkMemberGovernance.MemberCountChanged.selector, memberCountBeforeJoining, memberCountAfterJoining
+            )
+        );
+        vm.prank(address(safe));
+        governance.admitMember(
+            seventhMember.publicKeyX,
+            seventhMember.publicKeyY,
+            seventhMemberCommitment,
+            seventhMemberSigner,
+            memberCountBeforeJoining
+        );
+    }
+
+    function test_AdmitMember_RevertsWhen_AMemberLeftSinceTheTransactionWasBuilt() public {
+        _setUpGovernance(5);
+        _admitThroughGovernance();
+        uint256 memberCountBeforeLeaving = safe.getOwners().length;
+        uint256[] memory merkleProofSiblings = new uint256[](0);
+        vm.prank(governanceSigner);
+        governance.exitNetwork(memberNetworkId, merkleProofSiblings);
+        uint256 memberCountAfterLeaving = safe.getOwners().length;
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                NetworkMemberGovernance.MemberCountChanged.selector, memberCountBeforeLeaving, memberCountAfterLeaving
+            )
+        );
+        vm.prank(address(safe));
+        governance.admitMember(
+            networkMember.publicKeyX,
+            networkMember.publicKeyY,
+            semaphoreCommitment,
+            governanceSigner,
+            memberCountBeforeLeaving
+        );
+    }
+
+    function test_RemoveMember_RemovesAMemberWhoIsNotTheNewestSafeOwner() public {
+        _setUpGovernance(5);
+        _admitThroughGovernance();
+        address seventhOwner = makeAddr("seventhOwner");
+        uint256 memberCountWithTheSeventhOwner = safe.getOwners().length + 1;
+        uint256 thresholdWithTheSeventhOwner = governance.governanceThreshold(memberCountWithTheSeventhOwner);
+        vm.prank(address(safe));
+        safe.addOwnerWithThreshold(seventhOwner, thresholdWithTheSeventhOwner);
+        address memberGovernanceSigner = governedRegistry.governanceSignerOf(memberNetworkId);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
+
+        vm.prank(address(safe));
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCountWithTheSeventhOwner);
+
+        bool memberIsStillAnOwner = safe.isOwner(memberGovernanceSigner);
+        bool seventhOwnerIsStillAnOwner = safe.isOwner(seventhOwner);
+        assertFalse(memberIsStillAnOwner);
+        assertTrue(seventhOwnerIsStillAnOwner);
+    }
+
+    function test_RemoveMember_RemovesAMemberWithTwoSafeOwnersAddedAfterIt() public {
+        _setUpGovernance(5);
+        _admitThroughGovernance();
+        address seventhOwner = makeAddr("seventhOwner");
+        address eighthOwner = makeAddr("eighthOwner");
+        uint256 memberCountWithTheSeventhOwner = safe.getOwners().length + 1;
+        uint256 memberCountWithTheEighthOwner = memberCountWithTheSeventhOwner + 1;
+        uint256 thresholdWithTheSeventhOwner = governance.governanceThreshold(memberCountWithTheSeventhOwner);
+        uint256 thresholdWithTheEighthOwner = governance.governanceThreshold(memberCountWithTheEighthOwner);
+        vm.prank(address(safe));
+        safe.addOwnerWithThreshold(seventhOwner, thresholdWithTheSeventhOwner);
+        vm.prank(address(safe));
+        safe.addOwnerWithThreshold(eighthOwner, thresholdWithTheEighthOwner);
+        address memberGovernanceSigner = governedRegistry.governanceSignerOf(memberNetworkId);
+        uint256[] memory merkleProofSiblings = new uint256[](0);
+
+        vm.prank(address(safe));
+        governance.removeMember(memberNetworkId, merkleProofSiblings, memberCountWithTheEighthOwner);
+
+        bool memberIsStillAnOwner = safe.isOwner(memberGovernanceSigner);
+        bool seventhOwnerIsStillAnOwner = safe.isOwner(seventhOwner);
+        bool eighthOwnerIsStillAnOwner = safe.isOwner(eighthOwner);
+        assertFalse(memberIsStillAnOwner);
+        assertTrue(seventhOwnerIsStillAnOwner);
+        assertTrue(eighthOwnerIsStillAnOwner);
     }
 
     function _admitThroughGovernance() internal {
