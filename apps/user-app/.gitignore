@@ -1,0 +1,10 @@
+# Written by scripts/sync-assets.sh from build outputs that are themselves generated.
+assets/credential.noir
+assets/g1-*.dat
+src/generated/
+/android/
+/ios/
+.expo/
+*.apk
+# Device captures land here while debugging on a phone (adb logcat > crash.txt).
+/*.txt

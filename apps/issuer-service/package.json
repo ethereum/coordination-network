@@ -1,0 +1,40 @@
+{
+    "name": "issuer-service",
+    "private": true,
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    },
+    "scripts": {
+        "start": "tsx src/main.ts",
+        "pretest": "yarn build:libraries",
+        "test": "tsx --test tests/*.test.ts"
+    },
+    "dependencies": {
+        "@coordination-network/credential": "workspace:*",
+        "@coordination-network/network-member-client": "workspace:^",
+        "@coordination-network/network-member-governance": "workspace:*",
+        "@coordination-network/network-member-proof": "workspace:^",
+        "@coordination-network/revocation-registry": "workspace:^",
+        "@coordination-network/user-client": "workspace:^",
+        "@coordination-network/zk-artifacts": "workspace:^",
+        "@noble/hashes": "^1.8.0",
+        "@peculiar/asn1-android": "^2.10.0",
+        "@peculiar/asn1-schema": "^2.10.0",
+        "@peculiar/asn1-x509": "^2.10.0",
+        "@semaphore-protocol/identity": "4.14.5",
+        "express": "^5.2.1",
+        "viem": "^2.55.11",
+        "zod": "^4.3.11"
+    },
+    "devDependencies": {
+        "@coordination-network/identity": "workspace:^",
+        "@noble/curves": "^1.9.7",
+        "@peculiar/x509": "^2.1.0",
+        "@types/express": "^5.0.6",
+        "@types/node": "^26.1.0",
+        "ffjavascript": "0.3.1",
+        "reflect-metadata": "^0.2.2",
+        "tsx": "^4.23.0",
+        "typescript": "^6.0.3"
+    }
+}

@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/types
+**/out
+**/cache
+**/coverage
+.git
+.yarn/cache
+.yarn/install-state.gz
+**/.env
+**/.env.*

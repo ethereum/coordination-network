@@ -1,0 +1,39 @@
+{
+    "name": "coordination-network-contracts",
+    "packageManager": "yarn@4.17.0",
+    "private": true,
+    "type": "module",
+    "license": "MIT",
+    "repository": "https://github.com/ethereum/coordination-network",
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    },
+    "scripts": {
+        "build": "forge build --deny notes",
+        "test": "forge test -vvv --ffi --no-match-path \"test/fork/*\"",
+        "test:fork": "forge test -vvv --match-path \"test/fork/*\" --disable-block-gas-limit",
+        "fmt": "forge fmt",
+        "fmt:check": "forge fmt --check",
+        "lint": "forge lint --deny notes",
+        "coverage": "forge coverage --report lcov --report summary --exclude-tests --match-path 'test/{unit/*,integration/DeployScripts.t.sol}'",
+        "deploy:sepolia": "forge script script/DeployAll.s.sol --rpc-url sepolia --broadcast --verify --verifier etherscan",
+        "deploy:mainnet": "forge script script/DeployAll.s.sol --rpc-url mainnet --broadcast --verify --verifier etherscan",
+        "deployAndConfigureAll:sepolia": "env $(node script/generateNetworkMember.ts) forge script script/DeployAndConfigureAll.s.sol --rpc-url sepolia --broadcast --verify --verifier etherscan",
+        "deployAndConfigureAll:mainnet": "env $(node script/generateNetworkMember.ts) forge script script/DeployAndConfigureAll.s.sol --rpc-url mainnet --broadcast --verify --verifier etherscan"
+    },
+    "devDependencies": {
+        "@account-abstraction/contracts": "^0.8.0",
+        "@coordination-network/identity": "workspace:^",
+        "@openzeppelin/contracts": "^5.6.1",
+        "@safe-global/safe-smart-account": "1.5.0",
+        "@semaphore-protocol/contracts": "^4.14.5",
+        "@semaphore-protocol/group": "^4.14.5",
+        "@semaphore-protocol/identity": "^4.14.5",
+        "@semaphore-protocol/proof": "^4.14.5",
+        "@zk-kit/lean-imt-plus.sol": "0.1.1",
+        "@zk-kit/lean-imt.sol": "^2.0.1",
+        "forge-std": "github:foundry-rs/forge-std#v1.16.2",
+        "poseidon-solidity": "^0.0.5",
+        "viem": "^2.55.11"
+    }
+}

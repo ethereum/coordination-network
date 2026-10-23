@@ -1,0 +1,20 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.identitykeystore'
+version = '1.0.0'
+
+android {
+  namespace "expo.modules.identitykeystore"
+  defaultConfig {
+    versionCode 1
+    versionName "1.0.0"
+  }
+}
+
+expoModule {
+  // Only disables the Expo Gradle plugin's Maven publish tasks; the npm package still ships `android/`.
+  canBePublished false
+}

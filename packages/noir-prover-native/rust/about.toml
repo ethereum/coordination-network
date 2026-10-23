@@ -1,0 +1,22 @@
+# Licenses of the Rust crates linked into the Android library, for
+# MoproReactNativeBindings/THIRD_PARTY_LICENSES.md. Regenerate with
+#   cargo about generate --manifest-path Cargo.toml -c about.toml about.hbs -o MoproReactNativeBindings/THIRD_PARTY_LICENSES.md
+# Anything outside `accepted` fails the run instead of being listed.
+accepted = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Zlib",
+    "CC0-1.0",
+    "Unlicense",
+    "CDLA-Permissive-2.0"
+]
+targets = ["aarch64-linux-android"]
+ignore-build-dependencies = true
+ignore-dev-dependencies = true
+# Our own crate (publish = false) is not third-party code.
+private = { ignore = true }

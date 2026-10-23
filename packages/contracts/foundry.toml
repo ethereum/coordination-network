@@ -1,0 +1,60 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["node_modules"]
+solc = "0.8.34"
+evm_version = "amsterdam"
+optimizer = true
+bytecode_hash = "none"
+ffi = false
+fs_permissions = [
+    { access = "read", path = "./test/fixtures" },
+    { access = "read-write", path = "./deployments" },
+]
+# The deployed contracts link against the canonical poseidon-solidity deployments rather than
+# copies of their own. Tests run on an empty chain, so the bases that need these put the code at
+# both addresses with vm.etch before deploying anything.
+libraries = [
+    "node_modules/poseidon-solidity/PoseidonT3.sol:PoseidonT3:0x3333333C0A88F9BE4fd23ed0536F9B6c427e3B93",
+    "node_modules/poseidon-solidity/PoseidonT4.sol:PoseidonT4:0x4443338EF595F44e0121df4C21102677B142ECF0",
+]
+remappings = [
+    "forge-std/=node_modules/forge-std/src/",
+    "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+    "@account-abstraction/=node_modules/@account-abstraction/",
+    "@semaphore-protocol/contracts/=node_modules/@semaphore-protocol/contracts/",
+    "@semaphore-protocol/=node_modules/@semaphore-protocol/",
+    "@zk-kit/lean-imt.sol=node_modules/@zk-kit/lean-imt.sol",
+    "@zk-kit/lean-imt-plus.sol=node_modules/@zk-kit/lean-imt-plus.sol",
+    "poseidon-solidity/=node_modules/poseidon-solidity/",
+    "@safe-global/safe-smart-account/=node_modules/@safe-global/safe-smart-account/",
+]
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
+mainnet = "${MAINNET_RPC_URL}"
+
+[etherscan]
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+mainnet = { key = "${ETHERSCAN_API_KEY}" }
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+quote_style = "double"
+wrap_comments = true
+
+[lint]
+exclude_lints = [
+    "asm-keccak256",
+    "reentrancy-events",
+    "calls-loop",
+    "require-revert-in-loop",
+    "uninitialized-local",
+    "missing-events-access-control",
+]
+ignore = ["test/**/*.sol"]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

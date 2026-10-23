@@ -1,0 +1,9 @@
+{
+    "**/*.{js,ts,jsx,tsx,md,json,yaml,yml}": "prettier --write",
+    "**/*.{js,ts,jsx,tsx}": "eslint",
+    "packages/contracts/src/**/*.sol": [
+        "forge fmt --root packages/contracts",
+        "forge lint --root packages/contracts --deny notes"
+    ],
+    "packages/contracts/test/**/*.sol": "forge fmt --root packages/contracts"
+}

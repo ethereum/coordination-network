@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "declaration": false,
+        "declarationDir": null,
+        "types": ["node"],
+        "rewriteRelativeImportExtensions": true,
+        "erasableSyntaxOnly": true,
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "paths": {}
+    },
+    "include": ["scripts", "tests"]
+}

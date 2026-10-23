@@ -1,0 +1,38 @@
+{
+    "name": "@coordination-network/noir-prover-native",
+    "version": "0.1.3",
+    "description": "Native UltraHonk prover for the credential circuit, for React Native where Hermes has no WebAssembly.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ethereum/coordination-network.git",
+        "directory": "packages/noir-prover-native"
+    },
+    "homepage": "https://github.com/ethereum/coordination-network/tree/main/packages/noir-prover-native",
+    "bugs": "https://github.com/ethereum/coordination-network/issues",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "files": [
+        "dist/",
+        "src/",
+        "README.md",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "main": "dist/index.js",
+        "types": "dist/index.d.ts"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "dependencies": {
+        "@coordination-network/credential": "workspace:^",
+        "@coordination-network/wallet": "workspace:^",
+        "@noir-lang/noir_js": "1.0.0-beta.22"
+    },
+    "devDependencies": {
+        "@coordination-network/zk-artifacts": "workspace:^",
+        "typescript": "^6.0.3"
+    }
+}

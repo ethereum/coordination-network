@@ -1,0 +1,33 @@
+{
+  "approvedIssuerSet": "0x52b86Cacd9bA551C6bEDdc9D488681E4F952D873",
+  "blockNumber": 11958553,
+  "chainId": 11155111,
+  "credentialRevocationRegistry": "0x827c36C0BA98B8050f6046B463AB32C52663aC10",
+  "credentialRevocationRegistryId": 0,
+  "gas": {
+    "approvedIssuerSet": 12079099,
+    "credentialRevocationRegistry": 5122695,
+    "governanceSafe": 1169484,
+    "identityRegistry": 4291348,
+    "networkMemberGovernance": 7415571,
+    "networkMemberGroup": 3690722,
+    "networkMemberRegistry": 6799689,
+    "revocation": 12640568,
+    "semaphorePaymaster": 19328040
+  },
+  "governanceSafe": "0xCdBD54A921444691550CD7837F68B74FDD9A0662",
+  "identityRegistry": "0xdec1de498DEF6d3Def1000d0a1602A2237f5C306",
+  "networkMemberGovernance": "0x6c552D8B4BC7066bF11075345bF4ee73Ec0324a3",
+  "networkMemberGroup": "0x4C7C0432c10e595fA12784775644727557C458C5",
+  "networkMemberGroupId": 1,
+  "networkMemberRegistry": "0x964E891f721d47CceC876e26A2b4d14f2bB1212e",
+  "revocation": "0xb53198FA97A5963D10E980b88E4fdAbeCa55e4Db",
+  "semaphorePaymaster": "0xE65D883Ca2E305b688a3e6Bcd792F693b8959Af1",
+  "thirdParty": {
+    "entryPoint": "0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108",
+    "erc5564Announcer": "0x55649E01B5Df198D18D95b5cc5051630cfD45564",
+    "safeMultiSendCallOnly": "0xA83c336B20401Af773B6219BA5027174338D1836",
+    "semaphore": "0xC10E5102A2Cc077BE3B9740Fc0Ad7e27Ff8E0245",
+    "simple7702Account": "0xe6Cae83BdE06E4c305530e199D7217f42808555B"
+  }
+}

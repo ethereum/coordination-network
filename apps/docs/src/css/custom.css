@@ -1,0 +1,202 @@
+/* Inspired by Semaphore's documentation: https://docs.semaphore.pse.dev/ */
+@font-face {
+    font-family: "DM Sans";
+    src: url("/fonts/DMSans.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --ifm-color-primary: #3555df;
+    --ifm-color-primary-dark: #2445d0;
+    --ifm-color-primary-darker: #223fc4;
+    --ifm-color-primary-darkest: #1b339f;
+    --ifm-color-primary-light: #4d69e3;
+    --ifm-color-primary-lighter: #5973e5;
+    --ifm-color-primary-lightest: #7e92eb;
+    --ifm-background-color: #f7f7f8;
+    --ifm-background-surface-color: #fff;
+    --ifm-navbar-background-color: #f7f7f8;
+    --ifm-font-color-base: #26262b;
+    --ifm-heading-color: #1b2050;
+    --ifm-font-family-base: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --ifm-font-size-base: 18px;
+    --ifm-line-height-base: 1.8;
+    --ifm-heading-font-weight: 500;
+    --ifm-heading-line-height: 1.25;
+    --ifm-h1-font-size: 2.875rem;
+    --ifm-h2-font-size: 1.8rem;
+    --ifm-h3-font-size: 1.35rem;
+    --ifm-code-font-size: 90%;
+    --ifm-navbar-height: 4.5rem;
+    --ifm-navbar-shadow: none;
+    --ifm-toc-border-color: #dedee5;
+    --ifm-menu-color: #4b4b5b;
+    --ifm-menu-color-background-active: #e9edfc;
+    --ifm-menu-color-background-hover: #eeeef3;
+    --ifm-menu-link-padding-vertical: 0.5rem;
+    --ifm-menu-link-padding-horizontal: 0.9rem;
+    --ifm-menu-link-sublist-icon-filter: none;
+    --ifm-footer-background-color: #f0f4fe;
+    --ifm-footer-color: #4b4b5b;
+    --ifm-footer-title-color: #1b2050;
+    --ifm-footer-link-color: #3555df;
+    --ifm-global-radius: 0.5rem;
+    --docusaurus-highlighted-code-line-bg: rgba(53, 85, 223, 0.08);
+    --doc-sidebar-width: 300px;
+}
+
+[data-theme="dark"] {
+    --ifm-color-primary: #9abaf6;
+    --ifm-color-primary-dark: #7da6f3;
+    --ifm-color-primary-darker: #6f9cf2;
+    --ifm-color-primary-darkest: #4480ee;
+    --ifm-color-primary-light: #b7cef9;
+    --ifm-color-primary-lighter: #c5d8fa;
+    --ifm-color-primary-lightest: #f0f5fe;
+    --ifm-background-color: #00020d;
+    --ifm-background-surface-color: #0c0c15;
+    --ifm-navbar-background-color: #00020d;
+    --ifm-font-color-base: #d4d4de;
+    --ifm-heading-color: #f7f7f8;
+    --ifm-toc-border-color: #26262b;
+    --ifm-menu-color: #b6b6c6;
+    --ifm-menu-color-background-active: #171e3c;
+    --ifm-menu-color-background-hover: #151522;
+    --ifm-menu-link-sublist-icon-filter: invert(1);
+    --ifm-footer-background-color: #0c0c15;
+    --ifm-footer-color: #b6b6c6;
+    --ifm-footer-title-color: #f7f7f8;
+    --ifm-footer-link-color: #9abaf6;
+    --docusaurus-highlighted-code-line-bg: rgba(154, 186, 246, 0.12);
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar {
+    border-bottom: 1px solid var(--ifm-toc-border-color);
+    padding-inline: 1.5rem;
+}
+
+.navbar__title {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+.navbar__link {
+    font-size: 0.875rem;
+}
+
+.menu {
+    padding: 1.5rem 1rem;
+}
+
+.menu__link {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border-radius: 6px;
+}
+
+.menu__list-item-collapsible .menu__caret:hover {
+    background: none;
+}
+
+.menu__link--active {
+    font-weight: 600;
+}
+
+.markdown > h1 {
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.04em;
+}
+
+.markdown h2 {
+    margin-top: 2.5rem;
+    letter-spacing: -0.025em;
+}
+
+.markdown a {
+    text-underline-offset: 0.2em;
+}
+
+.markdown table {
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.markdown code {
+    overflow-wrap: anywhere;
+}
+
+.table-of-contents {
+    font-size: 0.8rem;
+    line-height: 1.65;
+}
+
+.table-of-contents__link {
+    display: block;
+    margin-inline: -0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    color: var(--ifm-menu-color);
+    transition:
+        background-color 0.15s,
+        color 0.15s;
+}
+
+.table-of-contents__link:hover {
+    background: var(--ifm-menu-color-background-hover);
+    color: var(--ifm-color-primary);
+}
+
+.table-of-contents__link--active {
+    color: var(--ifm-color-primary);
+}
+
+.pagination-nav__link {
+    background: var(--ifm-background-surface-color);
+    border-color: var(--ifm-toc-border-color);
+}
+
+.pagination-nav__link:hover {
+    border-color: var(--ifm-color-primary);
+}
+
+.footer {
+    border-top: 1px solid var(--ifm-toc-border-color);
+    font-size: 0.875rem;
+}
+
+.footer__copyright {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+}
+
+:where(a, button, input, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--ifm-color-primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 997px) {
+    .container.padding-top--md {
+        padding-top: 2.5rem !important;
+    }
+}
+
+@media (max-width: 996px) {
+    :root {
+        --ifm-h1-font-size: 2.125rem;
+        --ifm-h2-font-size: 1.5rem;
+        --ifm-font-size-base: 16px;
+        --ifm-navbar-height: 4rem;
+    }
+
+    .navbar {
+        padding-inline: 1rem;
+    }
+}

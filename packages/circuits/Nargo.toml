@@ -1,0 +1,13 @@
+[package]
+name = "credential"
+type = "bin"
+authors = ["Coordination Network"]
+
+[dependencies]
+poseidon = { git = "https://github.com/noir-lang/poseidon", tag = "v0.3.0" }
+# Baby Jubjub EdDSA verification lives in src/eddsa.nr rather than noir-lang/eddsa: the upstream
+# verifier passes its challenge through noir-edwards v0.2.5's `ScalarField::<64>::from`, which
+# does not constrain the decomposition to its input. Same version upstream eddsa (7e206c9) uses.
+edwards = { git = "https://github.com/noir-lang/noir-edwards", tag = "v0.2.5" }
+binary_merkle_root = { git = "https://github.com/zk-kit/zk-kit.noir", tag = "binary-merkle-root-v0.0.2", directory = "packages/binary-merkle-root" }
+lean_imt_plus = { git = "https://github.com/zk-kit/zk-kit.noir", tag = "lean-imt-plus-v0.0.1", directory = "packages/lean-imt-plus" }

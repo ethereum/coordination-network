@@ -1,0 +1,129 @@
+{
+    "registry": "0x00000000000000000000000000000000000a1DE1",
+    "chainId": 31337,
+    "updateDomainSeparator": "0x00f9e043e562053f155e4bdb494b2ee5d83ea40da164486e03a8edb881ae28c8",
+    "memberCommitments": [
+        "0x1387b214b9ab10e60ce6e20a496da50bf3c83081f1b5481e2d3760f25574c656",
+        "0x1b1016989e438b7eb28a20efda87cb684655aeb539a89fdbb2b61f2378deeeb1",
+        "0x12b649dee2f7146623f386b6b0ee377547238bf00e8c7d4687f792b0793249be"
+    ],
+    "newcomerCommitment": "0x27dd475c62e7a60817b306a5b181dcd81a5d6ae2141b0f6f7d65add78aedc10c",
+    "networkIdA": "0x1111111111111111111111111111111111111111111111111111111111111111",
+    "networkIdB": "0x2222222222222222222222222222222222222222222222222222222222222222",
+    "metaA": "0x021111111111111111111111111111111111111111111111111111111111111111032222222222222222222222222222222222222222222222222222222222222222",
+    "metaB": "0x023333333333333333333333333333333333333333333333333333333333333333034444444444444444444444444444444444444444444444444444444444444444",
+    "proofs": {
+        "registerA": {
+            "merkleTreeDepth": "0x2",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0x216951ccd70dbcb4e1034d0ff58adf587f593c148579f54370f246d237b275f1",
+            "scope": "0x1",
+            "points": [
+                "0x303e7d180729b77e40c393285a1e9a32fb77f875a95ac5d083199259a56a1f12",
+                "0x2e1f54619d4f861b201011c112543d72f81ca00113aa02fe5433e1243ea96c00",
+                "0x17990512dd9d7372c009e5002b6ff8c5b146a058a7717d650f6e8b31923baccc",
+                "0xeafef22383b1516bbb08a4d5e222b3b7f9c73bb5ca9747537b55c60251ee0aa",
+                "0x1c895e777c64bb5ec138eb61db1ef3c3bd1ef09a48c4c4f7da3447a245a7c11f",
+                "0x16ef63cb7d887a31c6db2d1659842ac76c76f786da6b8c2e7ece85e761a05a32",
+                "0x227b7311e73d1cd284a89569a10aa65644d89806dfa793c16c16800c3ec2877c",
+                "0xbc4788a0de4abff0ea8942e6bf04f64d0a0c61917991b904caf0bb527cb6c1d"
+            ]
+        },
+        "registerAByMemberOne": {
+            "merkleTreeDepth": "0x2",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0x8363e2f6e560a14bb6c009a96f24f7a4786bfcccf2bff5b1fd92b43c90a290",
+            "scope": "0x3",
+            "points": [
+                "0x1cdf700770695b62220333698649ee9f0f77c85274d33b10589367c030ff14ef",
+                "0x322a6832b95c771d880871c47863e5f3e04dfd68070e429dc56fec3cf385f08",
+                "0x2fa097308d83de8f12f9053cb5cc7416354db37ae9ed8dedf85c391c43eb247e",
+                "0x2ea6836f33991cf99f3f8c7799e1e549f10fe216a4a2b1893eb0628c3893772d",
+                "0x2ff0e224cd919fcde471056981000b6fe2f814ba0b9c9e3da5ddb456a6a6842b",
+                "0x7addb2a597440cd4fd6b8801bdd523dfc61f83affbc9a3393875375ba570929",
+                "0x9291bacbbe51caaaa63330d7a79823c07c247449ce54ab0b166913f55e2154a",
+                "0x138c58c0cbbdeb18b95b06fe7f7d1814a8f6f3e73faeb3cb70728c76d006ce15"
+            ]
+        },
+        "registerBAgain": {
+            "merkleTreeDepth": "0x2",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0xc3a15ca6884f160b162be923d7b371163a504ae49fc2e19836547f734234a7d",
+            "scope": "0x4",
+            "points": [
+                "0x11df3465e6548f1a83185bd1fd506a5b8c15ffd41f9120a9d1b91b97b27c4347",
+                "0x1ae55ae7e527ee943668c465f5b08ff908a0d939180d7fde86a5272f2e36ebab",
+                "0xdd196dd7cf38819d7647feb1cd45f600ce07394de79b3768ca7fcd6059597a0",
+                "0x167b5ec6806c1ee2a89a679a8cb4bb42da792f4f042485ebeb1cce271f95d402",
+                "0x2708894de6cc615df53463c8c533764ea62703734e53734f7afae146bac61777",
+                "0xf2135319bc96d042054a9d5154c7ff74fd4b012a0de07bb5db779342189689",
+                "0x1f7571fcc81d0091a1f0f10768ae8288609e7d6dff0270c05aa126c69effe63",
+                "0x2731b30173be13ff8daaabde8f95a773014c523909ed8262b9745ed41c1922bb"
+            ]
+        },
+        "updateA": {
+            "merkleTreeDepth": "0x2",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0x1c0286291b0114781ccf67947a240154703847d479bb37b963b1aa185480be3",
+            "scope": "0x5",
+            "points": [
+                "0x47c02b639591cd694326dec2926e4dfbb9bd752acebff952e3074def9599df7",
+                "0x292c7adfb3f2f65edeed14687cc98aee5e98e3802dc1aff90481914ed6e4b903",
+                "0x1cb1c44f4ac702c391663b90753ba32742e86ae6a2f4ec68fbc79738430da347",
+                "0x128d77a0319d82badb2625c3787d66573ace16db62719534f65abd10d9316e9d",
+                "0x2e00b227a000aa8be626fbc8054cc84c5e60926334faee331b3b878f1c2ec886",
+                "0xa0c1c9c9e6a4a6782d8c535f53681f73dbc51dfa7a4f30ebd5bcdb310b01dda",
+                "0x27259bfdafb5b1a81fdefa977045f2b3a090e88665605b2dc7958b0c08ec6e7f",
+                "0x2ca7656f2bf83838a37e2498efe314fe3ffcae23ea86e50bdbcfbfb603fa54db"
+            ]
+        },
+        "removeA": {
+            "merkleTreeDepth": "0x1",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0x2a7d9645ee3d21efb7f78bad31c2b250440b7333b91055ec027d0c43ddcf0bba",
+            "scope": "0x6",
+            "points": [
+                "0x1c084134aa1db019faed7709c16cbb357cd0d0922528e6e4095cb5744baccb45",
+                "0x22a1d94c0d92ae896b09a708387a8163d7382c0b7e5378dd4ec53a8adb4f7e68",
+                "0x27a3c54a292f61dc96bb9f8bc431c809ae21c28385b837bff5075ebdfe4ac105",
+                "0x194488dc7b7adf162a56c099bc5cc4fea8624d983bebf1b5a69d3231ad60806d",
+                "0xf9df41519d78c6583aa5dd5c9ed06819ae416596d4345db39c3a1387067f063",
+                "0x2e8fab2926c623b0034492ff651cac63d7c7c1c763a0494a1d84575664a2324",
+                "0x173f55fac42a1068b18e243fa1ebb75c41e5bb051a6126e78d1260ff5d038be0",
+                "0xd3d280691b72b4ccd460b1ffded0075fd96d2753128ab21db51f63213754681"
+            ]
+        },
+        "removedMemberRegisterB": {
+            "merkleTreeDepth": "0x1",
+            "merkleTreeRoot": "0x2ab290a6483acb5a2bca5c2e92054ede6bbe7cc9cbfd13e5a29bcca05e6ea777",
+            "nullifier": "0x1394d2b7298e2cf30b966f4e4ea3cbc156edac686ee12e602c6e682bb9890860",
+            "scope": "0x7",
+            "points": [
+                "0x1d65b6421af1d382893d54ef40b3ccdb884b88e7943d2b1949cbb47b64a84db5",
+                "0x2e17ce2a3ab3025abe1f4adb8713e7dd48fd883d594642b2680c9d5236963b1a",
+                "0x1f73a7aec05037044ade17ccd18818c0eb2d3be0da789a67a54c953d81e9a6d7",
+                "0xc16061d8bdfd8f8d6d21b1c15b71a461b5e6305b97a39fe155328c88affbcc4",
+                "0x1a50f7b33b8e01dd97f696ed4535c6d56c092fb61e760a643d6beb17017820bc",
+                "0xc626b62345cd4a356e474c256ea4dc6e6e33cb0b1e382618f447d01f4c1948c",
+                "0x2400dc2702e4126addf6351c6d4eaca6436def0faeb6b95e836106da7ba19813",
+                "0x30139cf3bd396bbc460efd994582f63f2e345eaf5ca0d1d14fe9ae4adb16b6c4"
+            ]
+        },
+        "foreignGroupRegisterA": {
+            "merkleTreeDepth": "0x2",
+            "merkleTreeRoot": "0x174a2fe0812fffea581d13e803e3102fddfccf4c168ebccbbb28cec4248ef486",
+            "nullifier": "0xc231ac93f66b9e9ec4b48b4dc626c040a4e7cdc2b7ca9e45096a1d53f8f81ad",
+            "scope": "0x8",
+            "points": [
+                "0x2174ac120682b3bc321d07d60f23beb3f99e9e7786b120e590e0d5c7f066a4ac",
+                "0x2e03e19e40bcce064ec712f473d033c648d3db7cda321d0e7c91fb47c468999f",
+                "0x25814f54780246c6e3d0f9e11c901fdf21bd90fa982fec7f8c356cbd81727ac7",
+                "0x8f051c9df79356b72c25040c88fb551f7d59319e458769dac45e7a6d6aba162",
+                "0xb7c2f80e9decfdfaf56785ec3f421c99a8e1743f20b399a5e9c962f3f8b127a",
+                "0x2868b2aa13b75b7fb97f500645b106fdac5764f0732c0c1bc94fcdf23b016e4",
+                "0x1e53a982dbe034643916938c0b4a1a08189df156e745bf5f8bc65adf598b33c1",
+                "0x26d160d0597f9d0c78673e4b79719daff07c0c9f69168d21c2504fe71aea6745"
+            ]
+        }
+    }
+}

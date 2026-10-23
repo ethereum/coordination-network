@@ -1,0 +1,29 @@
+name: production
+
+permissions:
+    contents: read
+
+on:
+    push:
+        branches:
+            - main
+        paths-ignore:
+            - "apps/docs/**"
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    # Duplicates the PR run. Delete once required status checks are available.
+    ci:
+        uses: ./.github/workflows/ci.yml
+
+    # Disabled: the image is not pushed anywhere, so it only
+    # checked that the Dockerfile still builds.
+    #
+    # indexer-image:
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - uses: actions/checkout@v5
+    #         - run: docker build -f apps/indexer/Dockerfile .

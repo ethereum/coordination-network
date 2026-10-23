@@ -1,0 +1,31 @@
+name: demos
+
+permissions:
+    contents: read
+
+on:
+    # Manual only: the demo apps are illustrative and do not gate PRs or main.
+    # Uncomment the triggers below to check them on every push.
+    workflow_dispatch:
+
+    # pull_request:
+    # push:
+    #     branches:
+    #         - main
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/setup
+            - run: yarn build
+            - run: yarn workspace @coordination-network/stealth-address-demo test
+            - run: yarn workspace @coordination-network/registry-demo test
+            - run: yarn workspace identity-testbed test
+            - run: yarn workspace user-web-app test
+            - run: yarn workspace network-member-web-app test

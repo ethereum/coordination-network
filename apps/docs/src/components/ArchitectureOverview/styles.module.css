@@ -1,0 +1,88 @@
+.figure {
+    --network-surface: #f7faf8;
+    --network-node: #fff;
+    --network-contracts: #e8f3ed;
+    --network-border: #cdded3;
+    --network-text: #203d30;
+    --network-muted: #4f655a;
+    --network-accent: #2e8555;
+    container-type: inline-size;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    color: var(--network-text);
+    background: var(--network-surface);
+    border: 1px solid var(--network-border);
+    border-radius: 16px;
+}
+
+:global([data-theme="dark"]) .figure {
+    --network-surface: #19251f;
+    --network-node: #202f27;
+    --network-contracts: #254536;
+    --network-border: #496453;
+    --network-text: #e1efe5;
+    --network-muted: #b7ccbf;
+    --network-accent: #84c8a1;
+}
+
+.figure figcaption {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.wide,
+.narrow {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.narrow {
+    display: none;
+}
+
+.node,
+.contracts {
+    fill: var(--network-node);
+    stroke: var(--network-border);
+    stroke-width: 1;
+}
+
+.contracts {
+    fill: var(--network-contracts);
+}
+
+.title {
+    fill: var(--network-text);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.detail,
+.edgeLabel {
+    fill: var(--network-muted);
+    font-size: 13px;
+}
+
+.icon,
+.arrow {
+    fill: none;
+    stroke: var(--network-accent);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@container (max-width: 600px) {
+    .wide {
+        display: none;
+    }
+
+    .narrow {
+        display: block;
+        max-width: 320px;
+    }
+}

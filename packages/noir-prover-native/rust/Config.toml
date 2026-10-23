@@ -1,0 +1,9 @@
+build_mode = "release"
+target_adapters = ["noir"]
+target_platforms = ["react-native"]
+react_native = [
+    "aarch64-linux-android",
+]
+auto_update = false
+
+[update]

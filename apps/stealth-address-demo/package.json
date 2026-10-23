@@ -1,0 +1,19 @@
+{
+    "name": "@coordination-network/stealth-address-demo",
+    "private": true,
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    },
+    "scripts": {
+        "test": "tsx --test tests/e2e.test.ts"
+    },
+    "dependencies": {
+        "@coordination-network/identity": "workspace:*",
+        "viem": "^2.55.17"
+    },
+    "devDependencies": {
+        "@types/node": "^26.2.0",
+        "tsx": "^4.23.12",
+        "typescript": "^6.0.3"
+    }
+}

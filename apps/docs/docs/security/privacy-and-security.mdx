@@ -1,0 +1,231 @@
+---
+title: Privacy and security for integrators
+sidebar_label: Privacy and security
+sidebar_position: 1
+---
+
+# Privacy and security for integrators
+
+This guide is for teams that run a network member, build a wallet, or verify presentations. The reference apps show the protocol, but some protections are yours to build. Read it together with the [threat model](../../../../specs/WS1-threat-model.md).
+
+## Run a network member
+
+### Protect your secrets
+
+These values spend your funds, sign your credentials or decrypt your users' data.
+
+| Variable                        | Service        | What it protects                                                    |
+| ------------------------------- | -------------- | ------------------------------------------------------------------- |
+| `MEMBER_SERVER_TOKEN`           | issuer service | the member-side routes, which change state and spend your funds     |
+| `ISSUER_PRIVATE_KEY`            | issuer service | the signature on every credential you issue                         |
+| `MEMBER_IDENTITY_SECRET`        | issuer service | your member's anonymous group identity                              |
+| `GOVERNANCE_AUTH_PRIVATE_KEY`   | issuer service | your member's auth key, which publishes its issuer keys             |
+| `GOVERNANCE_SIGNER_PRIVATE_KEY` | issuer service | your member's seat in the governance Safe                           |
+| `AUTH_TOKEN`                    | indexer        | every indexer route, with one token that has full access            |
+| `ENCRYPTION_KEY`                | indexer        | users' viewing keys at rest; lose it and stored keys cannot be read |
+| `LOOKUP_HASH_KEY`               | indexer        | the hashes rows are looked up by; lose it and rows cannot be found  |
+
+If you enable direct writes, `SUBMITTER_PRIVATE_KEY` and `MEMBER_PRIVATE_KEY` are funded keys too. `RPC_URL` and `BUNDLER_URL` often carry a provider API key, and the indexer's `DATABASE_URL` holds its database password.
+
+Generate each value per environment and keep it in a secrets manager. Any value copied from this repository is public, so replace it. `MEMBER_SERVER_TOKEN` needs at least 16 characters. The indexer takes `AUTH_TOKEN`, `ENCRYPTION_KEY` and `LOOKUP_HASH_KEY` as `0x` followed by 64 hex characters, and the issuer service takes its 32-byte keys as 64 hex characters without the prefix.
+
+```bash
+echo "0x$(openssl rand -hex 32)" # indexer values
+openssl rand -hex 32             # issuer service keys
+```
+
+Before you change `ENCRYPTION_KEY` or `LOOKUP_HASH_KEY`, delete each user's rows with `DELETE /keys/:networkId`. After the change, register their viewing keys again with `POST /keys` and the original `fromBlock`. A row you leave behind is never scanned again.
+
+### Keep services private
+
+Put the issuer service behind TLS. Run the indexer on a private network with your backend as its only caller, and give its Postgres database a private address, its own password and `sslmode=verify-full`.
+
+Set the indexer's `TRUSTED_PROXY_ADDRESS` to your proxy, and have the proxy overwrite `X-Forwarded-For`. Set the issuer service's `CORS_ALLOWED_ORIGINS` to the exact browser origins you serve.
+
+`POST /v1/verify` and `POST /v1/presentation-requests` take no token and have no rate limit. `POST /v1/challenge` and `POST /v1/credentials` take no token either. Each has one budget per process, shared by every caller, so a single caller can use it up. Rate-limit all four per caller in front of the service.
+
+### Keep the safe defaults
+
+Sponsored writes go through the shared paymaster from a fresh sender each time. Point `BUNDLER_URL` at a bundler that several members share, or a public one, since a bundle is sent from the bundler's own account. Then the chain records no address of yours. Prefer this to `ALLOW_DIRECT_REGISTRATION`, `ALLOW_DIRECT_DELIVERY` and `ALLOW_DIRECT_REVOCATION`, which sign every write with one key of yours and tie your users' records to you.
+
+Keep `MIN_DEVICE_SECURITY_LEVEL` at `TRUSTED_ENVIRONMENT` or higher, and let the issuer reach Google's attestation status list. Issuance scope comes from the server-owned `ISSUANCE_PROGRAMME` and `ISSUANCE_COUNTRY`. Any `networkId` that `POST /v1/registrations` registers, or finds already registered with the same keys, is approved for issuance. Run your own eligibility check before you call it.
+
+:::warning[Revocations can be lost]
+
+`ALLOW_IN_MEMORY_REVOCATION=true` keeps revocations in process memory. A restart loses them, nothing reaches the chain, and the server never sees another member's revocations. Use it only in local tests.
+
+:::
+
+### Decide how long you keep data
+
+The protocol leaves retention to each member. Set a period for each kind of record and publish it.
+
+The indexer encrypts viewing keys and keeps them with no expiry. `DELETE /keys/:networkId` removes a user's keys and the accounts found with them. The reference server checks each registration consent signature and does not keep it. If you keep signatures as records, set how long. Access logs record which user was looked up and when, and the indexer's logs also carry `RPC_URL`, which is a credential.
+
+Issuance and verification records follow the lifetimes in the [issuance spec](../../../../specs/03-vc-issuance.md). The `networkId`, meta-address and public keys a member receives belong in its personal-data inventory.
+
+### Limit your RPC proxy
+
+If phones reach the chain through your proxy:
+
+- Keep the provider key on the server, and never put a keyed provider URL in anything a phone scans.
+- Bind the proxy to loopback, or authenticate callers.
+- Cap request and response size, and set an upstream timeout.
+- Allow only the JSON-RPC methods the wallet needs, and limit batches.
+- Log no request or response bodies.
+
+In testnet mode, the [testbed proxy](https://github.com/ethereum/coordination-network/blob/main/apps/integration-testbed/src/rpc-proxy.ts) binds to loopback by default, caps requests at 1 MiB and logs no bodies. It does not cap responses, time out, filter JSON-RPC methods or limit batches.
+
+### Plan on-chain actions
+
+On-chain writes are public. Send one recipient per delivery transaction, because a batch links its recipients, and use a fresh random scope for each Semaphore membership proof.
+
+Use `unrevoke` and `updateRevocationCommitment` only to fix mistakes. `unrevoke` shows that a revoked commitment was reinstated, and `updateRevocationCommitment` shows the old and new commitments together.
+
+To recover a user, call `removeIdentity`, then a fresh `registerIdentity`. Send the two writes through the sponsored path from separate senders, not back to back. Never use `updateIdentity`: it keeps the `networkId` and pairs the old and new meta-addresses under it.
+
+:::info[Leaving is permanent]
+
+Admission and exit stay on chain. When a member leaves with `exitNetwork`, every credential it issued stops verifying, and rejoining takes a new request. Tell your holders first, and rehearse on a local stack or a throwaway testnet deployment. See [leaving voluntarily](https://github.com/ethereum/coordination-network/blob/main/packages/contracts/docs/configuration/network-member-onboarding.md#leaving-voluntarily).
+
+:::
+
+### Respond to a leaked issuer key
+
+:::danger[Forged credentials]
+
+Whoever holds your issuer key can issue credentials that verify. Call `retireIssuerKeyImmediately` from your auth address or through governance. It stops every root the key could be proven against.
+
+:::
+
+An immediate retirement also fails in-flight proofs for every member, so expect retries. Then reissue the credentials the key signed. Use `retireIssuerKey` only for planned rotation, since it leaves the key usable for the root window. The member registry's owner sets that window (`rootDuration`) and should keep it short. The [wallet spec](../../../../specs/02-wallet.md) and the threat model cover the trade-offs.
+
+### Finish governance changes
+
+When a member is removed or leaves, the paymaster's group admin must also remove it from the paymaster group. Each contract's ownership, and the paymaster's group admin, transfer separately, so check all of them. Change the Safe's owners and threshold only through the governance module.
+
+Vet candidates before you admit them, because any approved member can write registry records and publish issuer keys. The [onboarding guide](https://github.com/ethereum/coordination-network/blob/main/packages/contracts/docs/configuration/network-member-onboarding.md) walks through each step.
+
+## Build a wallet
+
+### Keep the account key away from other signers
+
+One signature over a fixed message derives the user's spending, viewing and auth keys. This keeps the derivation compatible with FluidKey.
+
+:::danger[Privacy risk]
+
+Anyone who gets the account key to sign that message once can spend the user's funds and read their whole payment history. Never expose the account key to a general-purpose signer such as `personal_sign`, and never log or send the signature.
+
+:::
+
+Derive keys on the device, in memory, when you need them. `signRegisterIdentity` in `@coordination-network/user-client` signs any 32-byte digest with the account key, so pass it only digests that package built.
+
+### Secure the link to member apps
+
+The reference deep link returns each response in the callback URL's query string, accepts `http` endpoints, and authenticates neither app. Another app that claims the same scheme can intercept a request or forge a response.
+
+Before production, carry links over OS-verified links (Android App Links and iOS Universal Links), so only your app can receive them. Sign or encrypt responses, and verify the calling app before the wallet shows a member's name or signs its issuance challenge. Require `https` for every endpoint and keep `responseUrl` on the caller's origin. Fetch nothing before the user consents, and show the resolved callback on the consent screen.
+
+The reference package refuses `http` and `https` for both the request scheme and the callback, so moving either direction to verified links needs a change to the package. On the wallet side, this Expo config registers verified links:
+
+```json
+{
+    "expo": {
+        "android": {
+            "intentFilters": [
+                {
+                    "action": "VIEW",
+                    "autoVerify": true,
+                    "data": [{ "scheme": "https", "host": "wallet.example.org", "pathPrefix": "/link" }],
+                    "category": ["BROWSABLE", "DEFAULT"]
+                }
+            ]
+        },
+        "ios": {
+            "associatedDomains": ["applinks:wallet.example.org"]
+        }
+    }
+}
+```
+
+The domain must serve `/.well-known/assetlinks.json` for Android and `/.well-known/apple-app-site-association` for iOS. Expo explains both in its guides to [Android App Links](https://docs.expo.dev/linking/android-app-links/) and [iOS Universal Links](https://docs.expo.dev/linking/ios-universal-links/).
+
+The reference wallet already checks a credential's issuer key against the member's keys in the on-chain issuer set.
+
+### Check served lists against the chain
+
+A member serves the issuer and revocation lists, so do not trust its roots. Read the issuer-set root, its leaf count and the revocation root from your own RPC at one block. Compare them with what the lists rebuild to, and refuse on a mismatch or when the chain is unreachable.
+
+The reference phone wallet does this in [`listsMatchChain`](https://github.com/ethereum/coordination-network/blob/main/packages/user-app-core/src/chain-state.ts). The browser demo wallet takes the roots from its server, so treat it as a demo only.
+
+### Protect presentations
+
+Reject a request whose `currentTime` is more than 300 seconds from the device clock. This stops a verifier from searching the credential's validity window with arbitrary times.
+
+Show a consent screen for every operation, queries included. Send back fixed error codes only, and keep details on the device. Derive the paymaster sponsorship identity separately from the credential's `holderKeyCommitment`, and never add `holderKeyCommitment` to a public group.
+
+### Store keys and credentials safely
+
+Keep keys in the OS keystore, gated by user authentication and excluded from backups. Send a device attestation at issuance, and encrypt the credential store at rest.
+
+The reference wallet does most of this on Android. Its device signing key needs a fresh authentication for every signature. The device secret and the other stored secrets sit in SecureStore without an authentication gate, by design, and stay out of cloud backups and device transfers. iOS has no keystore module in the reference, so it falls back to in-memory software keys that are not for production.
+
+## Verify presentations
+
+`verifyZkPresentationProof` from `@coordination-network/credential` checks the proof and its public inputs: current time, challenge, audience, programme and country. It does not check the two roots it outputs, so check both on chain yourself.
+
+Build the expected inputs from your own stored request, with its one-time challenge, expiry and your audience, and never from the submitter. The [issuer service's verify route](https://github.com/ethereum/coordination-network/blob/main/apps/issuer-service/src/routes/verify.ts) shows this. Ask only for what the decision needs, because programme and country are public inputs. Both registries accept a superseded root for a short window, though some changes, such as an immediate key retirement, close it at once. When a root check fails, ask the holder to prove again against the current root.
+
+```ts
+import { parseAbi } from "viem"
+import { verifyZkPresentationProof } from "@coordination-network/credential"
+
+const issuerSetAbi = parseAbi(["function isValidIssuerSetRoot(uint256 root) view returns (bool)"])
+const revocationAbi = parseAbi(["function isValidRoot(uint256 revocationRoot) view returns (bool)"])
+
+// `request` is your stored presentation request, never the submitter's claim
+const { currentTime, challenge, audience, programme, country } = request
+const result = await verifyZkPresentationProof(circuit, proof, {
+    currentTime,
+    challenge,
+    audience,
+    programme,
+    country
+})
+if (!result.ok) throw new Error(result.code)
+
+// `client` is a viem public client on the network's chain
+const [issuerRootOk, revocationRootOk] = await Promise.all([
+    client.readContract({
+        address: approvedIssuerSet,
+        abi: issuerSetAbi,
+        functionName: "isValidIssuerSetRoot",
+        args: [result.approvedIssuerRoot]
+    }),
+    client.readContract({
+        address: revocationRegistry,
+        abi: revocationAbi,
+        functionName: "isValidRoot",
+        args: [result.revocationRoot]
+    })
+])
+if (!issuerRootOk || !revocationRootOk) throw new Error("root not accepted on chain")
+```
+
+## Verify circuit artifacts
+
+A substituted circuit can make a verifier accept forged proofs. Regenerate the circuit artifacts and compare their SHA-256 digests with the published copy, as [the artifact package](/packages/zk-artifacts#verifying) describes.
+
+## Keep the demo stack local
+
+:::caution[Local demo only]
+
+`yarn stack` is a local demo, not a deployment. It runs over plain HTTP, every listener binds every interface, Anvil has account impersonation enabled, and member tokens sit in a local secrets file. Never send real funds to its accounts.
+
+:::
+
+Run it only on a network you trust. Locally, `STACK_HOST` only sets the address the phones are told to use. With `yarn stack:testnet`, every listener binds `STACK_HOST`, which defaults to loopback. Keep it there, because the dashboard key and member tokens travel over plain HTTP. On a deployed testnet, every `--check` spends paymaster and bundler funds and leaves records on chain, and the admission walkthrough runs once per deployment.
+
+## Know the accepted risks
+
+The threat model lists the [trade-offs and accepted threats](../../../../specs/WS1-threat-model.md#limitations), such as users having no privacy from network members and one shared token guarding the indexer. Read them before you deploy.

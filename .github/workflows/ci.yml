@@ -1,0 +1,58 @@
+name: ci
+
+permissions:
+    contents: read
+
+# The test suite, called by pull-requests.yml and production.yml. The library tests are the
+# slowest, so they run in their own job, in parallel with the rest.
+on:
+    workflow_call:
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/setup
+
+            - name: Lint and format
+              run: yarn style
+
+            # Jest only transpiles, so types are checked here.
+            - name: Typecheck
+              run: yarn typecheck
+
+            - name: Build
+              run: yarn build
+
+            - name: Test circuits
+              run: yarn test:circuits
+
+            - name: Test contracts
+              run: yarn test:contracts
+
+            - name: Test zk-artifacts
+              run: yarn test:zk-artifacts
+
+            - name: Test wallet e2e
+              run: yarn test:wallet-e2e
+
+            - name: Test integration testbed
+              run: yarn test:testbed
+
+            - name: Test integration testbed scenario
+              run: yarn workspace integration-testbed test:scenario
+
+    libraries:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/setup
+
+            # Library tests need the built packages.
+            - name: Build
+              run: yarn build
+
+            # package.json skips apps/indexer.
+            - name: Test libraries
+              run: yarn test:libraries

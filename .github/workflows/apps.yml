@@ -1,0 +1,33 @@
+name: apps
+
+permissions:
+    contents: read
+
+# Run from the Actions tab before merging changes to apps/, or to a package an app
+# depends on.
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/setup
+
+            - name: Build
+              run: yarn build
+
+            - name: Test indexer
+              run: yarn test:indexer
+
+            # Starts a postgres container, so this needs the runner's Docker.
+            - name: Test indexer integration
+              run: yarn test:indexer:integration
+
+            - name: Test issuer service
+              run: yarn workspace issuer-service test

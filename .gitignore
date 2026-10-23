@@ -1,0 +1,143 @@
+# OS
+.DS_Store
+
+# Editor
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.swp
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Testing
+coverage
+coverage.json
+*.lcov
+apps/integration-testbed/test-results/
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Optional npm cache directory
+.npm
+*.pem
+
+# Output of 'npm pack'
+*.tgz
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+network-member.env
+
+# Production
+build
+dist
+types
+/docs
+
+# Docusaurus cache and generated files
+.docusaurus
+.cache-loader
+
+# Hardhat
+artifacts
+cache
+typechain-types
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v3
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# asdf
+.tool-versions
+
+# direnv
+.envrc
+
+# Other
+snark-artifacts
+apps/integration-testbed/stack.json
+
+# vercel
+.vercel
+
+# local env files
+.env*.local
+
+# the testbed stack's keys and org seeds for a deployed network
+.stack.env
+
+# next.js
+.next/
+out/
+
+# Expo apps (generated native projects / bundler cache)
+.expo/
+apps/*/android/
+apps/*/ios/
+
+# forge coverage output
+lcov.info
+
+# Deployment files from local chains, fork rehearsals and tests
+packages/contracts/deployments/fork/
+packages/contracts/deployments/test/
+packages/contracts/deployments/11155112.json
+packages/contracts/deployments/31337.json
+packages/contracts/deployments/31338.json
+packages/contracts/deployments/1337.json
+
+# Forge broadcast records and script cache. Public-network records are committed
+packages/contracts/broadcast/**/11155112/
+packages/contracts/broadcast/**/31337/
+packages/contracts/broadcast/**/31338/
+packages/contracts/broadcast/**/1337/
+packages/contracts/broadcast/**/dry-run/
+packages/contracts/cache/

@@ -1,0 +1,39 @@
+---
+sidebar_position: 2
+description: How wallets, members, credentials, and shared contracts fit together in WS1.
+---
+
+import ArchitectureOverview from "@site/src/components/ArchitectureOverview"
+import CredentialFlow from "@site/src/components/CredentialFlow"
+
+# Architecture
+
+<ArchitectureOverview />
+
+## Identity and registration
+
+An organization may know whom it serves and retain the evidence needed for its own checks. The network needs a way to recognize that participant without placing their personal identity on Ethereum.
+
+For someone using their own wallet, the network identity comes from cryptographic keys generated on their device. The wallet derives a **network ID** from those keys, not from a name, document number, or biometric. Ethereum records that ID and public receiving information. The private keys stay on the person's device.
+
+Registration checks recognize reuse of the same wallet identity, not every possible identity belonging to one person.
+
+Holding your own keys is the **self sovereign** part of this flow. Keeping personal records off chain also does not make the participant anonymous to the organization that enrolled them.
+
+## Credentials
+
+The organization can then issue a **credential**, a signed record of approval, to the wallet.
+
+<CredentialFlow />
+
+A **zero knowledge proof** lets the person demonstrate that approval without sharing the credential or identifying its issuer. The programme and country requested by the verifier remain visible.
+
+## Revocation
+
+Members decide eligibility and can revoke approvals. Wallets refresh the shared revocation state before presenting, and verifiers check that the proof uses an accepted root.
+
+## Future capabilities
+
+The stack is designed to support private payments in the future. Payment distribution, spending, redemption, and settlement are outside WS1.
+
+Continue to the [integration guide](./guides/integration.mdx) or review [privacy and security](./security/privacy-and-security.mdx).

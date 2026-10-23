@@ -1,0 +1,4 @@
+include = [{ path = "remap.toml", optional = true }]
+
+[unstable]
+build-std = ["panic_abort", "std"]

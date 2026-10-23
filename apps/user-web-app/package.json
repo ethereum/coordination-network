@@ -1,0 +1,38 @@
+{
+    "name": "user-web-app",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite --host 0.0.0.0",
+        "test": "jest --config jest.config.ts --watchman=false",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@coordination-network/credential": "workspace:^",
+        "@coordination-network/identity": "workspace:^",
+        "@coordination-network/issuer-set": "workspace:^",
+        "@coordination-network/revocation-registry": "workspace:^",
+        "@coordination-network/user-app-link": "workspace:^",
+        "@coordination-network/user-client": "workspace:^",
+        "@coordination-network/wallet": "workspace:^",
+        "@coordination-network/zk-artifacts": "workspace:^",
+        "@noble/curves": "^1.9.7",
+        "@noble/hashes": "^1.8.0",
+        "@semaphore-protocol/identity": "4.14.5",
+        "react": "19.1.0",
+        "react-dom": "19.1.0"
+    },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/react": "^19.1.10",
+        "@types/react-dom": "^19.1.7",
+        "@vitejs/plugin-react": "^5.0.4",
+        "fake-indexeddb": "^6.2.2",
+        "jest": "29.7.0",
+        "ts-jest": "29.4.5",
+        "typescript": "^6.0.3",
+        "vite": "^7.1.5"
+    }
+}

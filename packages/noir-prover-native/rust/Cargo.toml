@@ -1,0 +1,69 @@
+
+[package]
+name = "noir-prover-native"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+# Adapters for different proof systems
+[features]
+default = ["uniffi"]
+uniffi = ["mopro-ffi/uniffi"]
+flutter = ["mopro-ffi/flutter"]
+wasm = ["mopro-ffi/wasm"]
+
+[dependencies]
+mopro-ffi = { version = "=0.3.7" }
+thiserror = "2.0.12"
+anyhow = "1.0.99"
+
+# CIRCOM_DEPENDENCIES
+# HALO2_DEPENDENCIES
+# NOIR_DEPENDENCIES
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.94"
+hex = "0.4"
+
+# Just the oneshot channel that carries a proof back off the prover thread. No executor, no runtime:
+# uniffi drives the future itself.
+futures-channel = "0.3"
+
+# mopro 0.3.7 pins zkmopro/noir-rs v1.0.0-beta.19, whose barretenberg-rs 4.2.0 cannot decode a
+# nargo beta.22 artifact at all. This tag pins barretenberg-rs 5.0.0 and acvm/nargo v1.0.0-beta.22,
+# matching the repo's @aztec/bb.js 5.0.0 exactly, so a native proof verifies with the SDK verifier.
+noir_rs = { git = "https://github.com/zkpassport/noir_rs", features = [
+    "barretenberg",
+], tag = "v1.0.0-beta.22-1" }
+    
+# GNARK_DEPENDENCIES
+
+[build-dependencies]
+# CIRCOM_BUILD_DEPENDENCIES
+# HALO2_BUILD_DEPENDENCIES
+# NOIR_BUILD_DEPENDENCIES
+
+# GNARK_BUILD_DEPENDENCIES
+
+[dev-dependencies]
+mopro-ffi = { version = "=0.3.7", features = ["uniffi-tests"] }
+
+# CIRCOM_DEV_DEPENDENCIES
+# HALO2_DEV_DEPENDENCIES
+# NOIR_DEV_DEPENDENCIES
+
+serial_test = "3.0.0"
+# `block_on`, to drive the async export from a plain `#[test]`.
+futures = "0.3"
+    
+# GNARK_DEV_DEPENDENCIES
+
+[target.wasm32-unknown-unknown.dependencies]
+mopro-ffi = { version = "=0.3.7", features = ["wasm"] }
+wasm-bindgen = "0.2"
+serde-wasm-bindgen = "0.6"
+
+    

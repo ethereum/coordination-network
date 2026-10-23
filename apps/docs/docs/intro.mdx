@@ -1,0 +1,36 @@
+---
+sidebar_position: 1
+slug: /
+---
+
+# What is Coordination Network?
+
+Coordination Network lets organizations, called network members, approve people for programmes while keeping those people private. A member issues each approved person a credential that lives on their own phone, and registers a stealth meta-address for them on chain under a pseudonymous `networkId`.
+
+This repository holds the apps, libraries and contracts behind it.
+
+## What it provides
+
+The network gives users and members five capabilities:
+
+- A user derives their identity from a secret on their own device. Its `networkId`, meta-address and public keys go to each member the user enrolls with.
+- Members issue credentials, backed by an on-chain approved-issuer set and on-chain revocation.
+- An on-chain registry maps each `networkId` to a stealth meta-address. A member registers the entry with an anonymous Semaphore proof, and the registry deduplicates identities across members.
+- A user proves in zero knowledge that an approved member issued them a valid, unrevoked credential. The verifier learns neither which member issued it nor which credential was presented, though programme and country are public. Verification runs off chain and costs no gas.
+- Accounts use ERC-5564 stealth addresses, so outside observers cannot link a user's meta-address to their accounts.
+
+Payments are a future capability the stack is designed to support; WS1 focuses on identity, credentials, and eligibility proofs.
+
+## How it fits together
+
+The user app is an Android wallet. It holds the device secret, keys and credentials, builds proofs, and answers member apps over deep links, each request behind a consent screen.
+
+Each member ships its own network member app to register wallets, issue credentials and check eligibility. The app holds no user keys, and asks the user app for signatures and proofs. Behind it runs the member's server, the issuer service, which handles registrations and admission, holds issuer keys, issues and revokes credentials, and verifies presentations. An indexer scans stealth announcements for the member's users.
+
+The contracts hold the identity registry, the member registry and governance, the approved-issuer set, the revocation registry and the paymaster.
+
+For a visual overview of these responsibilities, read [Architecture](./architecture.mdx).
+
+## Where to start
+
+To build on the network, start with the [integration guide](./guides/integration.mdx). Read the [repository README](https://github.com/ethereum/coordination-network#readme) for the apps, and the [specs](../../../specs/06-full-architecture-ws1.md) for the design, starting with the full architecture. If you run a member, build a wallet or verify presentations, read the [privacy and security guide](./security/privacy-and-security.mdx) too.

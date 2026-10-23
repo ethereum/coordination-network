@@ -1,0 +1,52 @@
+{
+    "name": "@coordination-network/issuer-set",
+    "version": "0.1.3",
+    "description": "Approved-issuer set in TypeScript: publish network members' credential signing keys into the LeanIMT accumulator (dynamic depth, capacity 2^20) spec 03 defines, and generate the membership proofs a credential circuit consumes, as the set itself or as a mirror of one held on chain.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ethereum/coordination-network.git",
+        "directory": "packages/issuer-set"
+    },
+    "homepage": "https://github.com/ethereum/coordination-network/tree/main/packages/issuer-set",
+    "bugs": "https://github.com/ethereum/coordination-network/issues",
+    "sideEffects": false,
+    "type": "module",
+    "main": "dist/index.cjs",
+    "module": "dist/index.js",
+    "types": "types/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "require": "./dist/index.cjs",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist/",
+        "types/",
+        "src/",
+        "README.md",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "rimraf dist types && rollup -c rollup.config.mjs"
+    },
+    "dependencies": {
+        "@zk-kit/baby-jubjub": "1.0.3",
+        "@zk-kit/lean-imt": "2.2.5",
+        "poseidon-lite": "0.3.0"
+    },
+    "devDependencies": {
+        "@rollup/plugin-typescript": "^12.3.0",
+        "rimraf": "^6.1.3",
+        "rollup": "^4.62.2",
+        "rollup-plugin-cleanup": "^3.2.1",
+        "rollup-plugin-dts": "^6.4.1",
+        "tslib": "^2.8.0",
+        "typescript": "^6.0.3"
+    }
+}

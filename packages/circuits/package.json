@@ -1,0 +1,49 @@
+{
+    "name": "@coordination-network/circuits",
+    "version": "0.1.3",
+    "description": "The coordination network's Noir circuits: the credential presentation circuit proving an approved issuer's signature, the credential policy, holder, device and revocation key possession, and revocation non-membership.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ethereum/coordination-network.git",
+        "directory": "packages/circuits"
+    },
+    "homepage": "https://github.com/ethereum/coordination-network/tree/main/packages/circuits",
+    "bugs": "https://github.com/ethereum/coordination-network/issues",
+    "files": [
+        "Nargo.toml",
+        "src/",
+        "README.md",
+        "LICENSE"
+    ],
+    "keywords": [
+        "noir",
+        "nargo",
+        "barretenberg",
+        "ultrahonk",
+        "zero-knowledge",
+        "circuit",
+        "verifiable-credentials",
+        "revocation",
+        "non-membership-proof"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "compile": "nargo compile",
+        "execute": "nargo execute",
+        "fixtures": "tsx scripts/generate-fixtures.ts",
+        "test": "nargo test && tsx scripts/test-constraints.ts",
+        "test:constraints": "tsx scripts/test-constraints.ts"
+    },
+    "devDependencies": {
+        "@noble/curves": "^1.9.7",
+        "@noble/hashes": "^1.8.0",
+        "@semaphore-protocol/identity": "^4.14.5",
+        "poseidon-lite": "0.3.0",
+        "tsx": "^4.23.0",
+        "typescript": "^6.0.3",
+        "viem": "^2.55.11"
+    }
+}

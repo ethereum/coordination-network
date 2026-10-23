@@ -1,0 +1,30 @@
+{
+    "name": "@coordination-network/registry-demo",
+    "private": true,
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    },
+    "scripts": {
+        "start:identity": "tsx scripts/run/identity.ts",
+        "start:member-and-identity": "tsx scripts/run/member-and-identity.ts",
+        "start:network-member": "tsx scripts/run/network-member.ts",
+        "test": "tsx --test --test-concurrency=1 --test-reporter=spec tests/*.test.ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@coordination-network/identity": "workspace:*",
+        "@coordination-network/network-member-client": "workspace:*",
+        "@coordination-network/network-member-governance": "workspace:*",
+        "@coordination-network/network-member-proof": "workspace:*",
+        "@safe-global/types-kit": "^4.0.1",
+        "@semaphore-protocol/data": "4.14.5",
+        "@semaphore-protocol/group": "4.14.5",
+        "@semaphore-protocol/identity": "4.14.5",
+        "viem": "^2.55.11"
+    },
+    "devDependencies": {
+        "@types/node": "^26.2.0",
+        "tsx": "^4.23.12",
+        "typescript": "^6.0.3"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "resolveJsonModule": true,
+        "types": ["jest", "node"],
+        "paths": {
+            "@coordination-network/app-ui/testing": ["../../packages/app-ui/src/testing"],
+            "@coordination-network/*": ["../../packages/*/src"]
+        }
+    },
+    "include": ["**/*.ts", "**/*.tsx"]
+}

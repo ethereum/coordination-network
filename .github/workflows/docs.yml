@@ -1,0 +1,70 @@
+name: docs
+
+permissions:
+    contents: read
+
+# Runs only when the docs or their sources change. The other workflows skip docs-only changes.
+on:
+    pull_request:
+        paths:
+            - "apps/docs/**"
+            - "specs/**"
+            - "packages/contracts/deployments/*.json"
+            - "packages/*/README.md"
+            - "packages/*/package.json"
+            - "packages/contracts/src/**/README.md"
+            - "packages/contracts/src/package.json"
+            - "packages/noir-prover-native/rust/MoproReactNativeBindings/README.md"
+            - "packages/noir-prover-native/rust/MoproReactNativeBindings/package.json"
+            - "packages/contracts/docs/**"
+            - "packages/identity/DERIVATION.md"
+            - "apps/issuer-service/README.md"
+            - "apps/indexer/*.md"
+            - "yarn.lock"
+            - ".github/workflows/docs.yml"
+    push:
+        branches:
+            - main
+        paths:
+            - "apps/docs/**"
+            - "specs/**"
+            - "packages/contracts/deployments/*.json"
+            - "packages/*/README.md"
+            - "packages/*/package.json"
+            - "packages/contracts/src/**/README.md"
+            - "packages/contracts/src/package.json"
+            - "packages/noir-prover-native/rust/MoproReactNativeBindings/README.md"
+            - "packages/noir-prover-native/rust/MoproReactNativeBindings/package.json"
+            - "packages/contracts/docs/**"
+            - "packages/identity/DERIVATION.md"
+            - "apps/issuer-service/README.md"
+            - "apps/indexer/*.md"
+            - "yarn.lock"
+            - ".github/workflows/docs.yml"
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: yarn
+
+            # Installs only the docs app and the root, which provides Prettier.
+            - name: Install docs dependencies
+              run: yarn workspaces focus docs coordination-network
+
+            # The ci workflow, which runs `yarn style`, skips docs-only pull requests.
+            - name: Typecheck and format docs
+              run: |
+                  yarn workspace docs typecheck
+                  yarn workspace docs format
+
+            - name: Build docs
+              run: yarn workspace docs build

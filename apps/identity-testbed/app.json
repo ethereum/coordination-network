@@ -1,0 +1,14 @@
+{
+    "expo": {
+        "name": "identity-testbed",
+        "slug": "coordination-network",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": false,
+        "android": {
+            "package": "network.coordination.identitytestbed"
+        },
+        "plugins": ["expo-dev-client", "expo-secure-store"]
+    }
+}

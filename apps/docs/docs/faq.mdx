@@ -1,0 +1,79 @@
+---
+sidebar_position: 6
+title: FAQ
+description: Short answers for readers arriving without context, each linking to the page that goes deeper.
+---
+
+# FAQ
+
+### What problem does this solve?
+
+Several organisations need to approve people for programmes, avoid approving the same person twice across organisations, and let third parties check an approval, without sharing their records with each other or publishing anything personal. See [What is Coordination Network?](/).
+
+### What is a network member?
+
+An organisation admitted to the network by a majority of the existing members. A member registers identities, issues and revokes credentials, and holds one seat in the governance Safe. Admission and removal are on chain. See [Architecture](./architecture.mdx).
+
+### What is a `networkId`?
+
+A pseudonym derived on the person's device from a key, with no name or document number behind it. The same device gives the same `networkId` in every member's app, which is what lets members deduplicate without sharing data. See the [identity package](/packages/identity).
+
+### What does a verifier learn from a presentation?
+
+That some approved member issued a valid, unrevoked credential for the programme and country the verifier asked about. It does not learn which member, which credential, or whether two presentations came from the same person. Programme and country are public. See [Verify presentations](./security/privacy-and-security.mdx#verify-presentations).
+
+### Is any personal data on chain?
+
+No. The chain holds `networkId` to meta-address mappings, member records and keys, revocation commitments and stealth announcements. The [privacy disclosure](/packages/contracts/docs/privacy-disclosure) lists every value that is public and who can read it.
+
+### Which chain does it run on?
+
+Sepolia, for the reference deployment. The addresses are on [Deployed contracts](./deployed-contracts.mdx). There is no mainnet deployment.
+
+### Has it been audited?
+
+Not externally yet. An internal privacy and security audit has been done and its findings addressed. Until an external audit, the presentation circuit's soundness rests on review and negative tests, and the threat model lists that as an accepted risk. See the [threat model](../../../specs/WS1-threat-model.md#4-credential-verification).
+
+### Who pays for gas?
+
+The members. They fund a shared Semaphore paymaster deposit that pays for registrations, credential deliveries and revocations, so the person pays nothing and no member pays from its own visible account. A member pays for its own admission request. Presentations are verified off chain and cost nothing. See [How the parts connect](./guides/integration.mdx#how-the-parts-connect).
+
+### Can a person be enrolled with two members?
+
+Yes, if they use the same wallet. The second member finds the existing registration and reuses it, and each member issues its own credentials to that identity. A new phone or a reset wallet gives a new `networkId`, so deduplication is only as strong as each member's identity checks.
+
+### What happens if the phone is lost?
+
+The identity and its credentials are lost with it; Phase 1 is one person, one device. A member recovers the person by removing the old registration and registering a fresh one, after its own identity check, and reissuing credentials. See [Plan on-chain actions](./security/privacy-and-security.mdx#plan-on-chain-actions).
+
+### Can a member see what its users receive?
+
+Yes. The member's indexer holds each user's viewing key. The key cannot move funds, but it finds every stealth account the user receives to, and anything those accounts later send is public on chain. Privacy holds against outside observers, not against the member that enrolled you. See the [threat model limitations](../../../specs/WS1-threat-model.md#limitations).
+
+### Can one member revoke another member's credential?
+
+The registry allows it: it does not check who issued a credential, so any approved member can revoke any commitment it knows. In practice a member only knows the commitments of credentials it issued, until a revocation puts one on chain. Any approved member can also undo a revocation with `unrevoke`, because revocations are anonymous and a mistaken one has to stay repairable. See the [revocation spec](../../../specs/04-revocation.md).
+
+### How long does a revocation take to apply?
+
+Verifiers accept a superseded revocation root for a configured window, one hour by default, so a revoked credential can still verify until it ends. To stop a credential at once, its issuer retires the signing key with `retireIssuerKeyImmediately`, which also stops every other credential that key signed. See [Verification and revocation checks](./guides/integration.mdx#verification-and-revocation-checks).
+
+### Does the wallet run on iOS?
+
+The reference wallet targets Android. On iOS it runs with in-memory software keys that are not for production. See [Store keys and credentials safely](./security/privacy-and-security.mdx#store-keys-and-credentials-safely).
+
+### Can I use the stack for payments today?
+
+Delivery to a stealth address, discovery by the indexer and a sponsored transfer out of it work at SDK level and are recorded in the [Sepolia demo](./guides/sepolia-demo.mdx). The phone wallet does not scan announcements or send. See the [stealth address spec](../../../specs/05-stealth-addresses.md).
+
+### What is Semaphore?
+
+A zero-knowledge protocol for proving membership in a group without revealing which member you are. The network uses it so that registry writes and sponsored transactions prove "an approved member did this" and nothing more. See the [Semaphore docs](https://docs.semaphore.pse.dev/).
+
+### How do I install the packages?
+
+They publish to npm under `@coordination-network/`. The [integration guide](./guides/integration.mdx) says which packages each part of a deployment needs.
+
+### What licence is it under?
+
+MIT. See the [repository](https://github.com/ethereum/coordination-network/blob/main/LICENSE).

@@ -1,0 +1,6 @@
+# Fetched by scripts/fetch-srs.sh; 8 MB of public structured reference string, not source.
+assets/*.dat
+# Produced by scripts/build-android.sh for upload to a release.
+noir-prover-native-android-v*.tar.gz
+# Written by scripts/build-android.sh with the maintainer's own paths.
+rust/.cargo/remap.toml

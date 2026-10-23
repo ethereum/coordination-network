@@ -1,0 +1,325 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700&display=swap");
+
+:root {
+    color: #17231d;
+    background: #dfe6e1;
+    font:
+        16px/1.5 "DM Sans",
+        sans-serif;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+}
+button {
+    font: inherit;
+}
+main {
+    display: grid;
+    width: min(440px, 100%);
+    min-height: 100vh;
+    margin: 0 auto;
+    grid-template-rows: auto 1fr auto;
+    background: #fbfcfa;
+    box-shadow: 0 0 50px rgb(23 35 29 / 10%);
+}
+header {
+    display: flex;
+    min-height: 92px;
+    padding: 20px 24px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e4e8e4;
+}
+.wallet-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.wallet-brand > span {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    color: white;
+    background: #245b3b;
+    border-radius: 12px;
+    font:
+        700 17px Manrope,
+        sans-serif;
+}
+.wallet-brand small {
+    color: #748078;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+h1 {
+    margin: 1px 0 0;
+    font:
+        700 20px Manrope,
+        sans-serif;
+}
+.private {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #34744d;
+    font-size: 12px;
+    font-weight: 700;
+}
+.private i {
+    width: 7px;
+    height: 7px;
+    background: #3c8a58;
+    border-radius: 50%;
+}
+.wallet-content {
+    padding: 34px 24px;
+}
+.approval-list {
+    display: grid;
+    gap: 16px;
+}
+.empty-state {
+    display: flex;
+    min-height: 390px;
+    padding: 42px 30px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    border: 1px dashed #cfd7d1;
+    border-radius: 24px;
+    background: #f7f9f6;
+}
+.empty-mark {
+    display: grid;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    place-items: center;
+    color: #647169;
+    background: #e8ede9;
+    border-radius: 50%;
+    font-size: 27px;
+}
+.empty-state h2 {
+    margin: 0 0 9px;
+    font:
+        700 24px Manrope,
+        sans-serif;
+}
+.empty-state p {
+    max-width: 280px;
+    margin: 0;
+    color: #69746d;
+}
+.pass {
+    display: flex;
+    min-height: 250px;
+    padding: 24px;
+    justify-content: space-between;
+    flex-direction: column;
+    color: white;
+    background: linear-gradient(145deg, #183b29, #2d7149);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgb(27 70 44 / 18%);
+}
+.pass.inactive {
+    background: linear-gradient(145deg, #4b504d, #777d79);
+}
+.pass-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+}
+.pass-top b {
+    padding: 4px 8px;
+    color: #17482b;
+    background: #d9f3e1;
+    border-radius: 99px;
+    letter-spacing: 0;
+}
+.pass.inactive .pass-top b {
+    color: #474c49;
+    background: #eef0ee;
+}
+.pass-mark {
+    font:
+        700 26px Manrope,
+        sans-serif;
+    opacity: 0.85;
+}
+.pass h2 {
+    margin: 0 0 2px;
+    font:
+        700 25px Manrope,
+        sans-serif;
+}
+.pass p {
+    margin: 0;
+    opacity: 0.75;
+}
+.pass p + p {
+    margin-top: 3px;
+}
+.pass .approval-scope {
+    margin-bottom: 5px;
+    font-weight: 600;
+    opacity: 0.95;
+}
+.pending,
+.revoked-notice,
+.success {
+    margin: 14px 0 0;
+    padding: 13px 15px;
+    border-radius: 11px;
+    font-size: 14px;
+}
+.pending {
+    color: #66501f;
+    background: #fff7df;
+}
+.success {
+    color: #245e39;
+    background: #eaf6ed;
+}
+.revoked-notice {
+    color: #873c35;
+    background: #fff0ee;
+}
+.error {
+    margin: 28px 24px;
+    padding: 14px;
+    color: #8d342f;
+    background: #fff0ee;
+    border-radius: 11px;
+}
+footer {
+    display: flex;
+    min-height: 76px;
+    padding: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #78817b;
+    border-top: 1px solid #e4e8e4;
+    font-size: 11px;
+}
+footer button {
+    flex: 0 0 auto;
+    padding: 7px 0;
+    color: #75504b;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 12px;
+}
+.permission {
+    align-self: center;
+    padding: 42px 32px;
+}
+.request-mark {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 24px;
+    place-items: center;
+    color: #fff;
+    background: #245b3b;
+    border-radius: 14px;
+    font:
+        700 19px Manrope,
+        sans-serif;
+}
+.request-from {
+    margin: 0 0 8px !important;
+    color: #477158 !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.permission h2 {
+    margin: 0 0 12px;
+    font:
+        700 28px/1.15 Manrope,
+        sans-serif;
+    letter-spacing: -0.025em;
+}
+.permission > p:not(.request-from) {
+    margin: 0;
+    color: #626d66;
+}
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 10px;
+    margin-top: 28px;
+}
+.actions button {
+    padding: 13px 16px;
+    color: #334139;
+    background: #edf0ed;
+    border: 0;
+    border-radius: 11px;
+    cursor: pointer;
+    font-weight: 700;
+}
+.actions .primary {
+    color: white;
+    background: #245b3b;
+}
+.review-button {
+    width: 100%;
+    margin-top: 28px;
+    padding: 14px 18px;
+    color: #fff;
+    background: #245b3b;
+    border: 0;
+    border-radius: 11px;
+    cursor: pointer;
+    font-weight: 700;
+}
+.processing {
+    text-align: center;
+}
+.spinner {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 28px;
+    border: 4px solid #dce6df;
+    border-top-color: #245b3b;
+    border-radius: 50%;
+    animation: spin 850ms linear infinite;
+}
+.request-error {
+    margin: 0 0 22px !important;
+    padding: 12px 14px;
+    color: #8d342f;
+    background: #fff0ee;
+    border-radius: 10px;
+    font-size: 14px;
+}
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (max-width: 440px) {
+    main {
+        box-shadow: none;
+    }
+    .wallet-content {
+        padding: 24px 18px;
+    }
+    .empty-state {
+        min-height: 340px;
+    }
+}

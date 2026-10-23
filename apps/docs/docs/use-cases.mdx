@@ -1,0 +1,118 @@
+---
+sidebar_position: 3
+description: The reusable pattern behind the stack, three worked deployments, and four more that fit with small changes.
+---
+
+# Use cases
+
+The reference deployment lets a set of organisations approve people for programmes without sharing personal data with each other or with the chain. The parts that make that work are generic. This page names the pattern, maps it to the components, walks three deployments through it in detail, and lists four more that fit with small changes. Each worked deployment ends with what the stack already does and what the deployment would have to add.
+
+## The pattern
+
+Every deployment has three roles and one shared ledger.
+
+| Role              | What it holds                                                                       | Component in this repository                                                                                                                                             |
+| ----------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Approver (member) | The decision to approve a holder, an issuer signing key, its own seat in governance | [Issuer service](/apps/issuer-service), [Indexer](/apps/indexer), [`network-member-client`](/packages/network-member-client)                                             |
+| Holder            | A device-bound identity and the credentials approvers issued to it                  | [User app](https://github.com/ethereum/coordination-network/tree/main/apps/user-app), [`user-app-core`](/packages/user-app-core), [`wallet`](/packages/wallet)             |
+| Verifier          | A stored request and the proof the holder answers it with                           | [`credential`](/packages/credential) plus [`zk-artifacts`](/packages/zk-artifacts); `POST /v1/verify` in the issuer service                                              |
+| Shared ledger     | Who the approvers are, which identities exist, which credentials are revoked        | The [contracts](/packages/contracts/src): member registry and governance, identity registry, approved-issuer set, revocation registry, paymaster                         |
+
+Four properties come with the pattern and do not depend on the deployment:
+
+1. **One identity per device across every approver.** The same device secret gives the same `networkId` in every approver's app, so a second approver finds the first approver's registration and reuses it. Deduplication is a single mapping read and no personal data crosses between approvers.
+2. **The chain records that an approver acted, never which one.** Registry writes carry an anonymous Semaphore membership proof and are sent from a sponsored, fresh address.
+3. **A presentation reveals the scope asked about and nothing else.** The verifier learns that some approved member issued a valid, unrevoked credential for the programme and country it named. It does not learn which member, which credential, or anything linking two presentations.
+4. **Verification costs no gas.** The proof is checked off chain; the verifier reads two roots from the chain to confirm the lists the proof used are current.
+
+Two things are fixed in Phase 1 and shape what a deployment can express:
+
+- The credential body has seven fields, and the two a verifier can ask about are `programme` and `country` ([VC issuance spec](../../../specs/03-vc-issuance.md)). A deployment encodes its eligibility question into those two values. Anything richer needs the planned [schema registry](../../../specs/06-full-architecture-ws1.md#2-components) or a circuit change.
+- Privacy holds against outside observers and against verifiers, not against the approver that enrolled a holder. The approver knows who it approved, holds the holder's viewing key, and can resolve the holder's `networkId` ([threat model](../../../specs/WS1-threat-model.md#limitations)). Deployments that need holders to be anonymous to the approver do not fit Phase 1.
+
+## Multi-agency assistance programmes
+
+This is the reference deployment, generalised. Several agencies run assistance programmes in the same region. Each one decides who it serves. They need to avoid enrolling the same person twice across agencies, prove eligibility at a service point run by a third party, and remove people from a programme when their circumstances change, all without pooling their beneficiary records.
+
+| Step                                           | What happens                                                                                                                                                                                                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agencies form the network                      | Each agency is admitted by a majority of the existing members through the governance Safe, then publishes its credential signing key into the approved-issuer set. There is no central operator.                                                              |
+| A person enrols with Agency A                  | The person installs the user app once. Agency A's field app asks it for a signed registration, and Agency A's server registers the `networkId` on chain under a Semaphore proof. The chain records a new identity and that an approved agency registered it.  |
+| Agency A issues a credential                   | After its own eligibility check, Agency A's issuer service signs a credential with `programme = cash-assistance-2026`, `country = <ISO code>`. The credential goes to the person's phone and nothing about it reaches the chain.                               |
+| The same person tries to enrol with Agency B   | Agency B's app derives the same `networkId` from the same device. The registry already holds it, so Agency B sees "already registered" and no second identity is created. Agency B learns nothing about Agency A from the chain.                              |
+| A service point checks eligibility             | The service point runs a verifier that asks "valid, unrevoked credential for `cash-assistance-2026` in `<country>`?" with a one-time challenge. The phone answers with a proof. The service point learns yes or no, and not which agency issued the credential. |
+| Agency A removes the person from the programme | Agency A publishes the credential's revocation commitment to the revocation registry. After the root window (one hour by default) every verifier rejects the old credential, and the identity stays registered for other programmes.                          |
+
+What the stack already does: everything in the table, end to end, on Sepolia. The [Sepolia demo](./guides/sepolia-demo.mdx) records these steps.
+
+What a deployment adds: its own eligibility policy in front of `POST /v1/registrations` and `POST /v1/credentials` (the reference service approves anyone it has registered), a retention policy for the `credentialId => networkId` record each agency keeps, and a recovery procedure for lost phones, which the stack supports with `removeIdentity` and a fresh registration but does not decide.
+
+## Professional licensing across regulators
+
+A country has several bodies that license health workers: a medical council, a nursing council, a pharmacy board. Employers and insurers need to check that a person holds a current licence of a given class without each regulator exposing its register, and without the check revealing which regulator a person is registered with, which would itself reveal their profession.
+
+| Pattern role | In this deployment                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Approver     | Each licensing body. Its issuer service signs licence credentials; its indexer is optional, since no value moves. |
+| Holder       | The licensed professional's phone.                                                                                |
+| Verifier     | An employer's onboarding system, an insurer, or a hospital's rostering tool.                                      |
+
+| Step                                  | What happens                                                                                                                                                                                                                                 |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Regulators form the network           | The three bodies admit each other through governance. Each publishes up to eight signing keys, so a regulator can rotate keys on its own schedule.                                                                                           |
+| A professional is licensed            | The regulator's back office, after its own examination and vetting, registers the professional's `networkId` and issues a credential with `programme = licence:prescriber` and `country = <jurisdiction>`.                                 |
+| A hospital onboards the professional  | The hospital's system creates a presentation request for `licence:prescriber` in `<jurisdiction>`, the professional approves it on their phone, and the proof comes back. The hospital learns "licensed, current" and nothing about the regulator. |
+| The licence is suspended              | The regulator publishes the revocation commitment. Within the root window every verifier rejects the credential.                                                                                                                             |
+| The suspension was a mistake          | The regulator calls `unrevoke`. The [privacy guide](./security/privacy-and-security.mdx#plan-on-chain-actions) notes that the reinstatement is visible on chain, though not which regulator made it.                                           |
+| A professional moves between regulators | A nurse who later qualifies as a prescriber has one `networkId` and two credentials from two regulators. Each verifier asks about the class it needs.                                                                                        |
+
+Issuer anonymity matters here in a way it does not in the assistance case. With three regulators in the approved-issuer set, a proof tells the employer that one of three bodies licensed the person. The [threat model](../../../specs/WS1-threat-model.md#limitations) records that this anonymity set is the whole guarantee: a deployment with one regulator gets no issuer privacy from the proof.
+
+What the stack already does: admission of each regulator, key publication, issuance, presentation, revocation and reinstatement.
+
+What a deployment adds: a mapping from licence classes to `programme` values, agreed across regulators so verifiers ask consistent questions; an expiry policy, since a Phase 1 credential carries a validity window the issuer sets and the licence renewal cycle has to drive it; and, if a verifier needs to prove to an auditor that it checked, its own record of each verification, which the proof does not supply.
+
+## Displaced-person registration across agencies and borders
+
+People displaced by conflict or disaster are registered by whichever organisation reaches them first: an international agency, a host-country ministry, a local NGO. The same person is registered again at each border, camp and distribution point, and the organisations cannot share their registers, for legal reasons and because the people registered may be at risk if a register leaks. The need is one registration that every organisation can recognise, eligibility checks at clinics, schools and distribution points that reveal nothing about the person's history, and a path for a host government to take over support without inheriting the agencies' data.
+
+| Pattern role | In this deployment                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Approver     | Each registering organisation. A host-country ministry can be a member on the same terms as an NGO: one governance seat, one set of issuer keys.   |
+| Holder       | The displaced person's phone, or a phone the agency issues.                                                                                        |
+| Verifier     | A clinic, a school, a food distribution point, a border service checking "registered displaced person" rather than nationality.                     |
+
+| Step                                             | What happens                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First registration, in country A                 | The international agency registers the person's `networkId` and issues `programme = displaced-registration`, `country = A`.                                                                                                                                                  |
+| A second organisation meets the same person      | The NGO's app finds the `networkId` already registered. It can issue its own credential (for example `programme = shelter-2026`) without re-registering, and without asking the agency who the person is.                                                                      |
+| A distribution point checks entitlement          | The verifier asks "valid credential for `shelter-2026` in `A`?" and learns yes or no. It does not learn the person's registration history, which organisations hold credentials for them, or whether this is the same person it saw yesterday.                                 |
+| The person crosses into country B                | Country B's programme asks about `country = B`, so the country-A credential does not answer it. The `networkId` is the same, so an organisation in B registering the person finds the existing identity and the person is not counted twice across the two countries' figures. |
+| The host government takes over support           | The ministry is admitted as a member, issues its own credentials to the same identities, and the agencies revoke theirs as programmes close. The ministry gets a working registry of identities and no personal data from the agencies.                                       |
+| An agency withdraws                              | It calls `exitNetwork`. Every credential it issued stops verifying, so the handover above has to finish first. The [privacy guide](./security/privacy-and-security.mdx#plan-on-chain-actions) covers the sequence.                                                            |
+
+Two properties of the chain matter in this setting. Nothing on it identifies a person, so a register that cannot be stolen is the default rather than an achievement. And the registry does not record which organisation registered or revoked an entry, so the chain does not reveal which agencies operate where. A ministry that is a member can read every `networkId` in the registry, as anyone can; it learns who a `networkId` is only by enrolling that person itself.
+
+What the stack already does: registration, cross-member deduplication, issuance by several members to one identity, verification by scope, revocation, member exit.
+
+What a deployment adds: a governance rule for admitting state actors, since any member can issue credentials and write registry entries; a recovery process that works at scale, because displaced people lose phones often and Phase 1 ties the identity to one device; and a decision on agency-issued phones, where the device is not the person's own and the "self-sovereign" assumption weakens.
+
+## Other
+
+Four more deployments that fit the pattern. Each needs one change beyond configuration to fit well; the change is named.
+
+| Use case                                     | Members                                                        | Credential says                           | Verifier                                     | Fit today                                                                                                                             | Change for a strong fit                                                                                                                                                                 |
+| -------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cross-ministry subsidy deduplication         | Ministries running food, fuel, fertiliser and cash schemes     | "enrolled in scheme X, country Y"         | Fair-price shop, agro-dealer, payment agent  | Runs as is. Ministries that cannot share beneficiary databases get one identity across schemes, and the chain holds no citizen data. | Season-bound or budget-year validity windows, driven from the issuer's policy. The credential already carries a validity window; the deployment has to set and renew it.               |
+| Health insurance point-of-care check         | District offices, employers, community health workers          | "active member of scheme X"               | Clinic, pharmacy, hospital admissions        | Runs as is. The clinic learns "covered" and nothing about the enrolment channel; lapsed premium is a revocation.                      | A premium-status feed that calls revoke and `unrevoke` automatically. Benefit tiers map to one `programme` each until the schema registry lands.                                        |
+| Disability and concession entitlements       | Hospitals, assessment boards, veterans' agencies               | "entitled to concession class X"          | Transport operator, utility, tax office      | Runs as is, and the verifier is the kind the proof protects best: low trust, high volume, learns a yes or no with no diagnosis.       | A fully offline verification path. Verification is already off chain, but the two root checks need an RPC read; a verifier that caches roots for a bounded time covers a bus with no signal. |
+| Smallholder farmer registry and input subsidy | Agriculture ministry, provincial agencies, producer cooperatives | "registered smallholder, district Y"      | Agro-dealer, crop-insurance underwriter      | Runs as is for the eligibility check. Several enrolling bodies and a chronic double-registration problem are the pattern's own case. | Input vouchers paid to the farmer's stealth address. Delivery and discovery work at SDK level ([Sepolia demo](./guides/sepolia-demo.mdx)); the phone wallet has no balance or send screen yet. |
+
+## When the pattern does not fit
+
+- The holder needs to be anonymous to the organisation that approved them. Phase 1 approvers know their holders ([design trade-offs](../../../specs/WS1-threat-model.md#design-trade-offs)). The [self-sovereign user spec](../../../specs/01-self-sovereign-user.md#deduplication--discovery) records a vOPRF-based dedup handle for that case as future work.
+- There is one approver. Issuer anonymity is empty with an anonymity set of one, and governance by majority of one member is a single key.
+- Verification has to happen on chain, for example inside a contract that gates a transfer. Phase 1 verifies off chain; an on-chain verifier for the UltraHonk proof is not part of the stack.
+- One-person-one-vote. A presentation is unlinkable to every other presentation, so a poll cannot tell by itself whether one holder voted twice. The circuit would need a per-poll nullifier output.
+- Holders need several devices, or the device is shared by a household. Phase 1 is one person, one device, one identity; the [multi-device extension](../../../specs/01-self-sovereign-user.md#multi-device-extension-future-phase) is recorded and not decided.
+- The eligibility question does not reduce to a programme and a country.

@@ -1,0 +1,17 @@
+name: pull-requests
+
+permissions:
+    contents: read
+
+on:
+    pull_request:
+        paths-ignore:
+            - "apps/docs/**"
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    ci:
+        uses: ./.github/workflows/ci.yml

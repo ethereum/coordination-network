@@ -1,0 +1,8 @@
+export { generateRevocationProof } from "./generate-revocation-proof"
+export type { GenerateRevocationProofOptions } from "./generate-revocation-proof"
+export { generateSemaphoreProof } from "./generate-semaphore-proof"
+export type { GenerateSemaphoreProofOptions } from "./generate-semaphore-proof"
+export { UPDATE_MESSAGE_DOMAIN, randomScope, updateDomainSeparator, updateMessage } from "./message"
+export { REVOCATION_MESSAGE_DOMAIN, revocationDomainSeparator, revocationMessage } from "./revocation-message"
+export { RevocationAction, UpdateAction } from "./types"
+export type { IdentityUpdate, NetworkMemberProof, RegistryLocation, RevocationUpdate } from "./types"

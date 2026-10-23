@@ -1,0 +1,48 @@
+{
+    "name": "integration-testbed",
+    "private": true,
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    },
+    "scripts": {
+        "demo": "tsx src/serve.ts --demo",
+        "serve": "tsx src/serve.ts",
+        "relay": "tsx src/run-link-relay.ts",
+        "start": "tsx src/start.ts",
+        "test": "tsx --test --test-force-exit --test-reporter=spec tests/admission.test.ts tests/link-relay.test.ts src/serve.test.ts src/stack-secrets.test.ts src/bundler.test.ts src/dashboard.test.ts src/paymaster-group.test.ts src/serve-ports.test.ts src/redact-urls.test.ts src/host-guard.test.ts src/rpc-proxy.test.ts src/testnet-stack.test.ts src/genesis.test.ts",
+        "test:scenario": "tsx --test --test-force-exit --test-reporter=spec src/main.ts",
+        "test:testnet": "TESTBED_MODE=testnet tsx --test --test-force-exit --test-reporter=spec src/main.ts",
+        "test:ui": "tsx --test --test-reporter=spec tests/demo-ui.test.ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@coordination-network/account": "workspace:^",
+        "@coordination-network/credential": "workspace:*",
+        "@coordination-network/identity": "workspace:^",
+        "@coordination-network/network-member-client": "workspace:^",
+        "@coordination-network/network-member-governance": "workspace:^",
+        "@coordination-network/network-member-proof": "workspace:^",
+        "@coordination-network/revocation-registry": "workspace:^",
+        "@coordination-network/user-client": "workspace:^",
+        "@coordination-network/zk-artifacts": "workspace:^",
+        "@noble/curves": "^1.9.7",
+        "@noble/hashes": "^1.8.0",
+        "@semaphore-protocol/group": "4.14.5",
+        "@semaphore-protocol/identity": "4.14.5",
+        "@semaphore-protocol/proof": "4.14.5",
+        "permissionless": "^0.4.1",
+        "poseidon-solidity": "^0.0.5",
+        "qrcode": "^1.5.4",
+        "qrcode-terminal": "^0.12.0",
+        "tsx": "^4.23.0",
+        "viem": "^2.55.11",
+        "zod": "^4.3.11"
+    },
+    "devDependencies": {
+        "@types/node": "^26.1.0",
+        "@types/qrcode": "^1",
+        "@types/qrcode-terminal": "^0.12.2",
+        "playwright-core": "^1.63.0",
+        "typescript": "^6.0.3"
+    }
+}

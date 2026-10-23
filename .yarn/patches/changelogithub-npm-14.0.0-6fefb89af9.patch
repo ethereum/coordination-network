@@ -1,0 +1,46 @@
+diff --git a/dist/shared/changelogithub.BadFeMDN.mjs b/dist/shared/changelogithub.BadFeMDN.mjs
+index 0df22f1a636ce1831d1b7729b5f864d866ff89e4..7a3d0a5c27729255745a6b863fc2fe9a9dd69b22 100644
+--- a/dist/shared/changelogithub.BadFeMDN.mjs
++++ b/dist/shared/changelogithub.BadFeMDN.mjs
+@@ -380,7 +380,7 @@ function formatLine$1(commit, options) {
+ function formatTitle$1(name, options) {
+   if (!options.emoji)
+     name = name.replace(emojisRE, "");
+-  return `### &nbsp;&nbsp;&nbsp;${name.trim()}`;
++  return `## &nbsp;&nbsp;&nbsp;${name.trim()}`;
+ }
+ function formatSection$1(commits, sectionName, options) {
+   if (!commits.length)
+@@ -397,7 +397,8 @@ function formatSection$1(commits, sectionName, options) {
+   Object.keys(scopes).sort().forEach((scope) => {
+     let padding = "";
+     let prefix = "";
+-    const scopeText = `**${options.scopeMap[scope] || scope}**`;
++    const url = `https://github.com/${options.repo}/tree/main/packages/${scope}`;
++    const scopeText = `[**@${options.repo.split("/")[1]}/${options.scopeMap[scope] || scope}**](${url})`;
+     if (scope && (useScopeGroup === true || useScopeGroup === "multiple" && scopes[scope].length > 1)) {
+       lines.push(`- ${scopeText}:`);
+       padding = "  ";
+diff --git a/dist/shared/changelogithub.DfG6AA4n.cjs b/dist/shared/changelogithub.DfG6AA4n.cjs
+index 76d92619a5ae74199d33804256ad8e3f71e184b8..b8232abff817c0c40035587dfaf18bc2cca14c13 100644
+--- a/dist/shared/changelogithub.DfG6AA4n.cjs
++++ b/dist/shared/changelogithub.DfG6AA4n.cjs
+@@ -388,7 +388,7 @@ function formatLine$1(commit, options) {
+ function formatTitle$1(name, options) {
+   if (!options.emoji)
+     name = name.replace(emojisRE, "");
+-  return `### &nbsp;&nbsp;&nbsp;${name.trim()}`;
++  return `## &nbsp;&nbsp;&nbsp;${name.trim()}`;
+ }
+ function formatSection$1(commits, sectionName, options) {
+   if (!commits.length)
+@@ -405,7 +405,8 @@ function formatSection$1(commits, sectionName, options) {
+   Object.keys(scopes).sort().forEach((scope) => {
+     let padding = "";
+     let prefix = "";
+-    const scopeText = `**${options.scopeMap[scope] || scope}**`;
++    const url = `https://github.com/${options.repo}/tree/main/packages/${scope}`;
++    const scopeText = `[**@${options.repo.split("/")[1]}/${options.scopeMap[scope] || scope}**](${url})`;
+     if (scope && (useScopeGroup === true || useScopeGroup === "multiple" && scopes[scope].length > 1)) {
+       lines.push(`- ${scopeText}:`);
+       padding = "  ";

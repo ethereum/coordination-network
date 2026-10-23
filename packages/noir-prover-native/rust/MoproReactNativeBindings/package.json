@@ -1,0 +1,78 @@
+{
+  "name": "@coordination-network/noir-prover-ffi",
+  "version": "0.1.3",
+  "description": "React Native bindings for the native Noir UltraHonk prover, with the Android arm64-v8a library included.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/coordination-network.git",
+    "directory": "packages/noir-prover-native/rust/MoproReactNativeBindings"
+  },
+  "homepage": "https://github.com/ethereum/coordination-network/tree/main/packages/noir-prover-native",
+  "bugs": "https://github.com/ethereum/coordination-network/issues",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "exports": {
+    ".": {
+      "source": "./src/index.tsx",
+      "types": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "!src/index.web.ts",
+    "cpp/",
+    "android/",
+    "!android/build",
+    "!android/.cxx",
+    "!android/.gradle",
+    "!android/local.properties",
+    "!**/.*",
+    "react-native.config.js",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "../../scripts/fetch-android-libs.sh"
+  },
+  "keywords": [
+    "react-native",
+    "android"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "codegenConfig": {
+    "name": "MoproFFISpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.moproffi"
+    }
+  },
+  "dependencies": {
+    "@ubjs/core": "0.31.0-5",
+    "uniffi-bindgen-react-native": "0.31.0-5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

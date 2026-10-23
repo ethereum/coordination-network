@@ -1,0 +1,26 @@
+name: coverage
+
+permissions:
+    contents: read
+
+on:
+    # Weekly: `yarn coverage`
+    schedule:
+        - cron: "0 4 * * 1"
+
+    # Also from the Actions tab.
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    coverage:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - uses: ./.github/actions/setup
+            - run: yarn build
+
+            - run: yarn coverage

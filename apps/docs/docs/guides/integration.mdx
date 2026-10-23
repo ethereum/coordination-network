@@ -1,0 +1,164 @@
+---
+sidebar_position: 1
+---
+
+import InstallPackages from "@site/src/components/InstallPackages"
+
+# Integration
+
+Start here to build on Coordination Network. This page shows the parts of the stack, which packages each part
+installs, and how they talk to each other. Each package page under [Packages](/packages) has its full API.
+
+## The parts
+
+| Part               | Runs on        | What it does                                                                                                   | Reference app                                                                                                 |
+| ------------------ | -------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| User app (wallet)  | User's phone   | Holds the user's keys and credentials, builds proofs, and answers member apps over deep links                  | [`apps/user-app`](https://github.com/ethereum/coordination-network/tree/main/apps/user-app)                     |
+| Network member app | User's phone   | Built by each member, installed by users. Holds no user keys: it asks the user app and calls its member server | [`apps/network-member-app`](https://github.com/ethereum/coordination-network/tree/main/apps/network-member-app) |
+| Member server      | Member backend | Registers users on chain, issues and revokes credentials, and verifies presentations                           | [`apps/issuer-service`](/apps/issuer-service)                                                                 |
+| Indexer            | Member backend | Scans stealth address announcements for the member's users                                                     | [`apps/indexer`](/apps/indexer)                                                                               |
+| Verifier           | Any backend    | Checks that a user holds a valid, unrevoked credential                                                         | Built into [`apps/issuer-service`](/apps/issuer-service) (`POST /v1/verify`)                                  |
+
+Each member builds its own app and runs its own server and indexer. Users install one user app, and it serves every member app.
+
+## What to install
+
+Packages install as `@coordination-network/<name>`.
+
+### User app
+
+<InstallPackages packages={["user-app-core", "user-app-link", "wallet", "identity"]} />
+
+`user-app-core` is the engine: give it a secure `Store`, a hardware device key and a prover, and it creates the identity
+and serves member app requests. `user-app-link` turns each incoming deep link into a call on it. On Android, the device
+key comes from `expo-identity-keystore` and the prover from `noir-prover-native`, which also needs `noir-prover-ffi`, the
+native library. These three are Android only:
+
+<InstallPackages packages={["expo-identity-keystore", "noir-prover-native", "noir-prover-ffi"]} />
+
+### Network member app
+
+<InstallPackages packages={["network-member-app-core", "user-app-link"]} />
+
+`network-member-app-core` runs the member flows (enrol, issue, verify, revoke) over a link client from `user-app-link`
+and a client for the member server. You add your own policy and screens.
+
+### Member server
+
+Run `apps/issuer-service` as is, or build your own with:
+
+<InstallPackages
+    packages={[
+        "credential",
+        "zk-artifacts",
+        "network-member-client",
+        "network-member-proof",
+        "revocation-registry",
+        "network-member-governance"
+    ]}
+/>
+
+`credential` and `zk-artifacts` issue credentials and verify proofs. `network-member-client` handles every chain write
+for users, using `network-member-proof` for the proof each write needs. `revocation-registry` keeps the revocation
+tree. `network-member-governance` is only for the member's own admission to the network.
+
+### Indexer
+
+Run `apps/indexer`, or build your own with:
+
+<InstallPackages packages={["identity"]} />
+
+### Verifier
+
+<InstallPackages packages={["credential", "zk-artifacts"]} />
+
+Verify the proof, then accept it only if the chain still accepts the two roots it outputs. See
+[Verification and revocation checks](#verification-and-revocation-checks).
+
+## How the parts connect
+
+```text
++--------------------------+    deep links     +---------------------------+
+| User app                 | <---------------> | Member app                |
+|   user-app-core          |   user-app-link   |   network-member-app-core |
++------------+-------------+                   +-------------+-------------+
+             |                                               |
+             | challenge, credential, proof                  | HTTP, member token
+             |                                               v
+             |                                 +---------------------------+
+             +-------------------------------> | Member server             |
+                                               |   credential              |
+                                               |   network-member-client   |
+                                               +-------------+-------------+
+                                                             |
+                                                             | reads, sponsored writes
+                                                             v
++--------------------------+    scans          +---------------------------+
+| Indexer                  | ----------------> | Chain                     |
+|   identity               |  announcements    |   registries, announcer   |
++--------------------------+                   +---------------------------+
+```
+
+- **User app and member app** talk over deep links with three requests: sign a registration, issue a credential,
+  create a presentation. The user approves each one in the user app.
+- **User app and member server** talk directly for anything with key material, so the member app never sees a
+  credential or a proof.
+- **Member server and chain:** each write for a user carries an anonymous proof that an approved member made it, and
+  the Semaphore paymaster pays the gas for registrations, credential deliveries and revocations.
+
+## Verification and revocation checks
+
+For a custom verifier, use [`credential`](/packages/credential) with matching
+[`zk-artifacts`](/packages/zk-artifacts). `verifyZkPresentationProof` verifies the proof and expected inputs;
+it does not check contract state. Before accepting a presentation:
+
+1. Bind it to a request your verifier created, including its one-time challenge, audience, time, programme, and country.
+2. Check the approved-issuer root and revocation root against the authoritative contracts on the intended chain.
+3. Claim the request atomically before verification, so concurrent submissions cannot both succeed, then record
+   the result on your backend. The wallet reporting that it sent a proof is not an acceptance decision.
+
+The [issuer service verification route](https://github.com/ethereum/coordination-network/blob/main/apps/issuer-service/src/routes/verify.ts)
+shows the reference sequence. Programme and country remain public in the presentation.
+
+Wallets must refresh revocation state before presenting. Updating a local tree does not publish a revocation;
+a member must submit the contract write. Contracts may accept superseded roots for a configured window, so revocation
+does not necessarily invalidate every in-flight presentation immediately. See the
+[revocation registry](/packages/revocation-registry) and [privacy and security guide](../security/privacy-and-security.mdx).
+
+## Packages
+
+To use a package marked _Not on npm_, copy its folder into your project or add it as a workspace dependency.
+
+| Package                                                                              | Description                                                                     |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| [`account`](/packages/account)                                                       | EIP-7702 accounts and Semaphore paymaster proofs for sponsored user operations  |
+| [`app-ui`](https://github.com/ethereum/coordination-network/tree/main/packages/app-ui) | _Not on npm._ Design tokens and screen components shared by the reference apps  |
+| [`circuits`](/packages/circuits)                                                     | Noir presentation circuit                                                       |
+| [`contracts`](/packages/contracts/src)                                               | Solidity contracts: registries, governance, approved-issuer set and paymaster   |
+| [`credential`](/packages/credential)                                                 | Issues credentials and builds and verifies zero-knowledge presentations         |
+| [`expo-identity-keystore`](/packages/expo-identity-keystore)                         | Expo module for hardware-backed P-256 keys in the Android Keystore              |
+| [`identity`](/packages/identity)                                                     | Derives `networkId` and the user's keys on device, plus stealth address helpers |
+| [`issuer-set`](/packages/issuer-set)                                                 | Approved-issuer tree and its membership proofs                                  |
+| [`network-member-app-core`](/packages/network-member-app-core)                       | Member app flows: enrol, issue, verify, revoke and membership status            |
+| [`network-member-client`](/packages/network-member-client)                           | Member server helpers: issue credentials and write to the registries            |
+| [`network-member-governance`](/packages/network-member-governance)                   | Safe transactions that admit or remove a network member                         |
+| [`network-member-proof`](/packages/network-member-proof)                             | Semaphore proofs that authorise registry writes                                 |
+| [`noir-prover-ffi`](/packages/noir-prover-native/rust/moproreactnativebindings)      | React Native binding with the prebuilt Android library                          |
+| [`noir-prover-native`](/packages/noir-prover-native)                                 | Native prover for React Native                                                  |
+| [`revocation-registry`](/packages/revocation-registry)                               | Revocation tree with membership and non-membership proofs                       |
+| [`user-app-core`](/packages/user-app-core)                                           | User app engine: identity creation and the deep-link requests                   |
+| [`user-app-link`](/packages/user-app-link)                                           | Deep-link protocol between the user app and member apps                         |
+| [`user-client`](/packages/user-client)                                               | One-call onboarding: derive keys and build the signed registration request      |
+| [`wallet`](/packages/wallet)                                                         | Holder SDK: credential storage, revocation sync and consent-gated presentations |
+| [`zk-artifacts`](/packages/zk-artifacts)                                             | Compiled credential circuit and its verification key                            |
+
+## Networks
+
+The contracts run on Sepolia. Their addresses are on the [deployed contracts](../deployed-contracts.mdx) page. The
+[issuer service page](/apps/issuer-service#configuration) lists the settings a member server needs.
+
+## Further reading
+
+- [WS1 full architecture](../../../../specs/06-full-architecture-ws1.md)
+- [Privacy and security for integrators](../security/privacy-and-security.mdx)
+- [Sepolia demo](./sepolia-demo.mdx)

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "paths": {}
+  },
+  "include": ["src"],
+  "exclude": ["src/index.web.ts"]
+}
