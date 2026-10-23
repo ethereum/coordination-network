@@ -414,7 +414,7 @@ field is read from the deployed `ApprovedIssuerSet` at one pinned block, and
 
 ## Revocation authorization
 
-The network shares one registry. Any approved network member can update it with an anonymous Semaphore membership proof, including revoking another issuer's commitment. WS1 trusts members to use this authority correctly.
+The network shares one registry. Any approved network member can update it with an anonymous Semaphore membership proof, including revoking another issuer's commitment. Phase 1 trusts members to use this authority correctly.
 
 Admission adds the member to the Semaphore group. Before issuing credentials, it must also publish its signing key with `POST /v1/membership/issuer-key`; admission does not publish the key automatically.
 

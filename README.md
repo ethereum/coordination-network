@@ -46,7 +46,7 @@
 
 <div align="center">
     <h4>
-        <a href="/specs/06-full-architecture-ws1.md">
+        <a href="/specs/06-full-architecture-phase-1.md">
             🏛 Architecture
         </a>
         <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -87,7 +87,7 @@ The Coordination Network is an open-source stack that lets those organizations (
 - **Sponsored gas.** An ERC-4337 Semaphore paymaster pays for members' registry writes, so a write can come from a fresh address that is not traceable back to the member, and users never need a gas balance. Spend is capped per operation and per epoch.
 - **Scanning.** A member-run indexer watches announcements with the user's viewing key and surfaces the stealth accounts addressed to them. The spending key never leaves the device.
 
-**What stays visible.** Stealth addresses break the link between sender and recipient; they do not hide amounts, balances or the existence of transfers. The indexer holds users' viewing keys (encrypted at rest), so whoever runs it can see which payments belong to which user. See the [threat model](specs/WS1-threat-model.md) for the full list of adversaries and residual risks.
+**What stays visible.** Stealth addresses break the link between sender and recipient; they do not hide amounts, balances or the existence of transfers. The indexer holds users' viewing keys (encrypted at rest), so whoever runs it can see which payments belong to which user. See the [threat model](specs/threat-model-phase-1.md) for the full list of adversaries and residual risks.
 
 ## How it fits together
 
@@ -99,20 +99,20 @@ flowchart LR
   B --> E["5. Stealth send and scan<br/>fresh address per payment"]
 ```
 
-The full component view, key model and flows are in [06 · Full Architecture](specs/06-full-architecture-ws1.md).
+The full component view, key model and flows are in [06 · Full Architecture](specs/06-full-architecture-phase-1.md).
 
 ## Specifications
 
-| Spec                                                         | Covers                                                         |
-| ------------------------------------------------------------ | -------------------------------------------------------------- |
-| [01 · Self-Sovereign User](specs/01-self-sovereign-user.md)  | Device-secret identity, key model, derivation                  |
-| [02 · Wallet](specs/02-wallet.md)                            | Credential storage, binding, presentation, recovery            |
-| [03 · VC Issuance and Verification](specs/03-vc-issuance.md) | Credential format, issuance, verifier procedure                |
-| [04 · Revocation](specs/04-revocation.md)                    | LeanIMT+ revocation and non-revocation proofs                  |
-| [05 · Stealth Addresses](specs/05-stealth-addresses.md)      | Stealth construction, sending, scanning, gas sponsorship       |
-| [06 · Full Architecture](specs/06-full-architecture-ws1.md)  | Components, flows, standards, implementation map               |
-| [Threat Model](specs/WS1-threat-model.md)                    | Adversaries, STRIDE analysis, residual risk                    |
-| [`DERIVATION.md`](packages/identity/DERIVATION.md)           | Normative key derivation scheme `v1`, with conformance vectors |
+| Spec                                                            | Covers                                                         |
+| --------------------------------------------------------------- | -------------------------------------------------------------- |
+| [01 · Self-Sovereign User](specs/01-self-sovereign-user.md)     | Device-secret identity, key model, derivation                  |
+| [02 · Wallet](specs/02-wallet.md)                               | Credential storage, binding, presentation, recovery            |
+| [03 · VC Issuance and Verification](specs/03-vc-issuance.md)    | Credential format, issuance, verifier procedure                |
+| [04 · Revocation](specs/04-revocation.md)                       | LeanIMT+ revocation and non-revocation proofs                  |
+| [05 · Stealth Addresses](specs/05-stealth-addresses.md)         | Stealth construction, sending, scanning, gas sponsorship       |
+| [06 · Full Architecture](specs/06-full-architecture-phase-1.md) | Components, flows, standards, implementation map               |
+| [Threat Model](specs/threat-model-phase-1.md)                   | Adversaries, STRIDE analysis, residual risk                    |
+| [`DERIVATION.md`](packages/identity/DERIVATION.md)              | Normative key derivation scheme `v1`, with conformance vectors |
 
 ## 🧰 Tooling
 
@@ -539,10 +539,10 @@ through the dashboard, the chain and contracts, and the stack descriptor's QR co
 scans on first launch. See [`apps/integration-testbed`](apps/integration-testbed)'s README for what
 each tab shows.
 
-This walks through the same ground as [`specs/06-full-architecture-ws1.md`](specs/06-full-architecture-ws1.md)'s
-WS1 flows 1 to 5: identity on the phone, registration paid by the Semaphore paymaster from a fresh
+This walks through the same ground as [`specs/06-full-architecture-phase-1.md`](specs/06-full-architecture-phase-1.md)'s
+Phase 1 flows 1 to 5: identity on the phone, registration paid by the Semaphore paymaster from a fresh
 stealth address, member admission through the Safe, credential issuance, and presentation with
-revocation. Stealth sends, flow 6, wait for the next workstream.
+revocation. Stealth sends, flow 6, wait for the next phase.
 
 The app needs a dev build rather than Expo Go, since the keystore module and the native prover are
 native code. Android only, for now, and 64-bit Arm (`arm64-v8a`) only.
@@ -672,7 +672,7 @@ Pushing the tag triggers a workflow that builds the packages, publishes them on 
 
 ## Standards used
 
-ERC-5564 and ERC-6538 (stealth addresses), ERC-4337 (paymaster), EIP-7702 (delegation), Semaphore v4 (anonymous membership), Safe (governance), OpenAC-inspired design (zero-knowledge credential presentation), Noir + Barretenberg UltraHonk (proofs), Baby Jubjub EdDSA + Poseidon (credential signatures), LeanIMT+ (revocation), FluidKey-compatible key derivation. Full table in [06 · Full Architecture §6](specs/06-full-architecture-ws1.md#6-standards-and-primitives).
+ERC-5564 and ERC-6538 (stealth addresses), ERC-4337 (paymaster), EIP-7702 (delegation), Semaphore v4 (anonymous membership), Safe (governance), OpenAC-inspired design (zero-knowledge credential presentation), Noir + Barretenberg UltraHonk (proofs), Baby Jubjub EdDSA + Poseidon (credential signatures), LeanIMT+ (revocation), FluidKey-compatible key derivation. Full table in [06 · Full Architecture §6](specs/06-full-architecture-phase-1.md#6-standards-and-primitives).
 
 ## License
 

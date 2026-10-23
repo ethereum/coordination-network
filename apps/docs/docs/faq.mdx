@@ -32,7 +32,7 @@ Sepolia, for the reference deployment. The addresses are on [Deployed contracts]
 
 ### Has it been audited?
 
-Not externally yet. An internal privacy and security audit has been done and its findings addressed. Until an external audit, the presentation circuit's soundness rests on review and negative tests, and the threat model lists that as an accepted risk. See the [threat model](../../../specs/WS1-threat-model.md#4-credential-verification).
+Not externally yet. An internal privacy and security audit has been done and its findings addressed. Until an external audit, the presentation circuit's soundness rests on review and negative tests, and the threat model lists that as an accepted risk. See the [threat model](../../../specs/threat-model-phase-1.md#4-credential-verification).
 
 ### Who pays for gas?
 
@@ -48,7 +48,7 @@ The identity and its credentials are lost with it; Phase 1 is one person, one de
 
 ### Can a member see what its users receive?
 
-Yes. The member's indexer holds each user's viewing key. The key cannot move funds, but it finds every stealth account the user receives to, and anything those accounts later send is public on chain. Privacy holds against outside observers, not against the member that enrolled you. See the [threat model limitations](../../../specs/WS1-threat-model.md#limitations).
+Yes. The member's indexer holds each user's viewing key. The key cannot move funds, but it finds every stealth account the user receives to, and anything those accounts later send is public on chain. Privacy holds against outside observers, not against the member that enrolled you. See the [threat model limitations](../../../specs/threat-model-phase-1.md#limitations).
 
 ### Can one member revoke another member's credential?
 

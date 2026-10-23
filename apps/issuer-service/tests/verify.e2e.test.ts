@@ -323,7 +323,7 @@ describe(`POST /v1/verify (anvil, port ${PORT})`, () => {
         const wireBytes = Buffer.byteLength(wireBody, "utf8")
         assert.ok(wireBytes < 100 * 1024, `presentation JSON is ${wireBytes} bytes, exceeding the server limit`)
         t.diagnostic(
-            `WS1 transport: proof=${okProof.proof.byteLength} bytes; JSON=${wireBytes} bytes; public inputs=${okProof.publicInputs.length}`
+            `Phase 1 transport: proof=${okProof.proof.byteLength} bytes; JSON=${wireBytes} bytes; public inputs=${okProof.publicInputs.length}`
         )
 
         // Two concurrent posts for the same requestId, proof and all: the store's consume() claims

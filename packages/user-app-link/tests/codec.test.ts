@@ -462,7 +462,7 @@ describe("worst-case realistic payloads against MAX_URL_LENGTH", () => {
     })
 })
 
-describe("WS1 same-device presentation payload", () => {
+describe("Phase 1 same-device presentation payload", () => {
     it("fits a Sepolia reference-app challenge and verdict into deep links without carrying the proof", () => {
         const id = "11111111-1111-4111-8111-111111111111"
         const origin = "https://member.reference.example"
