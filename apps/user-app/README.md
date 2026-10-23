@@ -265,4 +265,4 @@ request status and displays the verdict. Both phones need connectivity; the wall
 RPC access. A submitted proof is not a confirmed success. On a polling connection error, use
 **Retry status** for the same request; after expiry/cancellation use **New check**.
 
-See the [transport decision and acceptance checklist](../../packages/user-app-link/README.md#ws1-mobile-presentation-transport-112).
+See the [transport decision and acceptance checklist](../../packages/user-app-link/README.md#phase-1-mobile-presentation-transport-112).

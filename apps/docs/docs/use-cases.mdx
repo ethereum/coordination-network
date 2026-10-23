@@ -27,8 +27,8 @@ Four properties come with the pattern and do not depend on the deployment:
 
 Two things are fixed in Phase 1 and shape what a deployment can express:
 
-- The credential body has seven fields, and the two a verifier can ask about are `programme` and `country` ([VC issuance spec](../../../specs/03-vc-issuance.md)). A deployment encodes its eligibility question into those two values. Anything richer needs the planned [schema registry](../../../specs/06-full-architecture-ws1.md#2-components) or a circuit change.
-- Privacy holds against outside observers and against verifiers, not against the approver that enrolled a holder. The approver knows who it approved, holds the holder's viewing key, and can resolve the holder's `networkId` ([threat model](../../../specs/WS1-threat-model.md#limitations)). Deployments that need holders to be anonymous to the approver do not fit Phase 1.
+- The credential body has seven fields, and the two a verifier can ask about are `programme` and `country` ([VC issuance spec](../../../specs/03-vc-issuance.md)). A deployment encodes its eligibility question into those two values. Anything richer needs the planned [schema registry](../../../specs/06-full-architecture-phase-1.md#2-components) or a circuit change.
+- Privacy holds against outside observers and against verifiers, not against the approver that enrolled a holder. The approver knows who it approved, holds the holder's viewing key, and can resolve the holder's `networkId` ([threat model](../../../specs/threat-model-phase-1.md#limitations)). Deployments that need holders to be anonymous to the approver do not fit Phase 1.
 
 ## Multi-agency assistance programmes
 
@@ -66,7 +66,7 @@ A country has several bodies that license health workers: a medical council, a n
 | The suspension was a mistake          | The regulator calls `unrevoke`. The [privacy guide](./security/privacy-and-security.mdx#plan-on-chain-actions) notes that the reinstatement is visible on chain, though not which regulator made it.                                           |
 | A professional moves between regulators | A nurse who later qualifies as a prescriber has one `networkId` and two credentials from two regulators. Each verifier asks about the class it needs.                                                                                        |
 
-Issuer anonymity matters here in a way it does not in the assistance case. With three regulators in the approved-issuer set, a proof tells the employer that one of three bodies licensed the person. The [threat model](../../../specs/WS1-threat-model.md#limitations) records that this anonymity set is the whole guarantee: a deployment with one regulator gets no issuer privacy from the proof.
+Issuer anonymity matters here in a way it does not in the assistance case. With three regulators in the approved-issuer set, a proof tells the employer that one of three bodies licensed the person. The [threat model](../../../specs/threat-model-phase-1.md#limitations) records that this anonymity set is the whole guarantee: a deployment with one regulator gets no issuer privacy from the proof.
 
 What the stack already does: admission of each regulator, key publication, issuance, presentation, revocation and reinstatement.
 
@@ -110,7 +110,7 @@ Four more deployments that fit the pattern. Each needs one change beyond configu
 
 ## When the pattern does not fit
 
-- The holder needs to be anonymous to the organisation that approved them. Phase 1 approvers know their holders ([design trade-offs](../../../specs/WS1-threat-model.md#design-trade-offs)). The [self-sovereign user spec](../../../specs/01-self-sovereign-user.md#deduplication--discovery) records a vOPRF-based dedup handle for that case as future work.
+- The holder needs to be anonymous to the organisation that approved them. Phase 1 approvers know their holders ([design trade-offs](../../../specs/threat-model-phase-1.md#design-trade-offs)). The [self-sovereign user spec](../../../specs/01-self-sovereign-user.md#deduplication--discovery) records a vOPRF-based dedup handle for that case as future work.
 - There is one approver. Issuer anonymity is empty with an anonymity set of one, and governance by majority of one member is a single key.
 - Verification has to happen on chain, for example inside a contract that gates a transfer. Phase 1 verifies off chain; an on-chain verifier for the UltraHonk proof is not part of the stack.
 - One-person-one-vote. A presentation is unlinkable to every other presentation, so a poll cannot tell by itself whether one holder voted twice. The circuit would need a per-poll nullifier output.

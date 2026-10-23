@@ -32,7 +32,7 @@ const entryItem = ({ label, file, children }: DocEntry) =>
 
 const config: Config = {
     title: "Coordination Network",
-    tagline: "Coordination Network documentation and guides.",
+    tagline: "Decentralized, zero-knowledge identity and private payment rails for networks of organizations.",
     favicon: "img/network-mark.svg",
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future

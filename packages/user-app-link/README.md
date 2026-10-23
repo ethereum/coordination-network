@@ -72,7 +72,7 @@ console.log(signed.request.networkId)
 
 `request` encodes the op, opens the request URL in the user app, and resolves with the typed result (or rejects with a `LinkError` carrying the response's `code`) once the matching callback URL arrives. One request may be in flight at a time per client; a second call while one is pending rejects immediately.
 
-### WS1 mobile presentation transport (#112)
+### Phase 1 mobile presentation transport (#112)
 
 The holder's wallet and verifier's member app can run on **separate Android phones**. The verifier
 shows a public challenge QR; the holder scans it, reviews the request and consents to proving. The

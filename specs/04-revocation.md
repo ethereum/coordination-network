@@ -15,9 +15,9 @@ Let a verifier check that a presented credential has not been revoked, without l
 - **User (Holder)**: generates the revocation secret on their device and produces zero-knowledge non-membership proofs at presentation time.
 - **Verifier**: checks the proof and that its root is an accepted registry root.
 
-## WS1 authorization
+## Phase 1 authorization
 
-One shared registry stores revocation commitments for the whole network. Updates require an anonymous Semaphore proof from the approved network-member group, bound to the action and commitments. Any approved member can revoke any commitment, including one from another issuer. WS1 trusts approved members; the registry does not enforce issuer ownership.
+One shared registry stores revocation commitments for the whole network. Updates require an anonymous Semaphore proof from the approved network-member group, bound to the action and commitments. Any approved member can revoke any commitment, including one from another issuer. Phase 1 trusts approved members; the registry does not enforce issuer ownership.
 
 Governance admission adds a member to that Semaphore group, giving it revocation rights. To issue credentials, the member must also publish its credential signing key to `ApprovedIssuerSet` through `POST /v1/membership/issuer-key`. Admission does not publish that key automatically. Complete both steps when onboarding an issuer.
 
@@ -95,7 +95,7 @@ Revocation is normally permanent. The registry also has two operations for corre
 - **`unrevoke(commitment)`** takes a commitment out of the registry. The credential becomes valid again as soon as the transaction is included.
 - **`updateRevocationCommitment(old, new)`** replaces a revoked commitment with a different one in a single transaction: `old` becomes valid again and `new` becomes revoked.
 
-Like a revocation, each operation needs an anonymous Semaphore proof of network membership, bound to that exact operation and its commitments. Because revocations are anonymous, a mistaken one cannot be traced to its author, so any approved member can correct it. This also means a member can undo another member's revocation, which the [WS1 threat model](WS1-threat-model.md) accepts.
+Like a revocation, each operation needs an anonymous Semaphore proof of network membership, bound to that exact operation and its commitments. Because revocations are anonymous, a mistaken one cannot be traced to its author, so any approved member can correct it. This also means a member can undo another member's revocation, which the [Phase 1 threat model](threat-model-phase-1.md) accepts.
 
 **What becomes public.** Like every registry write, both operations are visible to anyone reading the chain. `unrevoke` shows that a commitment is no longer revoked. `updateRevocationCommitment` shows the old and new commitments together, so an observer can tell one replaced the other. If two commitments should not appear related, use `unrevoke` and a separate `revoke` instead, spaced apart in time, since two writes landing back to back can be linked by their timing alone. Neither operation reveals `r` or affects the privacy of presentations.
 

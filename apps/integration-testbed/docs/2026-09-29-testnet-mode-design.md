@@ -19,7 +19,7 @@ the dashboard and `--check`; a CI job that exercises the deployment-file path on
 scripts; docs.
 
 Out: the web apps (stale against today's `stack.json`), the delivery flow in the apps (spec flow 6,
-WS2; covered at SDK level), contract and deploy-script changes, SDK changes, hosted member servers.
+Phase 2; covered at SDK level), contract and deploy-script changes, SDK changes, hosted member servers.
 
 ## Decisions
 
