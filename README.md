@@ -2,7 +2,7 @@
     <h1 align="center">
         Coordination Network
     </h1>
-    <p align="center">A multi-organization coordination network monorepo.</p>
+    <p align="center">Decentralized, zero-knowledge identity and private payment rails for networks of organizations.</p>
 </p>
 
 <p align="center">
@@ -46,6 +46,10 @@
 
 <div align="center">
     <h4>
+        <a href="/specs/06-full-architecture-ws1.md">
+            🏛 Architecture
+        </a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
         <a href="/CONTRIBUTING.md">
             👥 Contributing
         </a>
@@ -60,8 +64,57 @@
     </h4>
 </div>
 
-| Coordination Network is a monorepo of applications, tools and libraries for multi-organization coordination. |
-| ------------------------------------------------------------------------------------------------------------ |
+> [!WARNING]
+> **Testnet only, unaudited.** The contracts and circuit have not been externally audited and there is no mainnet deployment. Do not use this code to hold real value.
+
+## What this is
+
+Several organizations often serve the same population: each one approves people, delivers value to them, and needs to avoid paying the same person twice. Today that usually means sharing personal data with each other, or running a permissioned ledger that one operator controls.
+
+The Coordination Network is an open-source stack that lets those organizations (**network members**) coordinate on a public chain without either. It has two halves.
+
+### Decentralized, zero-knowledge identity
+
+- **Self-sovereign identity.** A user's identity is derived on their own device from a single device secret. The resulting `networkId` is a pseudonym, the same across every network member, and no personal data leaves the device or touches the chain, hashed or otherwise.
+- **Verifiable credentials with zero-knowledge presentation.** A network member issues an approval credential to the user's wallet off chain. The user later presents it with OpenAC (open anonymous credentials), proving in zero knowledge (a Noir circuit, verified off chain with UltraHonk) that an approved member issued a valid, unrevoked credential matching what the verifier asked about. The verifier learns neither which member issued it nor which credential was presented, and a presentation costs no gas.
+- **Anonymous, member-governed registry writes.** Users are registered on chain by network members, each write authorized by a Semaphore membership proof against the group of approved members. The chain records that _an_ approved member made the change, not _which_ one. The registry has no owner, allowlist or override.
+- **No central operator.** Members are admitted and removed by majority vote through a Safe multisig in which every member holds one seat. The approved-issuer set and per-issuer revocation registries live on chain, so anyone can verify a credential against them.
+
+### Private payment rails
+
+- **Stealth addresses for every delivery.** Each user publishes a stealth meta-address (ERC-6538). Senders derive a fresh one-time address for every payment (ERC-5564), so nothing on chain links two payments to the same recipient, or a recipient to the member that paid them.
+- **Cross-member deduplication without data sharing.** The on-chain `networkId → meta-address` mapping lets any member resolve where to pay a user and detect a user another member has already registered, without exchanging records.
+- **Sponsored gas.** An ERC-4337 Semaphore paymaster pays for members' registry writes, so a write can come from a fresh address that is not traceable back to the member, and users never need a gas balance. Spend is capped per operation and per epoch.
+- **Scanning.** A member-run indexer watches announcements with the user's viewing key and surfaces the stealth accounts addressed to them. The spending key never leaves the device.
+
+**What stays visible.** Stealth addresses break the link between sender and recipient; they do not hide amounts, balances or the existence of transfers. The indexer holds users' viewing keys (encrypted at rest), so whoever runs it can see which payments belong to which user. See the [threat model](specs/WS1-threat-model.md) for the full list of adversaries and residual risks.
+
+## How it fits together
+
+```mermaid
+flowchart LR
+  A["1. On-device identity<br/>networkId + meta-address"] --> B["2. Register and resolve<br/>member-submitted, Semaphore-gated"]
+  B --> C["3. Credential issuance<br/>off chain, to the wallet"]
+  C --> D["4. ZK presentation<br/>off-chain proof, on-chain roots"]
+  B --> E["5. Stealth send and scan<br/>fresh address per payment"]
+```
+
+The full component view, key model and flows are in [06 · Full Architecture](specs/06-full-architecture-ws1.md).
+
+## Specifications
+
+| Spec                                                         | Covers                                                         |
+| ------------------------------------------------------------ | -------------------------------------------------------------- |
+| [01 · Self-Sovereign User](specs/01-self-sovereign-user.md)  | Device-secret identity, key model, derivation                  |
+| [02 · Wallet](specs/02-wallet.md)                            | Credential storage, binding, presentation, recovery            |
+| [03 · VC Issuance and Verification](specs/03-vc-issuance.md) | Credential format, issuance, verifier procedure                |
+| [04 · Revocation](specs/04-revocation.md)                    | LeanIMT+ revocation and non-revocation proofs                  |
+| [05 · Stealth Addresses](specs/05-stealth-addresses.md)      | Stealth construction, sending, scanning, gas sponsorship       |
+| [06 · Full Architecture](specs/06-full-architecture-ws1.md)  | Components, flows, standards, implementation map               |
+| [Threat Model](specs/WS1-threat-model.md)                    | Adversaries, STRIDE analysis, residual risk                    |
+| [`DERIVATION.md`](packages/identity/DERIVATION.md)           | Normative key derivation scheme `v1`, with conformance vectors |
+
+## 🧰 Tooling
 
 ♚ [Yarn workspaces](https://yarnpkg.com/features/workspaces): minimal monorepo package management (`yarn`, `yarn build`)\
 ♛ [Conventional Commits](https://www.conventionalcommits.org): human and machine readable meaning to commit messages (`czg` + `commitlint`)\
@@ -616,3 +669,11 @@ git push && git push origin v<version>
 ```
 
 Pushing the tag triggers a workflow that builds the packages, publishes them on [npm](https://www.npmjs.com/) and releases a new version on Github with its changelogs automatically.
+
+## Standards used
+
+ERC-5564 and ERC-6538 (stealth addresses), ERC-4337 (paymaster), EIP-7702 (delegation), Semaphore v4 (anonymous membership), Safe (governance), OpenAC-inspired design (zero-knowledge credential presentation), Noir + Barretenberg UltraHonk (proofs), Baby Jubjub EdDSA + Poseidon (credential signatures), LeanIMT+ (revocation), FluidKey-compatible key derivation. Full table in [06 · Full Architecture §6](specs/06-full-architecture-ws1.md#6-standards-and-primitives).
+
+## License
+
+[MIT](LICENSE)
