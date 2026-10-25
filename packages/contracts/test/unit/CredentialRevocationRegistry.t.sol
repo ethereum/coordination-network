@@ -149,6 +149,20 @@ contract CredentialRevocationRegistryUnitTest is CredentialRevocationRegistryTes
         assertTrue(revocation.isRevoked(_registryId(), commitmentC));
     }
 
+    function test_UpdateRevocationCommitment_RevertsWhen_ProofIsForAnotherAction() public {
+        uint256 lowLeafIndexOfA = _lowLeafIndex(commitmentA);
+        NetworkMemberGate.NetworkMemberProof memory revokeProof = _proof("revokeA");
+        NetworkMemberGate.NetworkMemberProof memory unrevokeProof = _proof("unrevokeA");
+        revocationRegistry.revoke(commitmentA, lowLeafIndexOfA, revokeProof);
+        uint256 predecessorOfA = _predecessorIndex(commitmentA);
+        uint256 newPredecessorIndex = 0;
+
+        vm.expectRevert(ISemaphore.Semaphore__InvalidProof.selector);
+        revocationRegistry.updateRevocationCommitment(
+            commitmentA, commitmentC, predecessorOfA, newPredecessorIndex, unrevokeProof
+        );
+    }
+
     /// @dev The circuit canonicalises an empty-registry witness to a zero root, so presentations
     /// verify from the first block.
     function test_IsValidRoot_AcceptsZeroWhileTheTreeIsEmpty() public view {

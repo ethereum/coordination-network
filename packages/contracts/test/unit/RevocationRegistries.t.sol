@@ -20,6 +20,17 @@ contract RevocationRegistriesTest is RevocationTestBase {
         assertEq(revocation.getRevocationTreeSize(registryId), 0);
     }
 
+    function test_getRevocationTreeDepth_ReturnsTreeDepthAfterThreeRevocations() public {
+        revoke(registryId, A);
+        revoke(registryId, B);
+        revoke(registryId, C);
+        uint256 depthOfSentinelAndThreeRevocations = 2;
+
+        uint256 depth = revocation.getRevocationTreeDepth(registryId);
+
+        assertEq(depth, depthOfSentinelAndThreeRevocations);
+    }
+
     function test_createRegistry_rejectsTheZeroAdmin() public {
         vm.expectRevert(IRevocationRegistries.ZeroAdmin.selector);
         revocation.createRegistry(address(0));

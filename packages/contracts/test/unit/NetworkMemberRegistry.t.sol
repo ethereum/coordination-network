@@ -5,6 +5,7 @@ import { Vm } from "forge-std/Test.sol";
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
+import { ApprovedIssuerSet } from "../../src/ApprovedIssuerSet.sol";
 import { NetworkMemberRegistry } from "../../src/NetworkMemberRegistry.sol";
 import { NetworkMemberRegistryTestBase } from "../utils/NetworkMemberRegistryTestBase.sol";
 
@@ -409,5 +410,57 @@ contract NetworkMemberRegistryUnitTest is NetworkMemberRegistryTestBase {
             networkMember.publicKeyX, networkMember.publicKeyY, semaphoreCommitment, governanceSigner
         );
         assertTrue(registry.isApproved(memberNetworkId));
+    }
+
+    /// @dev {approveNetworkMember}'s own wiring gate means a member approved while the set is unwired
+    /// can no longer arise through the public API: the set is never unwirable once set, so by the time
+    /// any approval succeeds, the set is already wired for good. This guard is therefore defense in
+    /// depth against that state, not a path a caller can reach — so the state is forced directly into
+    /// storage to exercise the guard at all.
+    function test_RemoveNetworkMember_RevertsWhen_IssuerSetNotWired() public {
+        NetworkMemberRegistry unwired = new NetworkMemberRegistry(owner);
+
+        // `networkMemberAuthAddress` is storage slot 2 (`forge inspect NetworkMemberRegistry
+        // storage-layout`).
+        vm.store(
+            address(unwired),
+            keccak256(abi.encode(memberNetworkId, uint256(2))),
+            bytes32(uint256(uint160(networkMember.addr)))
+        );
+        assertTrue(unwired.isApproved(memberNetworkId));
+
+        vm.expectRevert(NetworkMemberRegistry.IssuerSetNotWired.selector);
+        vm.prank(owner);
+        unwired.removeNetworkMember(memberNetworkId);
+
+        assertTrue(unwired.isApproved(memberNetworkId));
+    }
+
+    /// @dev The write cannot be redone, and the set only answers its own registry, so wiring a
+    /// mismatched one would make every removal revert with no way back.
+    function test_SetApprovedIssuerSet_RevertsWhen_SetBoundToAnotherRegistry() public {
+        NetworkMemberRegistry other = new NetworkMemberRegistry(owner);
+        ApprovedIssuerSet foreignSet = new ApprovedIssuerSet(address(other));
+        NetworkMemberRegistry unwired = new NetworkMemberRegistry(owner);
+
+        vm.expectRevert(NetworkMemberRegistry.ApprovedIssuerSetNotBoundToThisRegistry.selector);
+        vm.prank(owner);
+        unwired.setApprovedIssuerSet(address(foreignSet));
+    }
+
+    function test_SetApprovedIssuerSet_RevertsWhen_AlreadyWired() public {
+        ApprovedIssuerSet replacement = new ApprovedIssuerSet(address(registry));
+
+        vm.expectRevert(NetworkMemberRegistry.ApprovedIssuerSetAlreadyWired.selector);
+        vm.prank(owner);
+        registry.setApprovedIssuerSet(address(replacement));
+    }
+
+    function test_SetApprovedIssuerSet_RevertsWhen_ZeroAddress() public {
+        NetworkMemberRegistry unwired = new NetworkMemberRegistry(owner);
+
+        vm.expectRevert(NetworkMemberRegistry.ZeroApprovedIssuerSet.selector);
+        vm.prank(owner);
+        unwired.setApprovedIssuerSet(address(0));
     }
 }
