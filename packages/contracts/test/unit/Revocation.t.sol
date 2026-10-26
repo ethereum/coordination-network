@@ -203,4 +203,23 @@ contract RevocationTest is RevocationTestBase {
 
         assertEq(revocation.getRootSupersededAt(registryId, rootBeforeUpdate), block.timestamp);
     }
+
+    function test_revokeMany_supersedesThePreviousRoot() public {
+        revoke(registryId, A);
+        uint256 rootBeforeRevokeMany = revocation.getRevocationRoot(registryId);
+        uint256 revokeManyTime = 1 days;
+        uint256[] memory commitments = new uint256[](1);
+        commitments[0] = B;
+        uint256[] memory lowLeafIndices = new uint256[](1);
+        lowLeafIndices[0] = lowLeafIndex(registryId, B);
+        vm.warp(revokeManyTime);
+
+        vm.prank(admin);
+        revocation.revokeMany(registryId, commitments, lowLeafIndices);
+
+        uint256 rootAfterRevokeMany = revocation.getRevocationRoot(registryId);
+        uint256 rootSupersededAt = revocation.getRootSupersededAt(registryId, rootBeforeRevokeMany);
+        assertNotEq(rootAfterRevokeMany, rootBeforeRevokeMany);
+        assertEq(rootSupersededAt, revokeManyTime);
+    }
 }

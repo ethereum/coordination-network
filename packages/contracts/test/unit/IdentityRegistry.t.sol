@@ -96,6 +96,28 @@ contract IdentityRegistryUnitTest is IdentityRegistryTestBase {
         identityRegistry.registerIdentity(networkIdA, new bytes(65), _proof("registerA"));
     }
 
+    function test_RegisterIdentity_RevertsWhen_MetaStealthAddressTooLong() public {
+        uint256 tooLongLength = identityRegistry.META_STEALTH_ADDRESS_LENGTH() + 1;
+        bytes memory tooLongMeta = new bytes(tooLongLength);
+        NetworkMemberGate.NetworkMemberProof memory proof = _proof("registerA");
+
+        vm.expectRevert(IdentityRegistry.InvalidMetaStealthAddressLength.selector);
+        identityRegistry.registerIdentity(networkIdA, tooLongMeta, proof);
+    }
+
+    function test_RegisterIdentity_RegistersANetworkIdAgainAfterRemoval() public {
+        NetworkMemberGate.NetworkMemberProof memory registerProof = _proof("registerA");
+        NetworkMemberGate.NetworkMemberProof memory removeProof = _proof("removeA");
+        NetworkMemberGate.NetworkMemberProof memory secondMemberRegisterProof = _proof("registerAByMemberOne");
+        identityRegistry.registerIdentity(networkIdA, metaA, registerProof);
+        identityRegistry.removeIdentity(networkIdA, removeProof);
+
+        identityRegistry.registerIdentity(networkIdA, metaA, secondMemberRegisterProof);
+
+        bytes memory registeredMeta = identityRegistry.identity(networkIdA);
+        assertEq(registeredMeta, metaA);
+    }
+
     function test_RegisterIdentity_RevertsWhen_AlreadyRegistered() public {
         identityRegistry.registerIdentity(networkIdA, metaA, _proof("registerA"));
 
@@ -133,6 +155,15 @@ contract IdentityRegistryUnitTest is IdentityRegistryTestBase {
         identityRegistry.removeIdentity(networkIdA, _proof("removeA"));
 
         assertEq(identityRegistry.identity(networkIdA).length, 0);
+    }
+
+    function test_RemoveIdentity_RevertsWhen_ProofIsForAnotherAction() public {
+        NetworkMemberGate.NetworkMemberProof memory registerProof = _proof("registerA");
+        NetworkMemberGate.NetworkMemberProof memory updateProof = _proof("updateA");
+        identityRegistry.registerIdentity(networkIdA, metaA, registerProof);
+
+        vm.expectRevert(ISemaphore.Semaphore__InvalidProof.selector);
+        identityRegistry.removeIdentity(networkIdA, updateProof);
     }
 
     function test_RemoveIdentity_RevertsWhen_NotRegistered() public {

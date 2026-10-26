@@ -4,6 +4,7 @@ pragma solidity ^0.8.34;
 import { ISemaphore } from "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 import { ISemaphoreGroups } from "@semaphore-protocol/contracts/interfaces/ISemaphoreGroups.sol";
 
+import { IdentityRegistry } from "../../src/IdentityRegistry.sol";
 import { NetworkMemberGate } from "../../src/base/NetworkMemberGate.sol";
 import { stdJson } from "forge-std/StdJson.sol";
 
@@ -17,6 +18,15 @@ contract NetworkMemberGateUnitTest is IdentityRegistryTestBase {
         assertEq(address(identityRegistry.SEMAPHORE()), address(semaphore));
         assertEq(identityRegistry.NETWORK_MEMBER_GROUP_ID(), networkMemberGroupId);
         assertEq(semaphore.getGroupAdmin(networkMemberGroupId), governance);
+    }
+
+    function test_Constructor_StoresTheGivenGroupId() public {
+        uint256 secondGroupId = semaphore.createGroup(governance);
+
+        IdentityRegistry secondGroupRegistry = new IdentityRegistry(ISemaphore(address(semaphore)), secondGroupId);
+
+        uint256 storedGroupId = secondGroupRegistry.NETWORK_MEMBER_GROUP_ID();
+        assertEq(storedGroupId, secondGroupId);
     }
 
     /// @dev Client and contract must derive update messages identically. The real proofs the other
