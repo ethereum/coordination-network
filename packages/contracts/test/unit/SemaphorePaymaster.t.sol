@@ -5,6 +5,7 @@ import { _packValidationData, SIG_VALIDATION_FAILED } from "@account-abstraction
 import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import { ISemaphore } from "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 import { MIN_DEPTH, MAX_DEPTH } from "@semaphore-protocol/contracts/base/Constants.sol";
+import { SemaphoreVerifier } from "@semaphore-protocol/contracts/base/SemaphoreVerifier.sol";
 
 import { SemaphorePaymaster } from "../../src/SemaphorePaymaster.sol";
 import { SemaphorePaymasterTestBase } from "../utils/SemaphorePaymasterTestBase.sol";
@@ -27,6 +28,17 @@ contract SemaphorePaymasterUnitTest is SemaphorePaymasterTestBase {
         uint256 merkleTreeDuration = semaphorePaymaster.groups(groupId);
 
         assertEq(merkleTreeDuration, MERKLE_TREE_DURATION);
+    }
+
+    function test_Constructor_KeepsTheGroupAdminWhenAnotherGroupIsCreated() public {
+        address stranger = makeAddr("stranger");
+        uint256 groupId = semaphorePaymaster.GROUP_ID();
+
+        vm.prank(stranger);
+        semaphorePaymaster.createGroup();
+
+        address groupAdmin = semaphorePaymaster.getGroupAdmin(groupId);
+        assertEq(groupAdmin, owner);
     }
 
     function test_Constructor_RevertsWhen_OwnerZero() public {
@@ -95,6 +107,31 @@ contract SemaphorePaymasterUnitTest is SemaphorePaymasterTestBase {
         (, uint256 validationData) = _validatePaymasterUserOp(sender1, abi.encode(belowMinimumDepthProof), MAX_COST);
 
         assertEq(validationData, SIG_VALIDATION_FAILED);
+    }
+
+    function test_validatePaymasterUserOp_RejectsWhen_MerkleTreeDepthAboveMaximumBeforeVerifying() public {
+        _addNetworkMembers();
+        ISemaphore.SemaphoreProof memory aboveMaximumDepthProof = abi.decode(validProof, (ISemaphore.SemaphoreProof));
+        aboveMaximumDepthProof.merkleTreeDepth = MAX_DEPTH + 1;
+        bytes memory encodedAboveMaximumDepthProof = abi.encode(aboveMaximumDepthProof);
+        bytes memory verifyProofCall = abi.encodePacked(SemaphoreVerifier.verifyProof.selector);
+        uint64 expectedVerifyProofCallCount = 0;
+
+        vm.expectCall(address(semaphoreVerifier), verifyProofCall, expectedVerifyProofCallCount);
+        (, uint256 validationData) = _validatePaymasterUserOp(sender1, encodedAboveMaximumDepthProof, MAX_COST);
+
+        assertEq(validationData, SIG_VALIDATION_FAILED);
+    }
+
+    function test_validatePaymasterUserOp_ReachesTheVerifierWhen_MerkleTreeDepthIsMaximum() public {
+        _addNetworkMembers();
+        ISemaphore.SemaphoreProof memory maximumDepthProof = abi.decode(validProof, (ISemaphore.SemaphoreProof));
+        maximumDepthProof.merkleTreeDepth = MAX_DEPTH;
+        bytes memory encodedMaximumDepthProof = abi.encode(maximumDepthProof);
+        bytes memory verifyProofCall = abi.encodePacked(SemaphoreVerifier.verifyProof.selector);
+
+        vm.expectCall(address(semaphoreVerifier), verifyProofCall, 1);
+        _validatePaymasterUserOp(sender1, encodedMaximumDepthProof, MAX_COST);
     }
 
     function test_ValidatePaymasterUserOp_RejectsWhen_GroupHasNoMembers() public {
