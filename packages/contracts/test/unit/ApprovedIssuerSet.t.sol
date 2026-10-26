@@ -248,6 +248,26 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         issuerSet.publishIssuerKey(memberNetworkId, keyX[0], type(uint256).max);
     }
 
+    function test_PublishIssuerKey_RevertsWhen_PublicKeyXEqualsTheFieldSize() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 publicKeyXAtTheFieldSize = SNARK_SCALAR_FIELD;
+
+        vm.expectRevert(ApprovedIssuerSet.PublicKeyNotInField.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKey(memberNetworkId, publicKeyXAtTheFieldSize, keyY[0]);
+    }
+
+    function test_PublishIssuerKey_RevertsWhen_PublicKeyYEqualsTheFieldSize() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 publicKeyYAtTheFieldSize = SNARK_SCALAR_FIELD;
+
+        vm.expectRevert(ApprovedIssuerSet.PublicKeyNotInField.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKey(memberNetworkId, keyX[0], publicKeyYAtTheFieldSize);
+    }
+
     /// @dev The cap is what keeps {retireAllIssuerKeys} inside a block.
     function test_PublishIssuerKey_RevertsWhen_KeyCapReached() public {
         _approveMember(memberNetworkId);
@@ -275,6 +295,124 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         vm.expectRevert(ApprovedIssuerSet.IssuerSetFull.selector);
         vm.prank(authAddress);
         issuerSet.publishIssuerKey(memberNetworkId, keyX[0], keyY[0]);
+    }
+
+    function test_publishIssuerKeys_RevertWhen_BatchExceedsTheKeyCap() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 keyCount = issuerSet.MAX_ISSUER_KEYS_PER_MEMBER() + 1;
+        uint256[2][] memory keys = new uint256[2][](keyCount);
+        for (uint256 i = 0; i < keyCount; ++i) {
+            keys[i] = [keyX[i], keyY[i]];
+        }
+
+        vm.expectRevert(abi.encodeWithSelector(ApprovedIssuerSet.TooManyIssuerKeys.selector, memberNetworkId));
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKeys(memberNetworkId, keys);
+    }
+
+    function test_publishIssuerKeys_RevertWhen_TreeIsFull() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256[2][] memory keys = new uint256[2][](1);
+        keys[0] = [keyX[0], keyY[0]];
+
+        // forge inspect ApprovedIssuerSet storage-layout
+        bytes32 leafCountStorageSlot = bytes32(uint256(1));
+        vm.store(address(issuerSet), leafCountStorageSlot, bytes32(issuerSet.MAX_LEAVES()));
+
+        vm.expectRevert(ApprovedIssuerSet.IssuerSetFull.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKeys(memberNetworkId, keys);
+    }
+
+    function test_publishIssuerKeys_RevertWhen_TheBatchRepeatsAKey() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 repeatedLeaf = IssuerSetHashes.issuerKeyLeaf(keyX[0], keyY[0]);
+        uint256[2][] memory keys = new uint256[2][](2);
+        keys[0] = [keyX[0], keyY[0]];
+        keys[1] = [keyX[0], keyY[0]];
+
+        vm.expectRevert(abi.encodeWithSelector(ApprovedIssuerSet.IssuerKeyAlreadyPublished.selector, repeatedLeaf));
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKeys(memberNetworkId, keys);
+    }
+
+    function test_PublishIssuerKeys_AcceptsABatchThatReachesTheKeyCap() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 keyCap = issuerSet.MAX_ISSUER_KEYS_PER_MEMBER();
+        uint256[2][] memory keys = new uint256[2][](keyCap);
+        for (uint256 i = 0; i < keyCap; ++i) {
+            keys[i] = [keyX[i], keyY[i]];
+        }
+
+        vm.prank(authAddress);
+        uint256[] memory leaves = issuerSet.publishIssuerKeys(memberNetworkId, keys);
+
+        uint256[] memory memberKeys = issuerSet.issuerKeysOf(memberNetworkId);
+        uint256 liveKeyCount = issuerSet.getSize();
+        assertEq(memberKeys.length, keyCap);
+        assertEq(leaves, memberKeys);
+        assertEq(liveKeyCount, keyCap);
+    }
+
+    function test_PublishIssuerKeys_FillsTheLastFreeSlot() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256[2][] memory keys = new uint256[2][](1);
+        keys[0] = [keyX[0], keyY[0]];
+        uint256 maxLeaves = issuerSet.MAX_LEAVES();
+        uint256 lastFreeSlot = maxLeaves - 1;
+        // forge inspect ApprovedIssuerSet storage-layout
+        bytes32 leafCountStorageSlot = bytes32(uint256(1));
+        vm.store(address(issuerSet), leafCountStorageSlot, bytes32(lastFreeSlot));
+
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKeys(memberNetworkId, keys);
+
+        uint256 leafCount = issuerSet.getLeafCount();
+        assertEq(leafCount, maxLeaves);
+    }
+
+    function test_getLeaves_ReturnsLeavesFromOffset() public {
+        uint256 offset = 1;
+        uint256 expectedLeafCount = 2;
+
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        _publish(memberNetworkId, 0);
+        uint256 secondLeaf = _publish(memberNetworkId, 1);
+        uint256 thirdLeaf = _publish(memberNetworkId, 2);
+
+        vm.prank(authAddress);
+        issuerSet.retireIssuerKey(memberNetworkId, secondLeaf);
+        uint256 leafCount = issuerSet.getLeafCount();
+
+        uint256[] memory leaves = issuerSet.getLeaves(offset, leafCount);
+
+        assertEq(leaves.length, expectedLeafCount);
+        assertEq(leaves[0], 0);
+        assertEq(leaves[1], thirdLeaf);
+    }
+
+    function test_getLeaves_ReturnsLeavesWithRetiredSlotsAsZero() public {
+        _approveMember(memberNetworkId);
+        uint256 firstLeaf = _publish(memberNetworkId, 0);
+        uint256 secondLeaf = _publish(memberNetworkId, 1);
+        uint256 thirdLeaf = _publish(memberNetworkId, 2);
+
+        vm.prank(registry.networkMemberAuthAddress(memberNetworkId));
+        issuerSet.retireIssuerKey(memberNetworkId, secondLeaf);
+        uint256 leafCount = issuerSet.getLeafCount();
+
+        uint256[] memory leaves = issuerSet.getLeaves(0, leafCount);
+
+        assertEq(leaves.length, leafCount);
+        assertEq(leaves[0], firstLeaf);
+        assertEq(leaves[1], 0);
+        assertEq(leaves[2], thirdLeaf);
     }
 
     function test_RetireIssuerKey_RemovesTheKey() public {
@@ -317,6 +455,20 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         _approveMember(memberNetworkId);
         _approveMember(otherMemberNetworkId);
         uint256 leaf = _publish(memberNetworkId, 0);
+        address otherAuthAddress = registry.networkMemberAuthAddress(otherMemberNetworkId);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(ApprovedIssuerSet.IssuerKeyNotPublishedByMember.selector, otherMemberNetworkId, leaf)
+        );
+        vm.prank(otherAuthAddress);
+        issuerSet.retireIssuerKey(otherMemberNetworkId, leaf);
+    }
+
+    function test_RetireIssuerKey_RevertsWhen_TheCallerHoldsOnlyOtherKeys() public {
+        _approveMember(memberNetworkId);
+        _approveMember(otherMemberNetworkId);
+        uint256 leaf = _publish(memberNetworkId, 0);
+        _publish(otherMemberNetworkId, 1);
         address otherAuthAddress = registry.networkMemberAuthAddress(otherMemberNetworkId);
 
         vm.expectRevert(
@@ -658,6 +810,65 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         assertFalse(issuerSet.isValidIssuerSetRoot(rootB));
     }
 
+    function test_RetireAllIssuerKeys_InvalidatesTheRootsOfAMemberWhoOnlyPublishedInABatch() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256[2][] memory keys = new uint256[2][](2);
+        keys[0] = [keyX[0], keyY[0]];
+        keys[1] = [keyX[1], keyY[1]];
+        vm.prank(authAddress);
+        uint256[] memory leaves = issuerSet.publishIssuerKeys(memberNetworkId, keys);
+        uint256 rootAfterTheBatch = issuerSet.issuerSetRoot();
+        uint256 firstLeaf = leaves[0];
+        vm.prank(authAddress);
+        issuerSet.retireIssuerKey(memberNetworkId, firstLeaf);
+
+        _retireAll(memberNetworkId);
+
+        bool rootAfterTheBatchIsValid = issuerSet.isValidIssuerSetRoot(rootAfterTheBatch);
+        assertFalse(rootAfterTheBatchIsValid);
+    }
+
+    function test_RetireAllIssuerKeys_UnapprovesOnlyTheRemovedMembersKeys() public {
+        _approveMember(memberNetworkId);
+        _approveMember(otherMemberNetworkId);
+        uint256 firstLeaf = _publish(memberNetworkId, 0);
+        uint256 secondLeaf = _publish(memberNetworkId, 1);
+        uint256 otherMemberLeaf = _publish(otherMemberNetworkId, 2);
+
+        _retireAll(memberNetworkId);
+
+        bool firstLeafIsApproved = issuerSet.isApprovedIssuerKey(firstLeaf);
+        bool secondLeafIsApproved = issuerSet.isApprovedIssuerKey(secondLeaf);
+        bool otherMemberLeafIsApproved = issuerSet.isApprovedIssuerKey(otherMemberLeaf);
+        uint256[] memory memberKeys = issuerSet.issuerKeysOf(memberNetworkId);
+        uint256 liveKeyCount = issuerSet.getSize();
+        assertFalse(firstLeafIsApproved);
+        assertFalse(secondLeafIsApproved);
+        assertTrue(otherMemberLeafIsApproved);
+        assertEq(memberKeys.length, 0);
+        assertEq(liveKeyCount, 1);
+    }
+
+    function test_RetireAllIssuerKeys_RetiresTheRemainingKeysAfterTheFirstWasRetired() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256 firstLeaf = _publish(memberNetworkId, 0);
+        uint256 secondLeaf = _publish(memberNetworkId, 1);
+        uint256 thirdLeaf = _publish(memberNetworkId, 2);
+        vm.prank(authAddress);
+        issuerSet.retireIssuerKey(memberNetworkId, firstLeaf);
+
+        _retireAll(memberNetworkId);
+
+        bool secondLeafIsApproved = issuerSet.isApprovedIssuerKey(secondLeaf);
+        bool thirdLeafIsApproved = issuerSet.isApprovedIssuerKey(thirdLeaf);
+        uint256 liveKeyCount = issuerSet.getSize();
+        assertFalse(secondLeafIsApproved);
+        assertFalse(thirdLeafIsApproved);
+        assertEq(liveKeyCount, 0);
+    }
+
     /// @dev The cross-member variant: the root superseded inside a removed member's watermark
     /// window need not be superseded by that member's own traffic. Another member's publish
     /// supersedes it just as well, and {rootsInvalidatedAt} has to close it off regardless of whose
@@ -714,6 +925,21 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         _retireAll(otherMemberNetworkId);
 
         assertTrue(issuerSet.isValidIssuerSetRoot(issuerSet.issuerSetRoot()));
+    }
+
+    function test_RetireAllIssuerKeys_AcceptsARootSupersededAfterTheRemovalInsideItsWindow() public {
+        _approveMember(memberNetworkId);
+        _approveMember(otherMemberNetworkId);
+        _publish(memberNetworkId, 0);
+        _retireAll(memberNetworkId);
+        vm.warp(block.timestamp + 1);
+        _publish(otherMemberNetworkId, 1);
+        uint256 rootSupersededAfterTheRemoval = issuerSet.issuerSetRoot();
+        _publish(otherMemberNetworkId, 2);
+
+        bool rootIsValid = issuerSet.isValidIssuerSetRoot(rootSupersededAfterTheRemoval);
+
+        assertTrue(rootIsValid);
     }
 
     /// @dev Bounded blast radius: removing a member that never published must not touch the watermark,
@@ -911,6 +1137,16 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         uint256 leafCount = issuerSet.getLeafCount();
         vm.expectRevert(abi.encodeWithSelector(ApprovedIssuerSet.LeafIndexOutOfRange.selector, leafCount));
         issuerSet.siblingsOf(leafCount);
+    }
+
+    function test_SiblingsOf_RevertsWhen_IndexIsPastTheEnd() public {
+        _approveMember(memberNetworkId);
+        _publish(memberNetworkId, 0);
+        uint256 leafCount = issuerSet.getLeafCount();
+        uint256 indexPastTheEnd = leafCount + 1;
+
+        vm.expectRevert(abi.encodeWithSelector(ApprovedIssuerSet.LeafIndexOutOfRange.selector, indexPastTheEnd));
+        issuerSet.siblingsOf(indexPastTheEnd);
     }
 
     /// @dev {depth} and {siblingsOf} at the MAX_DEPTH boundary, forced via `leafCount`'s storage slot

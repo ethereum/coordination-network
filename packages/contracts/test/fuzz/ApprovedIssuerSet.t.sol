@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
+import { SNARK_SCALAR_FIELD } from "@zk-kit/lean-imt.sol/Constants.sol";
+
 import { ApprovedIssuerSet } from "../../src/ApprovedIssuerSet.sol";
 import { IssuerSetHashes } from "../../src/libraries/IssuerSetHashes.sol";
 import { ApprovedIssuerSetTestBase } from "../utils/ApprovedIssuerSetTestBase.sol";
@@ -165,6 +167,18 @@ contract ApprovedIssuerSetFuzzTest is ApprovedIssuerSetTestBase {
         vm.expectRevert(ApprovedIssuerSet.UnauthorizedCaller.selector);
         vm.prank(caller);
         issuerSet.publishIssuerKey(memberNetworkId, keyX[0], keyY[0]);
+    }
+
+    function testFuzz_publishIssuerKey_RevertWhen_PublicKeyIsOffCurve(uint256 publicKeyY) public {
+        uint256 reflectedKeyY = SNARK_SCALAR_FIELD - KEY_1_Y;
+        publicKeyY = bound(publicKeyY, 0, SNARK_SCALAR_FIELD - 1);
+        vm.assume(publicKeyY != KEY_1_Y && publicKeyY != reflectedKeyY);
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+
+        vm.expectRevert(ApprovedIssuerSet.PublicKeyNotOnCurve.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKey(memberNetworkId, KEY_1_X, publicKeyY);
     }
 
     /// @dev The reference implements spec 03's compacted-level loop literally, independent of
