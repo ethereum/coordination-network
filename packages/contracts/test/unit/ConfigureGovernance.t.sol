@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
+import { ModuleManager } from "@safe-global/safe-smart-account/contracts/base/ModuleManager.sol";
+import { Enum } from "@safe-global/safe-smart-account/contracts/libraries/Enum.sol";
 import { Safe } from "@safe-global/safe-smart-account/contracts/Safe.sol";
 
 import { DeploySafe } from "../../script/DeploySafe.s.sol";
@@ -75,5 +77,62 @@ contract ConfigureGovernanceUnitTest is CanonicalDependencies {
         configureGovernanceScript.configureGovernance(
             sharedSafe, owner, networkMemberRegistry, address(approvedIssuerSet), networkMemberGovernance
         );
+    }
+
+    function test_configureGovernance_executesOnASafeWhoseOwnersAreStoredHighestFirst() public {
+        address secondOwner = makeAddr("secondOwner");
+        address[] memory ownersHighestFirst = new address[](2);
+        if (owner > secondOwner) {
+            ownersHighestFirst[0] = owner;
+            ownersHighestFirst[1] = secondOwner;
+        } else {
+            ownersHighestFirst[0] = secondOwner;
+            ownersHighestFirst[1] = owner;
+        }
+        Safe sharedSafe = new DeploySafe().deploySafe(ownersHighestFirst);
+        NetworkMemberRegistry sharedRegistry = new NetworkMemberRegistry(address(sharedSafe));
+        ApprovedIssuerSet sharedIssuerSet = new ApprovedIssuerSet(address(sharedRegistry));
+        bytes memory setIssuerSetCall =
+            abi.encodeCall(NetworkMemberRegistry.setApprovedIssuerSet, (address(sharedIssuerSet)));
+        bytes memory enableModuleCall = abi.encodeCall(ModuleManager.enableModule, (networkMemberGovernance));
+        uint256 setIssuerSetNonce = sharedSafe.nonce();
+        uint256 enableModuleNonce = setIssuerSetNonce + 1;
+        bytes32 setIssuerSetHash = sharedSafe.getTransactionHash(
+            address(sharedRegistry),
+            0,
+            setIssuerSetCall,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            address(0),
+            setIssuerSetNonce
+        );
+        bytes32 enableModuleHash = sharedSafe.getTransactionHash(
+            address(sharedSafe),
+            0,
+            enableModuleCall,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            address(0),
+            enableModuleNonce
+        );
+        vm.startPrank(secondOwner);
+        sharedSafe.approveHash(setIssuerSetHash);
+        sharedSafe.approveHash(enableModuleHash);
+        vm.stopPrank();
+
+        configureGovernanceScript.configureGovernance(
+            sharedSafe, owner, sharedRegistry, address(sharedIssuerSet), networkMemberGovernance
+        );
+
+        address registryIssuerSet = address(sharedRegistry.approvedIssuerSet());
+        bool governanceModuleIsEnabled = sharedSafe.isModuleEnabled(networkMemberGovernance);
+        assertEq(registryIssuerSet, address(sharedIssuerSet));
+        assertTrue(governanceModuleIsEnabled);
     }
 }
