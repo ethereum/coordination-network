@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.34;
 
-import { IERC5564Announcer } from "./interfaces/IERC5564Announcer.sol";
+import { IERC5564Announcer } from "../interfaces/IERC5564Announcer.sol";
 
 /// @notice `ERC5564Announcer` contract to emit an `Announcement` event to broadcast information
 /// about a transaction involving a stealth address. See

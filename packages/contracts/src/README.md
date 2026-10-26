@@ -16,7 +16,8 @@ The coordination network's core contracts.
 - `ApprovedIssuerSet`: the issuer set the credential circuit proves against.
 - `SemaphorePaymaster`: an ERC-4337 paymaster that sponsors a user operation against a Semaphore
   membership proof.
-- `ERC5564Announcer`: the stealth-address announcement contract.
+- `test/ERC5564Announcer`: a copy of the canonical stealth-address announcement contract, deployed
+  only by tests and local stacks.
 
 The [revocation registries](revocation/README.md) ship in this package too: `CredentialRevocationRegistry`
 imports them directly.
