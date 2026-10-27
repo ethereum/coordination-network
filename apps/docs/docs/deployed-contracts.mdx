@@ -27,5 +27,5 @@ The [contracts package](/packages/contracts/src) has the sources and the
 | `CredentialRevocationRegistry` | One tree of revoked credentials, shared by all issuers. Verifiers check a presentation's root with `isValidRoot`. | [Revocation](../../../specs/04-revocation.md#registry)                                                                                                    |
 | `SemaphorePaymaster`           | Pays gas for user operations that carry a Semaphore membership proof.                                             | [Stealth addresses, gas sponsorship](../../../specs/05-stealth-addresses.md#gas-sponsorship)                                                              |
 
-The third-party contracts are standard deployments the network uses as they are: the ERC-4337 `EntryPoint`, the
-ERC-5564 `Announcer`, Semaphore, the `Simple7702Account` users delegate to, and Safe's `MultiSendCallOnly`.
+The third-party contracts are standard deployments the network uses as they are: the ERC-4337 EntryPoint, the
+canonical ERC-5564 announcer, Semaphore, the Simple7702Account users delegate to, and Safe's MultiSendCallOnly.
