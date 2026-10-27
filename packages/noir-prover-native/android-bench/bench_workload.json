@@ -24,12 +24,12 @@
     "runs": [
         {
             "name": "noir-credential",
-            "config": { "steps": ["credential"], "warm_iters": 5, "cooldown_ms": 10000 },
+            "config": { "steps": ["prove"], "warm_iters": 5, "cooldown_ms": 10000 },
             "timeout_s": 600
         },
         {
             "name": "noir-credential-lowmem",
-            "config": { "steps": ["credential"], "warm_iters": 5, "cooldown_ms": 10000, "low_memory_mode": true },
+            "config": { "steps": ["prove"], "warm_iters": 5, "cooldown_ms": 10000, "low_memory_mode": true },
             "timeout_s": 900
         }
     ]

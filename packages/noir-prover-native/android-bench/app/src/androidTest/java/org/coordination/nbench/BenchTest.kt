@@ -47,7 +47,7 @@ class BenchTest {
             Log.i(TAG, benchDeviceLine())
             for (s in 0 until steps.length()) {
                 val step = steps.getString(s)
-                if (step != "credential") {
+                if (step != "prove") {
                     Log.e(TAG, benchErrorLine(step, 0u, "unknown step"))
                     errors++
                     continue

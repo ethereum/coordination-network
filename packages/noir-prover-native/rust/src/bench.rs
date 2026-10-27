@@ -12,7 +12,7 @@ use crate::{credential_verification_key, init_srs, prove_credential_blocking, Mo
 /// The runner drops anything longer than this, so a builder never emits it.
 const MAX_LINE_BYTES: usize = 900;
 
-const STEP: &str = "credential";
+const STEP: &str = "prove";
 
 /// Same 239 values `tests/credential.rs` proves with.
 const WITNESS: &str = include_str!("../tests/credential-witness.json");
@@ -500,7 +500,7 @@ mod tests {
         let line = iter_line(&times(true, true));
         let body: Value = serde_json::from_str(line.strip_prefix("NOIR_ITER ").unwrap()).unwrap();
         assert_eq!(body["phase"], "cold");
-        assert_eq!(body["step"], "credential");
+        assert_eq!(body["step"], "prove");
         for key in ["iter", "load_ms", "prove_ms", "total_ms", "base_rss_kb", "peak_rss_kb", "mem_available_kb_before"] {
             assert!(body.get(key).is_some(), "missing {key}");
         }
@@ -528,7 +528,7 @@ mod tests {
 
     #[test]
     fn error_line_truncates_to_fit_and_keeps_utf8() {
-        let line = bench_error_line("credential".to_string(), 2, "é".repeat(2000));
+        let line = bench_error_line("prove".to_string(), 2, "é".repeat(2000));
         assert!(line.len() < MAX_LINE_BYTES, "{} bytes", line.len());
         assert!(line.starts_with("NOIR_ERROR "));
         let body: Value = serde_json::from_str(line.strip_prefix("NOIR_ERROR ").unwrap()).unwrap();

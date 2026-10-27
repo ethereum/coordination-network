@@ -27,7 +27,7 @@ fn main() {
                 ok += 1;
             }
             Err(e) => {
-                println!("{}", bench_error_line("credential".to_string(), iter, e.to_string()));
+                println!("{}", bench_error_line("prove".to_string(), iter, e.to_string()));
                 errors += 1;
             }
         }
