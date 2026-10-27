@@ -243,6 +243,19 @@ fn truncate(s: &str, max: usize) -> &str {
     &s[..end]
 }
 
+/// Cores listed on the DEVICE line. No phone has more, and the line must fit in 900 bytes.
+const MAX_CORES: usize = 32;
+
+/// A `getprop` value cut to 48 bytes, with anything that JSON would escape replaced, so a hostile
+/// or garbled property cannot push the DEVICE line over the limit.
+fn clean_prop(value: &str) -> String {
+    value
+        .chars()
+        .map(|c| if c.is_ascii_graphic() && c != '"' && c != '\\' || c == ' ' { c } else { '_' })
+        .take(48)
+        .collect()
+}
+
 #[allow(clippy::too_many_arguments)]
 fn device_line(
     model: &str,
@@ -255,14 +268,15 @@ fn device_line(
     freqs: &[Option<u64>],
     threads: usize,
 ) -> String {
+    let freqs = &freqs[..freqs.len().min(MAX_CORES)];
     marker(
         "DEVICE",
         json!({
-            "model": model,
-            "manufacturer": manufacturer,
-            "soc_model": soc_model,
-            "soc_manufacturer": soc_manufacturer,
-            "sdk": sdk,
+            "model": clean_prop(model),
+            "manufacturer": clean_prop(manufacturer),
+            "soc_model": clean_prop(soc_model),
+            "soc_manufacturer": clean_prop(soc_manufacturer),
+            "sdk": clean_prop(sdk),
             "mem_total_kb": mem_total_kb,
             "mem_available_kb": mem_available_kb,
             "cpu_max_freq_khz": freqs,
@@ -405,9 +419,10 @@ pub fn bench_iteration(
         .spawn(move || run_iteration(iter, &circuit_path, &srs_path, low_memory_mode, &proof_out_path))
         .map_err(|e| MoproError::NoirError(format!("cannot start the bench thread: {e}")))?
         .join()
-        // `.cargo/config.toml` builds std with panic_abort, so a panic ends the process before this
-        // join can see it.
-        .expect("panic=abort: a panicking bench thread never reaches join")
+        // Release builds unwind (`panic="unwind"`, per `cargo ndk rustc --release -- --print cfg`):
+        // `build-std` in `.cargo/config.toml` only builds `panic_abort` in, it does not select it. So
+        // a panic on the bench thread arrives here rather than ending the process.
+        .map_err(|_| MoproError::NoirError("the bench thread panicked".to_string()))?
 }
 
 fn run_iteration(
@@ -440,8 +455,8 @@ fn run_iteration(
     let mut load_parts = None;
     let mut load_ms = 0;
     let mut sizes = None;
-    // Poisoned only by a panic while locked, which aborts the process first.
-    let mut loaded = LOADED.lock().unwrap();
+    // A panic while locked poisons the mutex, but the state is only ever None or a complete `Loaded`.
+    let mut loaded = LOADED.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
 
     if let Some((hash, circuit_bytes)) = known {
         let t = Instant::now();
@@ -548,6 +563,17 @@ mod tests {
         }
         assert_eq!(body["big_cores"], json!([1]));
         assert_eq!(body["cpu_max_freq_khz"], json!([1, 2]));
+    }
+
+    #[test]
+    fn device_line_survives_hostile_properties_and_many_cores() {
+        let hostile = "\"\\\n\u{1}é".repeat(5000);
+        let freqs = vec![Some(2_800_000); 128];
+        let line = device_line(&hostile, &hostile, &hostile, &hostile, &hostile, u64::MAX, u64::MAX, &freqs, usize::MAX);
+        assert!(line.len() < MAX_LINE_BYTES, "{} bytes", line.len());
+        let body: Value = serde_json::from_str(line.strip_prefix("NOIR_DEVICE ").unwrap()).unwrap();
+        assert!(body["model"].as_str().unwrap().len() <= 48);
+        assert_eq!(body["cpu_max_freq_khz"].as_array().unwrap().len(), MAX_CORES);
     }
 
     fn times(cold: bool, rss_per_step: bool) -> IterTimes {

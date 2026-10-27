@@ -35,9 +35,17 @@ class BenchTest {
     fun bench() {
         var ok = 0
         var errors = 0
+        // False once the first call into Rust throws, e.g. UnsatisfiedLinkError when the library
+        // fails to load. From then on the marker lines are built here, so DONE still prints.
+        var rustUsable = true
         fun fail(iter: Int, e: Throwable) {
-            Log.e(TAG, benchErrorLine(STEP, iter.toUInt(), e.toString()))
             errors++
+            if (rustUsable) {
+                Log.e(TAG, benchErrorLine(STEP, iter.toUInt(), e.toString()))
+            } else {
+                val body = JSONObject().put("step", STEP).put("iter", iter).put("error", e.toString().take(120))
+                Log.i(TAG, "NOIR_ERROR $body")
+            }
         }
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -46,7 +54,12 @@ class BenchTest {
         wakeLock.acquire()
         // Whatever fails below, the run ends with DONE so the runner can tell it from a dead process.
         try {
-            Log.i(TAG, benchDeviceLine())
+            try {
+                Log.i(TAG, benchDeviceLine())
+            } catch (e: Throwable) {
+                rustUsable = false
+                throw e
+            }
             // The activity keeps the screen on and makes this the foreground process.
             ActivityScenario.launch(MainActivity::class.java).use {
                 try {
@@ -91,21 +104,21 @@ class BenchTest {
                                     Log.e(TAG, it)
                                     errors++
                                 }
-                            } catch (e: Exception) {
+                            } catch (e: Throwable) {
                                 fail(iter, e)
                                 // A failed cold iteration leaves nothing for the warm ones to reuse.
                                 if (iter == 0) break
                             }
                         }
                     }
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     fail(0, e)
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             fail(0, e)
         } finally {
-            Log.i(TAG, benchDoneLine(ok.toUInt(), errors.toUInt()))
+            Log.i(TAG, if (rustUsable) benchDoneLine(ok.toUInt(), errors.toUInt()) else "NOIR_DONE {\"ok\":$ok,\"errors\":$errors}")
             wakeLock.release()
         }
         assertEquals(0, errors)

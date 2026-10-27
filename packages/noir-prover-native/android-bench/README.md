@@ -46,12 +46,12 @@ scripts/verify-device-proof.sh ./out   # non-zero when rejected; the manifest's 
 
 ## Notes
 
-Cold iterations include a verification-key derivation, as the app does on every cold start:
-`load_ms` covers it and `vk_ms` reports it on its own.
+Cold iterations include a verification-key derivation. The app derives it once, on first launch,
+and caches it in AsyncStorage: `load_ms` covers it and `vk_ms` reports it on its own.
 
 `srs_ms` and `vk_ms` each include reading and parsing `circuit.json`, because `init_srs` and
 `credential_verification_key` each do, as in production. `load_ms` is their sum, which is what the
-app pays on a cold start. The circuit's hash and size are read once before the clock starts, as an
+app pays on its first launch; later cold starts skip the VK and pay about `srs_ms`. The circuit's hash and size are read once before the clock starts, as an
 app already knows them, and the file is dropped from the page cache again before `init_srs`.
 Warm `prove_ms` includes re-reading `circuit.json`, because `prove_credential_blocking` does.
 
