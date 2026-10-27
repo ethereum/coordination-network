@@ -62,6 +62,26 @@ describe("createNativeProofGenerator", () => {
         expect(proof.publicInputs).toEqual(["0x01", "0x02"])
     })
 
+    it("decodes a proof the prover returns without a 0x prefix", async () => {
+        const { module } = fakeModule()
+        const generator = createNativeProofGenerator({
+            loadModule: async () => ({
+                ...module,
+                async proveCredential() {
+                    return { proof: "deadbeef", publicInputs: [] }
+                }
+            }),
+            abi,
+            circuitHash: "1468",
+            circuitPath: "c.json",
+            srsPath: "g1.dat"
+        })
+
+        const proof = await generator.generateProof(inputs)
+
+        expect(Array.from(proof.proof)).toEqual([0xde, 0xad, 0xbe, 0xef])
+    })
+
     it("sets the SRS up once across proofs, because barretenberg's is process-global", async () => {
         const { module, calls } = fakeModule()
         const generator = createNativeProofGenerator({

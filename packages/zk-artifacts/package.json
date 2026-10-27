@@ -64,7 +64,8 @@
     "scripts": {
         "build": "rimraf dist types && rollup -c rollup.config.mjs",
         "sync": "tsx scripts/sync.ts",
-        "test": "tsx --test tests/*.test.ts"
+        "test": "tsx --test tests/*.test.ts",
+        "coverage": "tsx --test --experimental-test-coverage --test-coverage-include='src/**' --test-coverage-lines=98 --test-coverage-branches=95 --test-coverage-functions=98 tests/*.test.ts"
     },
     "devDependencies": {
         "@noir-lang/noir_js": "1.0.0-beta.22",
