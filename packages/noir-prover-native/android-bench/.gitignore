@@ -1,0 +1,6 @@
+build/
+.gradle/
+local.properties
+# Written by scripts/build-android-bench.sh
+app/src/main/jniLibs/
+app/src/main/kotlin/

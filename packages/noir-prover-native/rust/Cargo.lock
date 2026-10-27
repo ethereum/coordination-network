@@ -2318,6 +2318,7 @@ dependencies = [
  "futures",
  "futures-channel",
  "hex",
+ "libc",
  "mopro-ffi",
  "noir_rs",
  "serde",

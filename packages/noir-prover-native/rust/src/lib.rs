@@ -13,7 +13,12 @@ pub use error::MoproError;
 #[cfg(not(target_arch = "wasm32"))]
 mopro_ffi::app!();
 
+mod bench;
 mod credential;
+pub use bench::{
+    bench_current_rss_kb, bench_device_line, bench_done_line, bench_error_line, bench_iteration,
+    bench_mem_available_kb, bench_peak_rss_kb, bench_reset_peak_rss, BenchIteration,
+};
 pub use credential::{
     credential_verification_key, init_srs, prove_credential, prove_credential_blocking, CredentialProof,
 };
