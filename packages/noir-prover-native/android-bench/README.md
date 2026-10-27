@@ -15,14 +15,16 @@ library and bindings into the gitignored `app/src/main/{jniLibs,kotlin}`.
 
 ## Files on the device
 
-Nothing is bundled in the APKs. The runner pushes the circuit and SRS from the manifest, and writes
-the config, all under `/data/local/tmp/noir-bench/`. The app uid can read a world-readable file at a
-known path there, while the shell cannot create the app's own external files dir before the app has
-run (Android 11: `secure_mkdirs failed: Permission denied`).
+Nothing is bundled in the APKs. The runner pushes the circuit and SRS from the manifest and writes
+the config, all directly into the app's external files dir,
+`/sdcard/Android/data/org.coordination.nbench/files/`. That is the one place an untrusted_app can
+read what the shell wrote; `/data/local/tmp` is readable on permissive emulator images but not
+reliably on production builds, and a subdirectory made by `adb push` is shell-owned, mode 770.
 
-Verified on an API 30 arm64 emulator only, with `run-as` and a real instrumentation run. API 31 to 36
-are not checked; if SELinux refuses the read on a newer release, the test fails at `readText()` with a
-permission error rather than producing a wrong number.
+The shell cannot create that dir before the app has run (`secure_mkdirs failed: Permission denied`).
+After installing, the runner does `adb shell mkdir -p <dir>`. If that fails, it runs
+`am start -W -n org.coordination.nbench/.MainActivity` and then `am force-stop org.coordination.nbench`
+before pushing: `MainActivity.onCreate` calls `getExternalFilesDir(null)`, which creates the dir.
 
 Cold iterations time a verification-key derivation, which the contract's "no keygen on the device"
 rule does not mention; `load_ms` includes it, and `vk_ms` reports it on its own.

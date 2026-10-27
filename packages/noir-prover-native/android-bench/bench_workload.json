@@ -8,16 +8,16 @@
     "instrumentation": "org.coordination.nbench.test/androidx.test.runner.AndroidJUnitRunner",
     "marker_prefix": "NOIR_",
     "logcat_tags": ["NOIR"],
-    "config_path": "/data/local/tmp/noir-bench/bench_config.json",
+    "config_path": "/sdcard/Android/data/org.coordination.nbench/files/bench_config.json",
     "push": [
         {
             "src": "../../zk-artifacts/credential/circuit.json",
-            "dest": "/data/local/tmp/noir-bench/circuit.json",
+            "dest": "/sdcard/Android/data/org.coordination.nbench/files/circuit.json",
             "sha256": "984c2fb3f5de19c4f964e483e66639919474655d45ca22ddca50f5f25a2e32aa"
         },
         {
             "src": "../assets/g1-131073.dat",
-            "dest": "/data/local/tmp/noir-bench/g1-131073.dat",
+            "dest": "/sdcard/Android/data/org.coordination.nbench/files/g1-131073.dat",
             "sha256": "e97e6b2621d3ce99ec3c15e6362b7aaef6bd550b83e241a905a259380ec186a9"
         }
     ],

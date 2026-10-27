@@ -17,25 +17,24 @@ import uniffi.mopro.benchIteration
 
 private const val TAG = "NOIR"
 
-// Pushed by the host runner; see bench_workload.json. World-readable files under /data/local/tmp
-// are readable by the app uid, and unlike the app's external files dir the shell can create this
-// directory before the app has ever run.
-private const val DIR = "/data/local/tmp/noir-bench"
-private const val CONFIG = "$DIR/bench_config.json"
-private const val CIRCUIT = "$DIR/circuit.json"
-private const val SRS = "$DIR/g1-131073.dat"
+// The runner pushes the config, circuit and SRS into the app's external files dir, the one place
+// an untrusted_app can read what the shell wrote; see README.md.
+private const val CONFIG = "bench_config.json"
+private const val CIRCUIT = "circuit.json"
+private const val SRS = "g1-131073.dat"
 
 @RunWith(AndroidJUnit4::class)
 class BenchTest {
     @Test
     fun bench() {
-        val config = JSONObject(java.io.File(CONFIG).readText())
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val dir = context.getExternalFilesDir(null)!!
+        val config = JSONObject(java.io.File(dir, CONFIG).readText())
         val steps = config.getJSONArray("steps")
         val warmIters = config.getInt("warm_iters")
         val cooldownMs = config.getLong("cooldown_ms")
         val lowMemory = config.optBoolean("low_memory_mode", false)
 
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
         val wakeLock = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "noir-bench:run")
         wakeLock.acquire()
@@ -55,7 +54,12 @@ class BenchTest {
                 for (iter in 0..warmIters) {
                     if (iter > 0) Thread.sleep(cooldownMs)
                     try {
-                        val done = benchIteration(iter.toUInt(), CIRCUIT, SRS, lowMemory)
+                        val done = benchIteration(
+                            iter.toUInt(),
+                            java.io.File(dir, CIRCUIT).path,
+                            java.io.File(dir, SRS).path,
+                            lowMemory,
+                        )
                         Log.i(TAG, done.iterLine)
                         done.sizesLine?.let { Log.i(TAG, it) }
                         ok++
