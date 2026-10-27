@@ -29,6 +29,8 @@ class BenchTest {
     fun bench() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val dir = context.getExternalFilesDir(null)!!
+        // The host pulls out/ after the run and verifies the proof on a desktop.
+        val out = java.io.File(dir, "out").also { it.mkdirs() }
         val config = JSONObject(java.io.File(dir, CONFIG).readText())
         val steps = config.getJSONArray("steps")
         val warmIters = config.getInt("warm_iters")
@@ -59,6 +61,7 @@ class BenchTest {
                             java.io.File(dir, CIRCUIT).path,
                             java.io.File(dir, SRS).path,
                             lowMemory,
+                            java.io.File(out, "prove.proof").path,
                         )
                         Log.i(TAG, done.iterLine)
                         done.sizesLine?.let { Log.i(TAG, it) }

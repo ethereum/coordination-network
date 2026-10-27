@@ -2,7 +2,9 @@
  * Cross-checks a proof this crate produced against the SDK verifier the member server runs.
  * A native prover is only useful if `verifyZkPresentationProof` accepts its output unchanged.
  *
- *   node_modules/.bin/tsx packages/noir-prover-native/scripts/verify-native-proof.ts
+ *   node_modules/.bin/tsx packages/noir-prover-native/scripts/verify-native-proof.ts [proof.json]
+ *
+ * Without an argument it checks the proof `cargo test` wrote to rust/target/native-proof.json.
  */
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
@@ -22,7 +24,7 @@ async function main() {
     const circuit = (await getCredentialCircuit()) as ZkCredentialCircuit
     const raw = read(resolve(here, "rust/tests/credential-expected.json"))
     const expected: ExpectedZkPresentation = { ...raw, challenge: fromHex(raw.challenge) }
-    const document = read(resolve(here, "rust/target/native-proof.json"))
+    const document = read(process.argv[2] ?? resolve(here, "rust/target/native-proof.json"))
 
     const proof: ZkPresentationProof = { proof: fromHex(document.proof), publicInputs: document.publicInputs }
     const started = Date.now()

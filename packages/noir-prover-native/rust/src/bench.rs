@@ -339,6 +339,10 @@ fn proof_bytes(hex: &str) -> u64 {
 /// `prove_ms` is the app's own call, `prove_credential_blocking`, which re-reads `circuit_path`
 /// on every proof, so a warm `prove_ms` includes that parse.
 ///
+/// A non-empty `proof_out_path` gets the proof as JSON, `{"proof", "publicInputs"}`, the shape
+/// `scripts/verify-native-proof.ts` reads, so a desktop can verify what the device proved. It is
+/// written after the timed region and replaced by every success.
+///
 /// Runs on a 64 MiB stack thread, which barretenberg needs, and blocks until it finishes.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn bench_iteration(
@@ -346,11 +350,12 @@ pub fn bench_iteration(
     circuit_path: String,
     srs_path: String,
     low_memory_mode: bool,
+    proof_out_path: String,
 ) -> Result<BenchIteration, MoproError> {
     std::thread::Builder::new()
         .name("noir-bench".to_string())
         .stack_size(64 << 20)
-        .spawn(move || run_iteration(iter, &circuit_path, &srs_path, low_memory_mode))
+        .spawn(move || run_iteration(iter, &circuit_path, &srs_path, low_memory_mode, &proof_out_path))
         .map_err(|e| MoproError::NoirError(format!("cannot start the bench thread: {e}")))?
         .join()
         .map_err(|_| MoproError::NoirError("the bench thread panicked".to_string()))?
@@ -361,6 +366,7 @@ fn run_iteration(
     circuit_path: &str,
     srs_path: &str,
     low_memory_mode: bool,
+    proof_out_path: &str,
 ) -> Result<BenchIteration, MoproError> {
     let mem_available_kb_before = bench_mem_available_kb();
     let rss_per_step = bench_reset_peak_rss();
@@ -421,6 +427,11 @@ fn run_iteration(
         low_memory_mode,
         load_parts,
     };
+    if !proof_out_path.is_empty() {
+        let document = json!({ "proof": proof.proof, "publicInputs": proof.public_inputs });
+        std::fs::write(proof_out_path, document.to_string())
+            .map_err(|e| MoproError::NoirError(format!("cannot write {proof_out_path}: {e}")))?;
+    }
     let proof_len = proof_bytes(&proof.proof);
     Ok(BenchIteration {
         iter_line: iter_line(&times),

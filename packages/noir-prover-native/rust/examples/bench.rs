@@ -8,6 +8,7 @@ use noir_prover_native::{bench_device_line, bench_done_line, bench_error_line, b
 
 const CIRCUIT: &str = "../../zk-artifacts/credential/circuit.json";
 const SRS: &str = "../assets/g1-131073.dat";
+const PROOF_OUT: &str = "target/bench-proof.json";
 
 fn main() {
     let mut args = std::env::args().skip(1);
@@ -18,7 +19,7 @@ fn main() {
 
     let (mut ok, mut errors) = (0, 0);
     for iter in 0..=warm_iters {
-        match bench_iteration(iter, CIRCUIT.to_string(), SRS.to_string(), low_memory_mode) {
+        match bench_iteration(iter, CIRCUIT.to_string(), SRS.to_string(), low_memory_mode, PROOF_OUT.to_string()) {
             Ok(done) => {
                 println!("{}", done.iter_line);
                 if let Some(sizes) = done.sizes_line {

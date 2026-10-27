@@ -5,6 +5,7 @@
         "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
     ],
     "package": "org.coordination.nbench",
+    "launch_activity": "org.coordination.nbench/.MainActivity",
     "instrumentation": "org.coordination.nbench.test/androidx.test.runner.AndroidJUnitRunner",
     "marker_prefix": "NOIR_",
     "logcat_tags": ["NOIR"],
