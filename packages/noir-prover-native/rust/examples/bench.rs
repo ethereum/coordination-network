@@ -1,6 +1,6 @@
 //! macOS counterpart of the Android bench: prints the same `NOIR_*` markers to stdout.
 //!
-//!   cargo run --release --example bench -- [warm_iters] [low_memory]
+//!   cargo run --release --features bench --example bench -- [warm_iters] [low_memory]
 //!
 //! `ru_maxrss` cannot be reset, so every ITER line here carries `"rss_per_step": false`.
 
@@ -26,10 +26,18 @@ fn main() {
                     println!("{sizes}");
                 }
                 ok += 1;
+                if let Some(line) = done.write_error_line {
+                    println!("{line}");
+                    errors += 1;
+                }
             }
             Err(e) => {
                 println!("{}", bench_error_line("prove".to_string(), iter, e.to_string()));
                 errors += 1;
+                // A failed cold iteration leaves nothing for the warm ones to reuse.
+                if iter == 0 {
+                    break;
+                }
             }
         }
     }

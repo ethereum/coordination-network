@@ -152,7 +152,7 @@ fn split_proof(flat: &[u8]) -> Result<CredentialProof, MoproError> {
     })
 }
 
-fn circuit_json(circuit_path: &str) -> Result<serde_json::Value, MoproError> {
+pub(crate) fn circuit_json(circuit_path: &str) -> Result<serde_json::Value, MoproError> {
     let text = std::fs::read_to_string(circuit_path)
         .map_err(|e| MoproError::NoirError(format!("cannot read {circuit_path}: {e}")))?;
     serde_json::from_str(&text)

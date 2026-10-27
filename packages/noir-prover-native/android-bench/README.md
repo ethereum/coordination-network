@@ -10,7 +10,9 @@ through `bench_workload.json`.
   generated Kotlin bindings. Iteration 0 is cold: it loads the SRS and circuit, derives the
   verification key, then proves.
 
-Build with `scripts/build-android-bench.sh`. It builds the library with `mopro build` in a scratch
+Build with `scripts/build-android-bench.sh`, the only build that enables the crate's `bench` cargo
+feature (`rust/src/bench.rs` and its `bench_*` exports). `scripts/build-android.sh` and a plain
+`cargo build` do not contain them. It builds the library with `mopro build` in a scratch
 copy of `rust/` (`$NOIR_BENCH_SCRATCH`), refuses a library that imports `std::__1`, and drops the
 library and bindings into the gitignored `app/src/main/{jniLibs,kotlin}`.
 
@@ -45,5 +47,12 @@ scripts/verify-device-proof.sh ./out   # non-zero when rejected; the manifest's 
 ## Notes
 
 Cold iterations include a verification-key derivation, as the app does on every cold start:
-`load_ms` covers it and `vk_ms` reports it on its own. Warm `prove_ms` includes re-reading
-`circuit.json`, because the app's `prove_credential_blocking` does.
+`load_ms` covers it and `vk_ms` reports it on its own.
+
+`srs_ms` and `vk_ms` each include reading and parsing `circuit.json`, because `init_srs` and
+`credential_verification_key` each do, as in production. `load_ms` is their sum, which is what the
+app pays on a cold start. The circuit's hash and size are read once before the clock starts, as an
+app already knows them, and the file is dropped from the page cache again before `init_srs`.
+Warm `prove_ms` includes re-reading `circuit.json`, because `prove_credential_blocking` does.
+
+A failed write of `out/prove.proof` keeps the iteration: its ITER line prints, then a `NOIR_ERROR`.

@@ -27,6 +27,11 @@ rsync -a --delete \
     --exclude target --exclude build --exclude 'MoproReactNativeBindings' --exclude 'MoproAndroidBindings' \
     "$PKG/rust/" "$SCRATCH/rust/"
 
+# mopro cannot pass cargo features, so the scratch copy, which is rebuilt from rust/ every run,
+# turns the bench on by default. rust/ itself keeps it off.
+sed -i.bak 's/^default = \["uniffi"\]/default = ["uniffi", "bench"]/' "$SCRATCH/rust/Cargo.toml"
+grep -q '^default = \["uniffi", "bench"\]' "$SCRATCH/rust/Cargo.toml" || { echo "could not enable the bench feature in the scratch Cargo.toml" >&2; exit 1; }
+
 # `mopro build` exits 0 even when it fails, so only trust a library it just wrote.
 rm -rf "$SCRATCH/rust/MoproAndroidBindings"
 (cd "$SCRATCH/rust" && mopro build --mode release --platforms android --architectures "$TRIPLE" --no-auto-update)
@@ -36,8 +41,14 @@ SO="$SCRATCH/rust/MoproAndroidBindings/jniLibs/arm64-v8a/libnoir_prover_native.s
 
 # Same check as package-android-libs.sh: barretenberg is built against Zig's libc++ (std::__1), and
 # the NDK's is std::__ndk1, so a std::__1 import means a relink dlopen cannot load.
-imports="$("$NM" -D --undefined-only "$SO" | grep -c 'St3__1' || true)"
+# `nm_output` is its own assignment so a failing `nm` stops the script; only `grep -c`, which exits 1
+# on zero matches (the success case), gets `|| true`.
+nm_output="$("$NM" -D --undefined-only "$SO")"
+imports="$(printf '%s\n' "$nm_output" | grep -c 'St3__1' || true)"
 [ "$imports" -eq 0 ] || { echo "$SO imports std::__1 ($imports symbols)" >&2; exit 1; }
+
+defined="$("$NM" -D --defined-only "$SO")"
+printf '%s\n' "$defined" | grep -q 'func_bench_iteration' || { echo "$SO has no bench exports; the bench feature did not apply" >&2; exit 1; }
 
 rm -rf "$BENCH/app/src/main/jniLibs" "$BENCH/app/src/main/kotlin"
 mkdir -p "$BENCH/app/src/main/jniLibs" "$BENCH/app/src/main/kotlin"

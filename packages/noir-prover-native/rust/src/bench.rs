@@ -7,6 +7,7 @@ use std::time::Instant;
 
 use serde_json::{json, Value};
 
+use crate::credential::circuit_json;
 use crate::{credential_verification_key, init_srs, prove_credential_blocking, MoproError};
 
 /// The runner drops anything longer than this, so a builder never emits it.
@@ -31,6 +32,9 @@ static LOADED: Mutex<Option<Loaded>> = Mutex::new(None);
 pub struct BenchIteration {
     pub iter_line: String,
     pub sizes_line: Option<String>,
+    /// Set when the proof succeeded but `proof_out_path` could not be written: the timed proof
+    /// stands, and the caller logs this line after the others.
+    pub write_error_line: Option<String>,
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -280,8 +284,9 @@ struct IterTimes {
     mem_available_kb_before: u64,
     rss_per_step: bool,
     low_memory_mode: bool,
-    /// `(srs_ms, circuit_ms, vk_ms)`, cold only.
-    load_parts: Option<(u64, u64, u64)>,
+    /// `(srs_ms, vk_ms)`, cold only. Each includes the circuit read and parse its production call
+    /// does on its own.
+    load_parts: Option<(u64, u64)>,
 }
 
 fn iter_line(t: &IterTimes) -> String {
@@ -300,9 +305,8 @@ fn iter_line(t: &IterTimes) -> String {
     if !t.rss_per_step {
         body["rss_per_step"] = json!(false);
     }
-    if let Some((srs, circuit, vk)) = t.load_parts {
+    if let Some((srs, vk)) = t.load_parts {
         body["srs_ms"] = json!(srs);
-        body["circuit_ms"] = json!(circuit);
         body["vk_ms"] = json!(vk);
     }
     marker("ITER", body)
@@ -321,10 +325,20 @@ fn sizes_line(proof: u64, circuit: u64, srs: u64, vk: u64) -> String {
     )
 }
 
-/// `error` is cut to leave room for the rest of the line.
+/// `step` is capped, and `error` is cut after JSON escaping, so the line always fits: a quote or a
+/// control character costs up to six output bytes, and this is the one builder fed arbitrary text.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn bench_error_line(step: String, iter: u32, error: String) -> String {
-    marker("ERROR", json!({ "step": step, "iter": iter, "error": truncate(&error, 500) }))
+    let step = truncate(&step, 64);
+    let mut error = truncate(&error, MAX_LINE_BYTES);
+    loop {
+        let line = format!("NOIR_ERROR {}", json!({ "step": step, "iter": iter, "error": error }));
+        if line.len() < MAX_LINE_BYTES {
+            return line;
+        }
+        // Every dropped byte removes at least one output byte, so this converges.
+        error = truncate(error, error.len().saturating_sub(line.len() - MAX_LINE_BYTES + 1));
+    }
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
@@ -391,7 +405,9 @@ pub fn bench_iteration(
         .spawn(move || run_iteration(iter, &circuit_path, &srs_path, low_memory_mode, &proof_out_path))
         .map_err(|e| MoproError::NoirError(format!("cannot start the bench thread: {e}")))?
         .join()
-        .map_err(|_| MoproError::NoirError("the bench thread panicked".to_string()))?
+        // `.cargo/config.toml` builds std with panic_abort, so a panic ends the process before this
+        // join can see it.
+        .expect("panic=abort: a panicking bench thread never reaches join")
 }
 
 fn run_iteration(
@@ -401,6 +417,20 @@ fn run_iteration(
     low_memory_mode: bool,
     proof_out_path: &str,
 ) -> Result<BenchIteration, MoproError> {
+    // An app knows its circuit's hash and size without reading the file, so this read is not part of
+    // the cold load. It is dropped from the page cache again so `init_srs` still reads from storage.
+    let known = if iter == 0 {
+        let circuit = circuit_json(circuit_path)?;
+        let hash = circuit["hash"].as_str().unwrap_or_default().to_string();
+        let bytes = std::fs::metadata(circuit_path)
+            .map_err(|e| MoproError::NoirError(format!("cannot stat {circuit_path}: {e}")))?
+            .len();
+        drop_page_cache(std::path::Path::new(circuit_path));
+        Some((hash, bytes))
+    } else {
+        None
+    };
+
     let mem_available_kb_before = bench_mem_available_kb();
     let rss_per_step = bench_reset_peak_rss();
     let base_rss_kb = bench_current_rss_kb();
@@ -410,17 +440,10 @@ fn run_iteration(
     let mut load_parts = None;
     let mut load_ms = 0;
     let mut sizes = None;
+    // Poisoned only by a panic while locked, which aborts the process first.
     let mut loaded = LOADED.lock().unwrap();
 
-    if cold {
-        let t = Instant::now();
-        let text = std::fs::read_to_string(circuit_path)
-            .map_err(|e| MoproError::NoirError(format!("cannot read {circuit_path}: {e}")))?;
-        let circuit: Value = serde_json::from_str(&text)
-            .map_err(|e| MoproError::NoirError(format!("{circuit_path} is not valid JSON: {e}")))?;
-        let hash = circuit["hash"].as_str().unwrap_or_default().to_string();
-        let circuit_ms = ms(t);
-
+    if let Some((hash, circuit_bytes)) = known {
         let t = Instant::now();
         init_srs(circuit_path.to_string(), srs_path.to_string(), hash)?;
         let srs_ms = ms(t);
@@ -432,9 +455,9 @@ fn run_iteration(
         let srs_bytes = std::fs::metadata(srs_path)
             .map_err(|e| MoproError::NoirError(format!("cannot stat {srs_path}: {e}")))?
             .len();
-        sizes = Some((text.len() as u64, srs_bytes, vk.len() as u64));
+        sizes = Some((circuit_bytes, srs_bytes, vk.len() as u64));
         load_ms = ms(started);
-        load_parts = Some((srs_ms, circuit_ms, vk_ms));
+        load_parts = Some((srs_ms, vk_ms));
         *loaded = Some(Loaded { vk });
     }
 
@@ -460,15 +483,19 @@ fn run_iteration(
         low_memory_mode,
         load_parts,
     };
-    if !proof_out_path.is_empty() {
-        let document = json!({ "proof": proof.proof, "publicInputs": proof.public_inputs });
-        std::fs::write(proof_out_path, document.to_string())
-            .map_err(|e| MoproError::NoirError(format!("cannot write {proof_out_path}: {e}")))?;
-    }
+    let write_error_line = (!proof_out_path.is_empty())
+        .then(|| {
+            let document = json!({ "proof": proof.proof, "publicInputs": proof.public_inputs });
+            std::fs::write(proof_out_path, document.to_string())
+                .err()
+                .map(|e| bench_error_line(STEP.to_string(), iter, format!("cannot write {proof_out_path}: {e}")))
+        })
+        .flatten();
     let proof_len = proof_bytes(&proof.proof);
     Ok(BenchIteration {
         iter_line: iter_line(&times),
         sizes_line: sizes.map(|(circuit, srs, vk)| sizes_line(proof_len, circuit, srs, vk)),
+        write_error_line,
     })
 }
 
@@ -535,7 +562,7 @@ mod tests {
             mem_available_kb_before: 2_000_000,
             rss_per_step,
             low_memory_mode: false,
-            load_parts: cold.then_some((190, 20, 690)),
+            load_parts: cold.then_some((190, 690)),
         }
     }
 
@@ -550,6 +577,7 @@ mod tests {
         }
         assert!(body.get("rss_per_step").is_none(), "only a failed reset is flagged");
         assert_eq!(body["srs_ms"], 190);
+        assert!(body.get("circuit_ms").is_none());
 
         let warm: Value =
             serde_json::from_str(iter_line(&times(false, false)).strip_prefix("NOIR_ITER ").unwrap()).unwrap();
@@ -578,6 +606,19 @@ mod tests {
         let body: Value = serde_json::from_str(line.strip_prefix("NOIR_ERROR ").unwrap()).unwrap();
         assert_eq!(body["iter"], 2);
         assert!(body["error"].as_str().unwrap().starts_with('é'));
+    }
+
+    #[test]
+    fn error_line_stays_under_the_limit_after_json_escaping() {
+        // Every one of these escapes to two or six bytes, so truncating before serializing overflows.
+        let nasty = "\"\\\n\t\u{1}\u{7f}é\"".repeat(300);
+        for step in ["prove", &nasty] {
+            let line = bench_error_line(step.to_string(), u32::MAX, nasty.clone());
+            assert!(line.len() < MAX_LINE_BYTES, "{} bytes", line.len());
+            let body: Value = serde_json::from_str(line.strip_prefix("NOIR_ERROR ").unwrap()).unwrap();
+            assert_eq!(body["iter"], u32::MAX);
+            assert!(nasty.starts_with(body["error"].as_str().unwrap()), "error keeps a prefix of the input");
+        }
     }
 
     #[test]

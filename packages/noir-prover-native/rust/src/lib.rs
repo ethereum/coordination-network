@@ -13,8 +13,11 @@ pub use error::MoproError;
 #[cfg(not(target_arch = "wasm32"))]
 mopro_ffi::app!();
 
+#[cfg(feature = "bench")]
 mod bench;
 mod credential;
+// The device bench stays out of the production library and its bindings.
+#[cfg(feature = "bench")]
 pub use bench::{
     bench_current_rss_kb, bench_device_line, bench_done_line, bench_error_line, bench_iteration,
     bench_mem_available_kb, bench_peak_rss_kb, bench_reset_peak_rss, bench_stage_file, BenchIteration,

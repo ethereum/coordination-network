@@ -38,3 +38,15 @@ fn a_cold_iteration_loads_and_a_warm_one_only_proves() {
     assert_eq!(iter["load_ms"], 0);
     assert!(warm.sizes_line.is_none());
 }
+
+#[test]
+#[serial_test::serial]
+fn an_unwritable_proof_path_keeps_the_timed_proof() {
+    let done = bench_iteration(0, CIRCUIT.to_string(), SRS.to_string(), false, "/no-such-dir/prove.proof".to_string())
+        .expect("the proof itself succeeded");
+    assert!(done.iter_line.starts_with("NOIR_ITER "));
+    assert!(done.sizes_line.is_some());
+    let error = body(&done.write_error_line.expect("the write failure is reported"), "NOIR_ERROR ");
+    assert_eq!(error["step"], "prove");
+    assert!(error["error"].as_str().unwrap().contains("/no-such-dir/prove.proof"));
+}
