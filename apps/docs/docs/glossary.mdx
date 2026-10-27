@@ -1,0 +1,72 @@
+---
+sidebar_position: 8
+description: The terms, standards and primitives the site and the specs use, each defined in a sentence or two.
+---
+
+# Glossary
+
+Definitions for the terms the site and the specs use without explaining them. The
+[self-sovereign user spec](../../../specs/01-self-sovereign-user.md#terminology) has the specs' own terminology table,
+and [Architecture](./architecture.mdx#component-names) maps each component's name on this site to its name in the specs
+and the code.
+
+## Network roles and components
+
+| Term                        | Definition                                                                                                                                                                                                                                         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Network member**          | An organisation admitted to the network by a majority of the existing members. It registers identities, issues and revokes credentials, and holds one seat in the governance Safe.                                                               |
+| **Self-sovereign user**     | A user who holds their own keys on their own device and authorises their own claims. Phase 1 serves this user.                                                                                                                                    |
+| **Delegated user**          | A user whose keys a network member holds on their behalf. Out of scope for Phase 1. Unrelated to an EIP-7702 delegated account.                                                                                                                  |
+| **User app**                | The wallet on the user's phone. It holds the device secret, keys and credentials, builds proofs, and answers member apps over deep links. The specs call it the User App.                                                                         |
+| **Network member app**      | The app each member builds and its users install. It holds no user keys and asks the user app for each signature or proof.                                                                                                                         |
+| **Member server**           | The member's backend, `apps/issuer-service` in this repository. It registers users on chain, issues and revokes credentials, and verifies presentations. The specs split it into the Network Member Server and the VC Issuer Service.           |
+| **Indexer**                 | A member backend service that scans stealth-address announcements with its users' viewing keys and reports the accounts addressed to them. Each member runs its own.                                                                              |
+| **Verifier**                | Any party that checks a presentation: it verifies the proof off chain, then checks the roots the proof outputs against the contracts.                                                                                                              |
+| **Governance Safe**         | The members' multisig. Each member holds one owner seat, and a majority admits or removes a member.                                                                                                                                                |
+| **Approved-issuer set**     | The on-chain set of members' credential signing keys. A presentation proves its credential was signed by a key in the set without saying which one.                                                                                                |
+| **Identity registry**       | The on-chain mapping from `networkId` to stealth meta-address, written only with a Semaphore proof from an approved member. The specs also call it the Identity Mapping.                                                                         |
+| **Revocation registry**     | The on-chain tree of revoked credentials' revocation commitments, one for every issuer, so checking it does not reveal which member issued a credential.                                                                                          |
+| **Paymaster**               | The ERC-4337 paymaster that pays gas for registrations, credential deliveries and revocations when the operation carries a Semaphore proof of membership.                                                                                         |
+| **Phase 1**                 | The current phase: self-sovereign identity, credentials, eligibility proofs and stealth addresses. Payments are future work. Earlier documents call it WS1.                                                                                       |
+
+## Identity and keys
+
+| Term                         | Definition                                                                                                                                                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Device secret**            | A random secret generated on the user's phone. It is the root of the user's identity and never leaves the device.                                                                                                           |
+| **`networkId`**              | The user's pseudonym: `keccak256(DOMAIN_NETWORK_ID ‖ pubKey)` over the account public key derived from the device secret. The same device secret gives the same `networkId` with every member, which is how members deduplicate. |
+| **Device key**               | The hardware P-256 key pair in the phone's secure element, one key for signing and one for key agreement. It cannot be exported. Also called the hardware P-256 device key.                                                 |
+| **Identity key**             | The user's Baby Jubjub key, rooted in the device key, which signs at presentation and carries the user's Semaphore commitment.                                                                                               |
+| **`holderKeyCommitment`**    | The Semaphore commitment of the user's identity key, signed into the credential. It binds the credential to that key without revealing it.                                                                                   |
+| **Spending and viewing keys** | The two secrets behind a stealth meta-address. The viewing key finds payments addressed to the user; the spending key controls them. Both are derived from the device secret.                                               |
+| **Stealth meta-address**     | The user's long-lived public handle that senders derive a fresh receiving address from for each payment (ERC-5564, ERC-6538). Shown as `st:eth:…`.                                                                          |
+| **Stealth address**          | A one-time address derived from a meta-address. Outside observers cannot link it to the meta-address or to other stealth addresses of the same user.                                                                         |
+
+## Credentials and proofs
+
+| Term                       | Definition                                                                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Credential**             | A member's signed approval, held in the user app. Its body has seven fields: programme, country, validity window, and the device, holder and revocation key commitments. It names neither the issuer nor the user. |
+| **Programme and country**  | The two policy fields a credential certifies and a verifier asks about. They are public in every presentation.                                                                                                    |
+| **Presentation**           | A zero-knowledge proof that the user holds a valid, unrevoked credential from an approved member for the requested programme and country, bound to the verifier's challenge and audience.                         |
+| **Challenge and audience** | The one-time value and the verifier identity a presentation is bound to, so it cannot be replayed to another verifier or session.                                                                                 |
+| **Revocation commitment**  | A per-credential value signed into the credential, whose secret stays on the phone. A member revokes by publishing it; a presentation proves it has not been published.                                          |
+| **Root**                   | The hash that summarises a Merkle tree. A presentation outputs the approved-issuer and revocation roots it proved against, and the verifier checks that the contracts still accept both.                         |
+
+## Standards and primitives
+
+| Term                 | Definition                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Semaphore**        | A zero-knowledge protocol for proving membership of a group without revealing which member you are. Here it proves a write came from an approved member without saying which one. See the [Semaphore docs](https://docs.semaphore.pse.dev/). |
+| **ERC-5564**         | The Ethereum standard for stealth addresses and the announcements that let recipients find payments sent to them.                                                                                                 |
+| **ERC-6538**         | The Ethereum standard registry format for stealth meta-addresses.                                                                                                                                                 |
+| **ERC-4337**         | Ethereum account abstraction: user operations sent through a bundler, with a paymaster that can pay their gas.                                                                                                   |
+| **EIP-7702**         | Lets an ordinary Ethereum account delegate to smart-account code, so it can send sponsored user operations.                                                                                                      |
+| **EIP-712**          | The Ethereum standard for signing typed, structured data. The user's registration consent is an EIP-712 signature.                                                                                              |
+| **Baby Jubjub**      | An elliptic curve that is cheap to use inside zero-knowledge circuits on BN254. Members sign credentials with EdDSA over Baby Jubjub.                                                                            |
+| **EdDSA**            | The signature scheme members use to sign credentials and the user's identity and revocation keys use to sign at presentation.                                                                                    |
+| **Poseidon**         | A hash function designed to be cheap inside zero-knowledge circuits. Credential bodies and tree nodes are Poseidon hashes.                                                                                       |
+| **LeanIMT, LeanIMT+** | Lean incremental Merkle trees. The approved-issuer set is a LeanIMT; the revocation registry is a LeanIMT+, which also supports proofs that a value is absent.                                                  |
+| **Noir**             | The language the presentation circuit is written in.                                                                                                                                                             |
+| **UltraHonk**        | The Barretenberg proving system the presentation proof uses, over the BN254 curve. Proofs are verified off chain.                                                                                                |
+| **BN254**            | The elliptic curve Ethereum's precompiles support, and the field the circuit and its hashes work over.                                                                                                           |

@@ -9,15 +9,19 @@ Coordination Network lets organizations, called network members, approve people 
 
 This repository holds the apps, libraries and contracts behind it.
 
+:::warning[Status]
+Phase 1 runs on the Sepolia testnet and is not ready for production: the presentation circuit has no external audit yet, and the deep links between apps need [hardening](./security/privacy-and-security.mdx#secure-the-link-to-member-apps) before production.
+:::
+
 ## What it provides
 
 The network gives users and members five capabilities:
 
 - A user derives their identity from a secret on their own device. Its `networkId`, meta-address and public keys go to each member the user enrolls with.
 - Members issue credentials, backed by an on-chain approved-issuer set and on-chain revocation.
-- An on-chain registry maps each `networkId` to a stealth meta-address. A member registers the entry with an anonymous Semaphore proof, and the registry deduplicates identities across members.
+- An on-chain registry maps each `networkId` to a stealth meta-address. A member registers the entry with an anonymous [Semaphore](./glossary.mdx#standards-and-primitives) proof, and the registry deduplicates identities across members.
 - A user proves in zero knowledge that an approved member issued them a valid, unrevoked credential. The verifier learns neither which member issued it nor which credential was presented, though programme and country are public. Verification runs off chain and costs no gas.
-- Accounts use ERC-5564 stealth addresses, so outside observers cannot link a user's meta-address to their accounts.
+- Accounts use [ERC-5564](./glossary.mdx#standards-and-primitives) stealth addresses, so outside observers cannot link a user's meta-address to their accounts.
 
 Payments are a future capability the stack is designed to support; Phase 1 focuses on identity, credentials, and eligibility proofs.
 
@@ -33,4 +37,4 @@ For a visual overview of these responsibilities, read [Architecture](./architect
 
 ## Where to start
 
-To build on the network, start with the [integration guide](./guides/integration.mdx). Read the [repository README](https://github.com/ethereum/coordination-network#readme) for the apps, and the [specs](../../../specs/06-full-architecture-phase-1.md) for the design, starting with the full architecture. If you run a member, build a wallet or verify presentations, read the [privacy and security guide](./security/privacy-and-security.mdx) too.
+To build on the network, start with the [integration guide](./guides/integration.mdx). Read the [repository README](https://github.com/ethereum/coordination-network#readme) for the apps, and the [specs](../../../specs/06-full-architecture-phase-1.md) for the design, starting with the full architecture. If you run a member, build a wallet or verify presentations, read the [privacy and security guide](./security/privacy-and-security.mdx) too. The [glossary](./glossary.mdx) defines the terms the site and the specs use.
