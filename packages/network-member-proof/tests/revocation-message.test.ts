@@ -99,6 +99,12 @@ describe("the revocation message", () => {
             revocationMessage(REGISTRY, { action: RevocationAction.RevokeMany, revocationCommitments: [] })
         ).toThrow("a batch binds at least one commitment")
     })
+
+    it("refuses an action the registry does not know", () => {
+        const unknown = { action: 99, revocationCommitment: COMMITMENT_A } as unknown as RevocationUpdate
+
+        expect(() => revocationMessage(REGISTRY, unknown)).toThrow("unknown revocation action")
+    })
 })
 
 describe("generating a revocation proof", () => {
