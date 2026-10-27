@@ -93,6 +93,16 @@ html {
     font-size: 0.875rem;
 }
 
+.navbar__search-input {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    transition: outline-color 0.2s ease-out;
+}
+
+.navbar__search-input:hover {
+    outline-color: var(--search-local-input-active-border-color, var(--ifm-color-primary));
+}
+
 .menu {
     padding: 1.5rem 1rem;
 }
