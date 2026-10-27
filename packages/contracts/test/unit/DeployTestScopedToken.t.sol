@@ -16,4 +16,13 @@ contract DeployTestScopedTokenUnitTest is CanonicalDependencies {
             vm.computeCreate2Address(deployTestScopedTokenScript.SALT(), keccak256(type(TestScopedToken).creationCode))
         );
     }
+
+    function test_deployTestScopedToken_reRunReturnsTheDeployedToken() public {
+        DeployTestScopedToken deployTestScopedTokenScript = new DeployTestScopedToken();
+        TestScopedToken deployedToken = deployTestScopedTokenScript.deployTestScopedToken();
+
+        TestScopedToken tokenFromReRun = deployTestScopedTokenScript.deployTestScopedToken();
+
+        assertEq(address(tokenFromReRun), address(deployedToken));
+    }
 }

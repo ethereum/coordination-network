@@ -15,7 +15,7 @@
         "fmt": "forge fmt",
         "fmt:check": "forge fmt --check",
         "lint": "forge lint --deny notes",
-        "coverage": "forge coverage --report lcov --report summary --exclude-tests --match-path 'test/{unit/*,integration/DeployScripts.t.sol}'",
+        "coverage": "forge coverage --report lcov --report summary --exclude-tests --no-match-coverage 'src/test/' --match-path 'test/{unit/*,integration/DeployScripts.t.sol}'",
         "deploy:sepolia": "forge script script/DeployAll.s.sol --rpc-url sepolia --broadcast --verify --verifier etherscan",
         "deploy:mainnet": "forge script script/DeployAll.s.sol --rpc-url mainnet --broadcast --verify --verifier etherscan",
         "deployAndConfigureAll:sepolia": "env $(node script/generateNetworkMember.ts) forge script script/DeployAndConfigureAll.s.sol --rpc-url sepolia --broadcast --verify --verifier etherscan",
