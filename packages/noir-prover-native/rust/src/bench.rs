@@ -185,6 +185,39 @@ fn android_prop(_name: &str) -> String {
     String::new()
 }
 
+/// Drops `path` from the page cache. A failure only leaves the file cached, so it is ignored.
+#[cfg(any(target_os = "linux", target_os = "android"))]
+fn drop_page_cache(path: &std::path::Path) {
+    use std::os::fd::AsRawFd;
+    if let Ok(f) = std::fs::File::open(path) {
+        // SAFETY: the fd is valid for the call; offset 0 and length 0 mean the whole file.
+        unsafe { libc::posix_fadvise(f.as_raw_fd(), 0, 0, libc::POSIX_FADV_DONTNEED) };
+    }
+}
+
+#[cfg(not(any(target_os = "linux", target_os = "android")))]
+fn drop_page_cache(_path: &std::path::Path) {}
+
+/// Copies `src` to `dest` (creating parent directories), flushes it and drops both from the page
+/// cache, so the next load reads from storage rather than RAM. Returns the bytes copied. Pushed
+/// files sit on emulated external storage while an app keeps its keys in private storage, so the
+/// bench stages them there, untimed, before the cold iteration. Ported from OpenAC's `stage_file`.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn bench_stage_file(src: String, dest: String) -> Result<u64, MoproError> {
+    let io = |what: &str, path: &str, e: std::io::Error| MoproError::NoirError(format!("{what} {path}: {e}"));
+    let dest_path = std::path::Path::new(&dest);
+    if let Some(parent) = dest_path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| io("cannot create the directory of", &dest, e))?;
+    }
+    let mut input = std::fs::File::open(&src).map_err(|e| io("cannot open", &src, e))?;
+    let mut output = std::fs::File::create(dest_path).map_err(|e| io("cannot create", &dest, e))?;
+    let bytes = std::io::copy(&mut input, &mut output).map_err(|e| io("cannot copy to", &dest, e))?;
+    output.sync_all().map_err(|e| io("cannot flush", &dest, e))?;
+    drop_page_cache(std::path::Path::new(&src));
+    drop_page_cache(dest_path);
+    Ok(bytes)
+}
+
 // ---------------------------------------------------------------------------------------------
 // Marker lines
 // ---------------------------------------------------------------------------------------------
@@ -557,6 +590,42 @@ mod tests {
         let device = device_line(&"m".repeat(60), &"m".repeat(60), "s", "s", "34", 1, 1, &vec![Some(2_800_000); 8], 8);
         assert!(device.len() < MAX_LINE_BYTES, "{} bytes", device.len());
         assert!(iter_line(&times(true, false)).len() < MAX_LINE_BYTES);
+    }
+
+    fn scratch_dir(name: &str) -> std::path::PathBuf {
+        let dir = std::env::temp_dir().join(format!("noir-bench-{name}-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    #[test]
+    fn stage_file_copies_and_creates_parents() {
+        let dir = scratch_dir("stage");
+        let src = dir.join("src.bin");
+        std::fs::write(&src, vec![7u8; 4096]).unwrap();
+        let dest = dir.join("a/b/dest.bin");
+        let n = bench_stage_file(src.to_string_lossy().into(), dest.to_string_lossy().into()).unwrap();
+        assert_eq!(n, 4096);
+        assert_eq!(std::fs::read(&dest).unwrap(), vec![7u8; 4096]);
+    }
+
+    #[test]
+    fn stage_file_overwrites_a_longer_existing_file() {
+        let dir = scratch_dir("overwrite");
+        let src = dir.join("src.bin");
+        let dest = dir.join("dest.bin");
+        std::fs::write(&dest, vec![1u8; 9000]).unwrap();
+        std::fs::write(&src, b"new").unwrap();
+        bench_stage_file(src.to_string_lossy().into(), dest.to_string_lossy().into()).unwrap();
+        assert_eq!(std::fs::read(&dest).unwrap(), b"new");
+    }
+
+    #[test]
+    fn stage_file_reports_a_missing_source() {
+        let dir = scratch_dir("missing");
+        let error = bench_stage_file("/nonexistent/src.bin".into(), dir.join("never.bin").to_string_lossy().into())
+            .unwrap_err();
+        assert!(format!("{error}").contains("cannot open /nonexistent/src.bin"), "got: {error}");
     }
 
     #[test]

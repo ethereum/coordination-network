@@ -5,33 +5,42 @@
         "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
     ],
     "package": "org.coordination.nbench",
-    "launch_activity": "org.coordination.nbench/.MainActivity",
     "instrumentation": "org.coordination.nbench.test/androidx.test.runner.AndroidJUnitRunner",
     "marker_prefix": "NOIR_",
     "logcat_tags": ["NOIR"],
-    "config_path": "/sdcard/Android/data/org.coordination.nbench/files/bench_config.json",
+    "config_path": "/sdcard/zkbench/org.coordination.nbench/bench_config.json",
     "push": [
         {
             "src": "../../zk-artifacts/credential/circuit.json",
-            "dest": "/sdcard/Android/data/org.coordination.nbench/files/circuit.json",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/circuit.json",
             "sha256": "984c2fb3f5de19c4f964e483e66639919474655d45ca22ddca50f5f25a2e32aa"
         },
         {
             "src": "../assets/g1-131073.dat",
-            "dest": "/sdcard/Android/data/org.coordination.nbench/files/g1-131073.dat",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/g1-131073.dat",
             "sha256": "e97e6b2621d3ce99ec3c15e6362b7aaef6bd550b83e241a905a259380ec186a9"
         }
     ],
     "runs": [
         {
             "name": "noir-credential",
-            "config": { "steps": ["prove"], "warm_iters": 5, "cooldown_ms": 10000 },
+            "config": {
+                "steps": ["prove"],
+                "warm_iters": 5,
+                "cooldown_ms": 10000
+            },
             "timeout_s": 600
         },
         {
             "name": "noir-credential-lowmem",
-            "config": { "steps": ["prove"], "warm_iters": 5, "cooldown_ms": 10000, "low_memory_mode": true },
+            "config": {
+                "steps": ["prove"],
+                "warm_iters": 5,
+                "cooldown_ms": 10000,
+                "low_memory_mode": true
+            },
             "timeout_s": 900
         }
-    ]
+    ],
+    "verify": ["../scripts/verify-device-proof.sh", "{out_dir}"]
 }

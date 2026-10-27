@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 # Verifies a proof pulled from the device against the SDK verifier and the committed circuit.
+# Takes the pulled out/ directory, as the runner passes it, or the proof file itself.
 #
-#   adb pull /sdcard/Android/data/org.coordination.nbench/files/out ./out
-#   scripts/verify-device-proof.sh out/prove.proof
+#   adb pull /sdcard/zkbench/org.coordination.nbench/out ./out
+#   scripts/verify-device-proof.sh ./out
 #
-# Exits non-zero when the proof is rejected.
+# Exits non-zero when the proof is missing or rejected.
 set -euo pipefail
 
-[ $# -eq 1 ] || { echo "usage: $0 <prove.proof>" >&2; exit 2; }
-PROOF="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+[ $# -eq 1 ] || { echo "usage: $0 <out dir | prove.proof>" >&2; exit 2; }
+TARGET="$1"
+[ -d "$TARGET" ] && TARGET="$TARGET/prove.proof"
+[ -f "$TARGET" ] || { echo "no proof at $TARGET" >&2; exit 1; }
+PROOF="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 
 cd "$ROOT"

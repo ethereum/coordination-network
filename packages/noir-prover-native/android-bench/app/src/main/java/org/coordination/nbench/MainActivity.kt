@@ -9,8 +9,6 @@ import android.widget.TextView
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Creates /sdcard/Android/data/<package>/files, which the shell cannot do itself.
-        getExternalFilesDir(null)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(TextView(this).apply { text = "noir bench" })
     }
