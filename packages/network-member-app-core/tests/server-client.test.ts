@@ -245,6 +245,16 @@ describe("createMemberServerClient.closePresentationRequest", () => {
             code: "NOT_FOUND"
         })
     })
+
+    it("falls back to REQUEST_FAILED on an unmapped status", async () => {
+        const { fetch } = createFakeFetch({ "/v1/presentation-requests/req/close": { status: 500 } })
+        const server = createMemberServerClient({ baseUrl, fetch })
+
+        await expect(server.closePresentationRequest("req", "NO_CREDENTIAL")).rejects.toMatchObject({
+            code: "REQUEST_FAILED",
+            status: 500
+        })
+    })
 })
 
 describe("createMemberServerClient.getVerification", () => {
@@ -660,5 +670,35 @@ describe("cross-device presentation status", () => {
             const server = createMemberServerClient({ baseUrl, fetch })
             await expect(server.getPresentationStatus("req")).rejects.toThrow()
         }
+    })
+})
+
+describe("createMemberServerClient status fallbacks", () => {
+    it.each<
+        [
+            method: "getPresentationStatus" | "cancelPresentationRequest" | "getVerification" | "getMembership",
+            status: number,
+            code: string
+        ]
+    >([
+        ["getPresentationStatus", 401, "UNAUTHORIZED"],
+        ["getPresentationStatus", 404, "NOT_FOUND"],
+        ["getPresentationStatus", 410, "NOT_FOUND"],
+        ["getPresentationStatus", 500, "REQUEST_FAILED"],
+        ["getVerification", 500, "REQUEST_FAILED"],
+        ["getMembership", 401, "UNAUTHORIZED"],
+        ["getMembership", 500, "REQUEST_FAILED"],
+        ["cancelPresentationRequest", 404, "REQUEST_FAILED"]
+    ])("%s maps a %i without a server code to %s", async (method, status, code) => {
+        const { fetch } = createFakeFetch({
+            "/v1/presentation-requests/req": { status },
+            "/v1/presentation-requests/req/cancel": { status },
+            "/v1/verifications/req": { status },
+            "/v1/membership": { status }
+        })
+        const server = createMemberServerClient({ baseUrl, fetch })
+        const call = method === "getMembership" ? server.getMembership() : server[method]("req")
+
+        await expect(call).rejects.toMatchObject({ code, status })
     })
 })

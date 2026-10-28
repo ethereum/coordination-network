@@ -221,6 +221,31 @@ describe("verify", () => {
         })
     })
 
+    it("reports a failed outcome with stage presentation.create when the link throws something other than a LinkError", async () => {
+        const closePresentationRequest = jest.fn(async () => ({ verificationId: "unused" }))
+        const { client } = createFakeLinkClient({
+            "presentation.create": async () => {
+                throw Object.assign(new Error("wallet crashed"), { code: "NO_CREDENTIAL" })
+            }
+        })
+        const ctx = buildContext({
+            link: client,
+            server: createFakeServer({
+                createPresentationRequest: async () => presentationRequest,
+                closePresentationRequest
+            })
+        })
+
+        const outcome = await verify(ctx, scope)
+
+        expect(outcome).toEqual({
+            status: "failed",
+            stage: "presentation.create",
+            error: { message: "wallet crashed" }
+        })
+        expect(closePresentationRequest).not.toHaveBeenCalled()
+    })
+
     it("reports a failed outcome with stage verifications when the record can't be read back", async () => {
         const ctx = buildContext({
             server: createFakeServer({
