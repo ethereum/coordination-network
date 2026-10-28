@@ -195,6 +195,26 @@ describe("Safe transactions", () => {
         it("refuses an empty batch", () => {
             expect(() => buildSafeTransactionData([], SAFE, 0)).toThrow("at least one call")
         })
+
+        it("refuses to batch for a Safe version with no published MultiSendCallOnly", () => {
+            // The override skips the address lookup, so the ABI lookup is what has to refuse.
+            const unknown = {
+                ...SAFE,
+                safeVersion: "9.9.9",
+                multiSend: getAddress("0x3333333333333333333333333333333333333333")
+            } as unknown as SafeContext
+
+            expect(() =>
+                buildSafeTransactionData(
+                    [
+                        { to: CONTRACTS.registry, value: "0", data: "0x1234" },
+                        { to: CONTRACTS.governance, value: "0", data: "0x5678" }
+                    ],
+                    unknown,
+                    0
+                )
+            ).toThrow("No MultiSendCallOnly deployment for Safe 9.9.9")
+        })
     })
 
     describe("resolveMultiSend", () => {
