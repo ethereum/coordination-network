@@ -214,4 +214,15 @@ describe("normalizeEcdhSharedSecret", () => {
     it("throws InvalidEcdhSecretError directly for a bad input", () => {
         expect(() => normalizeEcdhSharedSecret(new Uint8Array(31))).toThrow(InvalidEcdhSecretError)
     })
+
+    it("rethrows a failure that is not an invalid-secret error unchanged", () => {
+        const failure = new Error("length unreadable")
+        class Unreadable extends Uint8Array {
+            override get length(): number {
+                throw failure
+            }
+        }
+
+        expect(() => normalizeEcdhSharedSecret(new Unreadable(32))).toThrow(failure)
+    })
 })
