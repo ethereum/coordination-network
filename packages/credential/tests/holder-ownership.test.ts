@@ -34,5 +34,6 @@ describe("holder key ownership", () => {
             })
         ).toBe(false)
         expect(() => signHolderKeyOwnership(new Uint8Array(31), nonce)).toThrow("identity seed must be 32 bytes")
+        expect(verifyHolderKeyOwnership({ ...ownership, nonce: new Uint8Array() })).toBe(false)
     })
 })

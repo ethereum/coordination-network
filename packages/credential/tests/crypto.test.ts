@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto"
+import { randomUuid } from "../src/crypto"
 import {
     base64urlToBytes,
     bytesToBase64url,
@@ -56,6 +57,16 @@ describe("RFC 7638 thumbprint", () => {
 })
 
 describe("LocalP256Signer", () => {
+    it("rejects a digest with the wrong width before signing", async () => {
+        const signer = LocalP256Signer.generate()
+        await expect(signer.signDigest(new Uint8Array(31))).rejects.toThrow("P-256 digest must be 32 bytes")
+    })
+
+    it("treats malformed runtime signature values as a verification failure", async () => {
+        const signer = LocalP256Signer.generate()
+        const key = jwkToPublicKeyBytes(await signer.getPublicKeyJwk())
+        expect(verifyP256(new Uint8Array(1), null as unknown as Uint8Array, key)).toBe(false)
+    })
     it("signs in message mode with a raw 64-byte signature that verifies", async () => {
         const signer = LocalP256Signer.generate()
         const message = new TextEncoder().encode("hello counter")
@@ -73,4 +84,8 @@ describe("LocalP256Signer", () => {
     it("verifyP256 returns false instead of throwing on garbage input", () => {
         expect(verifyP256(new Uint8Array(1), new Uint8Array(3), new Uint8Array(2))).toBe(false)
     })
+})
+
+it("generates RFC 4122 version 4 UUIDs with the required variant", () => {
+    expect(randomUuid()).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
 })

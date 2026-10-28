@@ -17,6 +17,7 @@ import {
     REVOCATION_SECRET_PREFIX,
     Wallet,
     WalletError,
+    SYNC_INTERVAL_MS,
     type ChainStateLoader,
     type ConsentRequest,
     type WalletChainState
@@ -102,6 +103,124 @@ const otherChain = (fixture: Fixture, approvedIssuers: ApprovedIssuerSet): Walle
     ...fixture.chain,
     approvedIssuers,
     approvedIssuerRoot: approvedIssuers.root
+})
+
+describe("wallet storage and dependency failures", () => {
+    let fixture: Fixture
+
+    beforeAll(async () => {
+        fixture = await issueForTest()
+    })
+
+    afterEach(() => {
+        jest.restoreAllMocks()
+        jest.useRealTimers()
+    })
+
+    it("does not request consent or prove when the separately stored revocation secret is missing", async () => {
+        const { wallet, store, harness, consent, proofGenerator } = await createWallet(fixture)
+        await addFixtureCredential(wallet, fixture)
+        await store.delete(`${REVOCATION_SECRET_PREFIX}${CREDENTIAL_ID}`)
+
+        await expect(wallet.present(CREDENTIAL_ID, fixture.request, harness.load)).rejects.toMatchObject({
+            code: "NOT_FOUND",
+            message: expect.stringContaining("revocation secret")
+        })
+        expect(consent.seen).toEqual([])
+        expect(proofGenerator.inputs).toEqual([])
+    })
+
+    it("preserves a typed signer error without invoking the prover", async () => {
+        const failure = new WalletError("NOT_FOUND", "device key deleted")
+        const { wallet, harness, proofGenerator } = await createWallet(fixture)
+        await addFixtureCredential(wallet, fixture)
+        jest.spyOn(fixture.deviceSigner, "signDigest").mockRejectedValueOnce(failure)
+
+        await expect(wallet.present(CREDENTIAL_ID, fixture.request, harness.load)).rejects.toBe(failure)
+        expect(proofGenerator.inputs).toEqual([])
+    })
+
+    it("wraps an untyped signer failure without invoking the prover", async () => {
+        const { wallet, harness, proofGenerator } = await createWallet(fixture)
+        await addFixtureCredential(wallet, fixture)
+        jest.spyOn(fixture.deviceSigner, "signDigest").mockRejectedValueOnce("device disconnected")
+
+        await expect(wallet.present(CREDENTIAL_ID, fixture.request, harness.load)).rejects.toMatchObject({
+            code: "PRESENTATION_FAILED",
+            message: "failed to build presentation inputs",
+            cause: "device disconnected"
+        })
+        expect(proofGenerator.inputs).toEqual([])
+    })
+
+    it("wraps an untyped seed-provider failure without storing a credential or revocation secret", async () => {
+        const { wallet, store } = await createWallet(fixture, {
+            identitySeed: async () => {
+                throw "device disconnected"
+            }
+        })
+        await expect(addFixtureCredential(wallet, fixture)).rejects.toMatchObject({
+            code: "CREDENTIAL_INVALID",
+            message: "credential verification failed",
+            cause: "device disconnected"
+        })
+        expect(await store.list()).toEqual([])
+    })
+
+    it("maps an untyped chain-loader failure to CHAIN_STATE_UNAVAILABLE", async () => {
+        const { wallet } = await createWallet(fixture)
+        await addFixtureCredential(wallet, fixture)
+        await expect(
+            wallet.syncCredential(CREDENTIAL_ID, async () => {
+                throw "offline"
+            })
+        ).rejects.toMatchObject({ code: "CHAIN_STATE_UNAVAILABLE", message: "failed to load chain state" })
+    })
+
+    it("skips a credential deleted between listing and reading during synchronization", async () => {
+        const { wallet, store } = await createWallet(fixture)
+        await addFixtureCredential(wallet, fixture)
+        const list = store.list.bind(store)
+        jest.spyOn(store, "list").mockImplementationOnce(async () => {
+            const keys = await list()
+            await store.delete(`${CREDENTIAL_PREFIX}${CREDENTIAL_ID}`)
+            return keys
+        })
+        const write = jest.spyOn(store, "set")
+
+        await expect(wallet.syncRevocations()).resolves.toBeUndefined()
+        expect(write).not.toHaveBeenCalled()
+        expect(await wallet.getCredential(CREDENTIAL_ID)).toBeNull()
+    })
+
+    it("uses memory storage, the system clock and the default polling interval when options are omitted", async () => {
+        jest.useFakeTimers()
+        jest.setSystemTime(VALID_AT * 1000)
+        const load = jest.fn().mockResolvedValue(fixture.chain)
+        const wallet = new Wallet({
+            identitySeed: fixture.identitySeed,
+            deviceSigner: fixture.deviceSigner,
+            consent: async () => true,
+            proofGenerator: new RecordingProofGenerator(),
+            loadChainState: load
+        })
+        await addFixtureCredential(wallet, fixture)
+        expect(await wallet.getCredential(CREDENTIAL_ID)).toMatchObject({ status: "valid", checkedAt: Date.now() })
+        load.mockRejectedValue(new Error("offline"))
+        const stop = wallet.startRevocationSync()
+        try {
+            await jest.advanceTimersByTimeAsync(SYNC_INTERVAL_MS - 1)
+            expect(load).toHaveBeenCalledTimes(1)
+            await jest.advanceTimersByTimeAsync(1)
+            expect(load).toHaveBeenCalledTimes(2)
+            await jest.advanceTimersByTimeAsync(SYNC_INTERVAL_MS)
+            expect(load).toHaveBeenCalledTimes(3)
+        } finally {
+            stop()
+        }
+        await jest.advanceTimersByTimeAsync(SYNC_INTERVAL_MS)
+        expect(load).toHaveBeenCalledTimes(3)
+    })
 })
 
 describe("key management", () => {
