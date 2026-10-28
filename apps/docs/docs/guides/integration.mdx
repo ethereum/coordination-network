@@ -101,6 +101,10 @@ Verify the proof, then accept it only if the chain still accepts the two roots i
 | user-app-core | user-app-link | network-member-app-core |
 +------------+-------------+                   +-------------+-------------+
              |                                               |
+| User app                 | <---------------> | Member app                |
+|   user-app-core          |   user-app-link   |   network-member-app-core |
++------------+-------------+                   +-------------+-------------+
+             |                                               |
              | challenge, credential, proof                  | HTTP, member token
              |                                               v
              |                                 +---------------------------+
@@ -112,8 +116,8 @@ Verify the proof, then accept it only if the chain still accepts the two roots i
                                                              | reads, sponsored writes
                                                              v
 +--------------------------+    scans          +---------------------------+
-| Indexer | ----------------> | Chain |
-| identity | announcements | registries, announcer |
+| Indexer                  | ----------------> | Chain                     |
+|   identity               |  announcements    |   registries, announcer   |
 +--------------------------+                   +---------------------------+
 ```
 
