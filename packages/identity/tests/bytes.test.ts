@@ -39,4 +39,8 @@ describe("bytesToBase64url", () => {
     it.each(["a", "ab=", "ab+", "ab/"])("rejects invalid encoding %p", (encoded) => {
         expect(() => base64urlToBytes(encoded)).toThrow("expected unpadded base64url")
     })
+
+    it.each(["AB", "AAB"])("rejects non-zero trailing bits in %p", (encoded) => {
+        expect(() => base64urlToBytes(encoded)).toThrow("non-canonical trailing bits")
+    })
 })
