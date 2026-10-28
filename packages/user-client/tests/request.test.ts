@@ -96,6 +96,14 @@ describe("buildRegistrationRequest + verifyRegistrationRequest", () => {
         expect(verifyRegistrationRequest(mutated, DOMAIN)).toBe(false)
     })
 
+    it.each([0, 26, 29, 0x44])("rejects a recovery byte of %i that is neither 27 nor 28", (v) => {
+        const signatureBytes = hexToBytes(request.signature)
+        signatureBytes[64] = v
+        const mutated: RegistrationRequest = { ...request, signature: bytesToHex(signatureBytes) }
+
+        expect(verifyRegistrationRequest(mutated, DOMAIN)).toBe(false)
+    })
+
     it("rejects a request signed with the spending key instead of the account key", () => {
         const digest = registerIdentityDigest(DOMAIN, keys.networkId, request.metaStealthAddress)
         const wrongSignature = signRegisterIdentity(keys.spending.privateKey, digest)
