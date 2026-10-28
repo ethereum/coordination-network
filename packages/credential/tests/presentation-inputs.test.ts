@@ -190,6 +190,53 @@ describe("ZK presentation inputs", () => {
         ).rejects.toThrow(/issuer proof is invalid/)
     })
 
+    it("rejects an issuer proof that names another root before signing", async () => {
+        const credential = parseZkCredential(fixture.credential)
+        const proof = fixture.chain.approvedIssuers.generateProof(credential.issuerPublicKey)
+        const signer = jest.spyOn(fixture.holder.deviceSigner, "signDigest")
+        try {
+            const approvedIssuers: IssuerSet = {
+                root: fixture.chain.approvedIssuers.root,
+                generateProof: () => ({ ...proof, root: proof.root + 1n })
+            }
+            await expect(
+                buildZkPresentationInputs(
+                    fixture.credential,
+                    fixture.holder,
+                    { ...fixture.chain, approvedIssuers },
+                    fixture.request
+                )
+            ).rejects.toThrow("issuer proof root does not match")
+            expect(signer).not.toHaveBeenCalled()
+        } finally {
+            signer.mockRestore()
+        }
+    })
+
+    it("rejects a revocation proof that names another root before signing", async () => {
+        const proof = fixture.chain.revocations.generateProof(BigInt(fixture.credential.body.revocationCommitment))
+        const generateProof = jest
+            .spyOn(fixture.chain.revocations, "generateProof")
+            .mockReturnValue({ ...proof, root: proof.root + 1n })
+        const signer = jest.spyOn(fixture.holder.deviceSigner, "signDigest")
+        try {
+            await expect(build()).rejects.toThrow("revocation proof root does not match")
+            expect(signer).not.toHaveBeenCalled()
+        } finally {
+            generateProof.mockRestore()
+            signer.mockRestore()
+        }
+    })
+
+    it("rejects a device signer returning a non-compact signature", async () => {
+        const signer = jest.spyOn(fixture.holder.deviceSigner, "signDigest").mockResolvedValue(new Uint8Array(65))
+        try {
+            await expect(build()).rejects.toThrow("device signer must return a compact 64-byte signature")
+        } finally {
+            signer.mockRestore()
+        }
+    })
+
     it("rejects an issuer proof whose depth exceeds the circuit maximum", async () => {
         const credential = parseZkCredential(fixture.credential)
         const validProof = fixture.chain.approvedIssuers.generateProof(credential.issuerPublicKey)
