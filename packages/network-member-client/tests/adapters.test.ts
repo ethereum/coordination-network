@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, jest } from "@jest/globals"
 import {
+    BaseError,
     ContractFunctionRevertedError,
     decodeFunctionData,
     encodeErrorResult,
@@ -222,6 +223,16 @@ describe("IdentityRegistryWriter", () => {
 
         await expect(writer.registerIdentity(NETWORK_ID, META_STEALTH_ADDRESS, PROOF)).rejects.toBe(transportError)
     })
+
+    it("rethrows a viem error that wraps no contract revert unchanged", async () => {
+        const viemError = new BaseError("rpc unavailable")
+        const writeContract = jest.fn<(call: ContractCall) => Promise<Hex>>(async () => {
+            throw viemError
+        })
+        const writer = new IdentityRegistryWriter(REGISTRY, walletClient(writeContract))
+
+        await expect(writer.registerIdentity(NETWORK_ID, META_STEALTH_ADDRESS, PROOF)).rejects.toBe(viemError)
+    })
 })
 
 /** Minimal shape of a decoded Semaphore group event, enough to drive the mirror's replay. */
@@ -366,6 +377,36 @@ describe("SemaphoreGroupClient", () => {
         expect(group.indexOf(C0)).toBe(0)
     })
 
+    it("orders logs from different blocks by block number, whatever order the queries return them in", async () => {
+        // MemberAdded (queried first) is the later block, so the merged list starts out reversed.
+        const { client } = semaphoreGroupClient(
+            {
+                MemberAdded: [
+                    {
+                        eventName: "MemberAdded",
+                        args: { groupId: GROUP_ID, index: 0n, identityCommitment: C0 },
+                        blockNumber: 6n,
+                        logIndex: 0
+                    }
+                ],
+                MemberRemoved: [
+                    {
+                        eventName: "MemberRemoved",
+                        args: { groupId: GROUP_ID, index: 0n, identityCommitment: C0 },
+                        blockNumber: 5n,
+                        logIndex: 0
+                    }
+                ]
+            },
+            new Group([C0]).root
+        )
+        const mirror = new SemaphoreGroupClient(SEMAPHORE_ADDRESS, GROUP_ID, client)
+
+        const group = await mirror.currentGroup()
+
+        expect(group.indexOf(C0)).toBe(0)
+    })
+
     it("throws GROUP_MIRROR_UNAVAILABLE when no membership events are found for the group", async () => {
         const { client } = semaphoreGroupClient({}, 0n)
         const mirror = new SemaphoreGroupClient(SEMAPHORE_ADDRESS, GROUP_ID, client)
@@ -475,6 +516,24 @@ describe("SemaphoreRegistrationProver", () => {
         await expect(proving).rejects.toMatchObject({ code: "MEMBER_NOT_IN_GROUP" })
         expect(currentGroup).toHaveBeenCalledTimes(1)
     })
+
+    it("proves against the group the mirror reports when the identity is a member", async () => {
+        const identity = new Identity("a-registering-member")
+        const group = new Group([identity.commitment, 2n])
+        const prover = new SemaphoreRegistrationProver({
+            identity,
+            groupMirror: { currentGroup: async () => group },
+            registry: REGISTRY
+        })
+
+        const proof = await prover.prove({
+            action: UpdateAction.Register,
+            networkId: NETWORK_ID,
+            metaStealthAddress: META_STEALTH_ADDRESS
+        })
+
+        expect(proof.merkleTreeRoot).toBe(BigInt(group.root))
+    }, 60_000)
 })
 
 describe("SemaphoreRevocationProver", () => {

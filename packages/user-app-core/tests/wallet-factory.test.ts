@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals"
+import { describe, expect, it, jest } from "@jest/globals"
 import { p256 } from "@noble/curves/nist.js"
 import { Identity } from "@semaphore-protocol/identity"
 import { deriveEddsaKeypair, eddsaPeerPointBytes } from "@coordination-network/identity"
@@ -115,5 +115,26 @@ describe("createIdentitySeedCache", () => {
         seeds.clear()
         await seeds.resolve()
         expect(deviceKey.calls).toEqual(["ecdh", "ecdh"])
+    })
+
+    it("keeps a newer attempt when an older cancelled one settles after clear", async () => {
+        const deviceKey = createTestDeviceKey()
+        let rejectFirst: (error: Error) => void = () => {}
+        const ecdh = jest.spyOn(deviceKey, "ecdh").mockImplementationOnce(
+            () =>
+                new Promise((_resolve, reject) => {
+                    rejectFirst = reject
+                })
+        )
+        const seeds = createIdentitySeedCache(deviceKey)
+
+        const stale = seeds.resolve()
+        seeds.clear()
+        const fresh = await seeds.resolve()
+        rejectFirst(new Error("late cancel"))
+        await expect(stale).rejects.toThrow("late cancel")
+
+        expect(await seeds.resolve()).toBe(fresh)
+        expect(ecdh).toHaveBeenCalledTimes(2)
     })
 })
