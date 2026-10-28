@@ -45,3 +45,27 @@ it("never encodes basic-auth credentials or query tokens in a public challenge",
         })
     ).toThrow()
 })
+
+describe("presentation QR endpoint shape", () => {
+    it.each([
+        [
+            "response url without the verify path",
+            {
+                responseUrl: "https://member.example",
+                issuersUrl: "https://member.example/v1/issuers",
+                revocationsUrl: "https://member.example/v1/revocations/snapshot"
+            }
+        ],
+        ["issuers url on another path", { issuersUrl: "https://member.example/v1/other" }],
+        ["revocations url on another path", { revocationsUrl: "https://member.example/v1/other" }]
+    ])("rejects %s", (_name, override) => {
+        expect(() => encodePresentationQr({ ...value, params: { ...value.params, ...override } })).toThrow(
+            "Unsupported presentation endpoints"
+        )
+    })
+
+    it("rejects a challenge too large for a QR code", () => {
+        const params = { ...value.params, audience: "a".repeat(2000) }
+        expect(() => encodePresentationQr({ ...value, params })).toThrow("Presentation QR is too large")
+    })
+})
