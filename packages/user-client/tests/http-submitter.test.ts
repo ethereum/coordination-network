@@ -60,6 +60,56 @@ describe("createHttpRegistrationSubmitter", () => {
         expect((error as HttpSubmissionError).status).toBe(201)
     })
 
+    it("201 with a txHash of the wrong width: throws HttpSubmissionError(invalidResponse)", async () => {
+        const error = await catchError(mockFetch(201, { status: "submitted", txHash: `0x${"aa".repeat(31)}` }))
+
+        expect(error).toBeInstanceOf(HttpSubmissionError)
+        expect((error as HttpSubmissionError).reason).toBe("invalidResponse")
+        expect((error as HttpSubmissionError).status).toBe(201)
+    })
+
+    it("a response that is not JSON: throws HttpSubmissionError(invalidResponse) with the status and cause", async () => {
+        const parseError = new SyntaxError("Unexpected token <")
+        const fetchImpl = jest.fn<typeof fetch>(
+            async () =>
+                ({
+                    status: 502,
+                    json: async () => {
+                        throw parseError
+                    }
+                }) as unknown as Response
+        )
+
+        const error = await catchError(fetchImpl)
+
+        expect(error).toBeInstanceOf(HttpSubmissionError)
+        expect(error).toMatchObject({ reason: "invalidResponse", status: 502, cause: parseError })
+        expect((error as Error).message).toBe("Registration submission returned 502 with no JSON body")
+    })
+
+    it("200 with a null body: throws HttpSubmissionError(alreadyRegistered) without the registry's entry", async () => {
+        const error = await catchError(mockFetch(200, null))
+
+        expect(error).toBeInstanceOf(HttpSubmissionError)
+        expect(error).toMatchObject({ reason: "alreadyRegistered", status: 200 })
+        expect((error as HttpSubmissionError).metaStealthAddress).toBeUndefined()
+        expect((error as HttpSubmissionError).matchesRequest).toBeUndefined()
+    })
+
+    it("uses the global fetch when none is injected", async () => {
+        const fetchMock = mockFetch(201, { status: "submitted", txHash: VALID_TX_HASH })
+        const original = globalThis.fetch
+        globalThis.fetch = fetchMock
+        try {
+            const submitter = createHttpRegistrationSubmitter({ url: "https://member.example" })
+
+            await expect(submitter.submit(request)).resolves.toEqual({ txHash: VALID_TX_HASH })
+        } finally {
+            globalThis.fetch = original
+        }
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+
     it("500: throws HttpSubmissionError(invalidResponse), not (unavailable) - only 503 and 429 map to unavailable", async () => {
         const error = await catchError(mockFetch(500, { code: "INTERNAL" }))
 
