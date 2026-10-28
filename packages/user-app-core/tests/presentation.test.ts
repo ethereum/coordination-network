@@ -561,6 +561,21 @@ describe("presentation.create and the chain's roots", () => {
         ).rejects.toMatchObject({ code: "NO_CREDENTIAL" })
         expect(read).not.toHaveBeenCalled()
     })
+
+    it("does not prove a credential that appears only after the chain was skipped", async () => {
+        const { harness, verifier } = await twoMembers()
+        const read = jest.fn(async () => verifier.chainRoots())
+        harness.roots.read = read
+        const list = harness.store.list.bind(harness.store)
+        // The first read finds nothing, so no chain state is taken; the second finds the credential.
+        // Each read lists twice: listIssuerEntries and the Wallet's listCredentialIds.
+        let calls = 0
+        jest.spyOn(harness.store, "list").mockImplementation(async () => (++calls <= 2 ? [] : list()))
+
+        await expect(present(harness, verifier)).rejects.toMatchObject({ code: "NO_CREDENTIAL" })
+        expect(calls).toBeGreaterThan(2)
+        expect(read).not.toHaveBeenCalled()
+    })
 })
 
 describe("presentation.create and the device keys", () => {
