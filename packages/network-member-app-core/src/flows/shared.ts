@@ -15,8 +15,7 @@ export function toFlowError(error: unknown): FlowError {
 }
 
 /** A hook that throws must never fail the flow it's attached to, or the onError report of an earlier failure. */
-async function safeInvoke(hook: (() => unknown) | undefined): Promise<void> {
-    if (!hook) return
+async function safeInvoke(hook: () => unknown): Promise<void> {
     try {
         await hook()
     } catch {

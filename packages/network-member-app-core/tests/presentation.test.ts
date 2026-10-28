@@ -1,4 +1,5 @@
 import { expect, it, jest } from "@jest/globals"
+import { decodePresentationQr } from "@coordination-network/user-app-link"
 import { createMemberFlows } from "../src/context"
 import { config, createFakeLinkClient, createFakePolicy, createFakeServer, verificationRecord } from "./support"
 
@@ -73,4 +74,64 @@ it("reports a throwing business hook without losing the server result or firing 
     await flows.presentationStatus(verification.requestId)
     expect(hooks.onVerified).toHaveBeenCalledTimes(1)
     expect(hooks.onError).toHaveBeenCalledTimes(1)
+})
+
+it("does not notify hooks for a status that is not completed", async () => {
+    const { flows, hooks, server } = setup()
+    server.getPresentationStatus = async () => ({ status: "pending" })
+    await expect(flows.presentationStatus("request")).resolves.toEqual({ status: "pending" })
+    expect(hooks.onVerified).not.toHaveBeenCalled()
+    expect(hooks.onError).not.toHaveBeenCalled()
+})
+
+it.each([200, 409] as const)("cancels a presentation request through the server (%s)", async (result) => {
+    const { flows, server } = setup()
+    const cancel = jest.fn<(requestId: string) => Promise<200 | 409>>(async () => result)
+    server.cancelPresentationRequest = cancel
+    await expect(flows.cancelPresentation("request")).resolves.toBe(result)
+    expect(cancel).toHaveBeenCalledWith("request")
+})
+
+it("lets a failed cancellation reach the caller", async () => {
+    const { flows, server } = setup()
+    server.cancelPresentationRequest = async () => {
+        throw new Error("offline")
+    }
+    await expect(flows.cancelPresentation("request")).rejects.toThrow("offline")
+})
+
+it("starts a presentation and encodes only the public challenge into the QR", async () => {
+    const { flows, server } = setup()
+    const record = {
+        requestId: "urn:uuid:req-1",
+        challenge: `0x${"9c".repeat(31)}` as const,
+        audience: "urn:cn:network:member-server",
+        currentTime: 1_700_000_000,
+        programme: "demo-programme",
+        country: "ZZZ",
+        expiresAt: 1_700_000_300
+    }
+    const create = jest.fn<(input: { programme: string; country: string }) => Promise<typeof record>>(
+        async () => record
+    )
+    server.createPresentationRequest = create
+
+    const challenge = await flows.startPresentation({ programme: "demo-programme", country: "ZZZ" })
+
+    expect(create).toHaveBeenCalledWith({ programme: "demo-programme", country: "ZZZ" })
+    expect(challenge).toMatchObject({ requestId: record.requestId, expiresAt: record.expiresAt })
+    expect(decodePresentationQr(challenge.qr)).toEqual({
+        expiresAt: record.expiresAt,
+        params: {
+            requestId: record.requestId,
+            challenge: record.challenge,
+            audience: record.audience,
+            currentTime: record.currentTime,
+            programme: record.programme,
+            country: record.country,
+            issuersUrl: "https://issuer.example/v1/issuers",
+            revocationsUrl: "https://issuer.example/v1/revocations/snapshot",
+            responseUrl: "https://issuer.example/v1/verify"
+        }
+    })
 })
