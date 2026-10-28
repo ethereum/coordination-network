@@ -93,29 +93,16 @@ const config: Config = {
     workerIdleMemoryLimit: "512MB",
     verbose: true,
     // ts-jest compiles `index.ts` files to getter functions. The getters count as untested code.
-    collectCoverageFrom: [
-        "packages/*/src/**/*.ts",
-        "apps/indexer/src/**/*.ts",
-        "!**/index.ts",
-        "!packages/zk-artifacts/src/**"
-    ],
+    collectCoverageFrom: ["packages/*/src/**/*.ts", "!**/index.ts", "!packages/zk-artifacts/src/**"],
     coverageDirectory: "./coverage",
-    // TODO: update these in later PRs as we add test coverage
+    // zk-artifacts runs under `tsx --test`, so its package.json repeats these.
     coverageThreshold: {
-        global: {},
-        "./apps/indexer/src/": { lines: 61, statements: 59, functions: 50, branches: 62 },
-        "./packages/credential/src/": { lines: 94, statements: 92, functions: 97, branches: 87 },
-        "./packages/identity/src/": { lines: 99, statements: 98, functions: 95, branches: 95 },
-        "./packages/issuer-set/src/": { lines: 99, statements: 99, functions: 100, branches: 97 },
-        "./packages/network-member-app-core/src/": { lines: 97, statements: 97, functions: 100, branches: 86 },
-        "./packages/network-member-client/src/": { lines: 99, statements: 99, functions: 100, branches: 95 },
-        "./packages/network-member-governance/src/": { lines: 100, statements: 98, functions: 100, branches: 97 },
-        "./packages/network-member-proof/src/": { lines: 100, statements: 100, functions: 100, branches: 100 },
-        "./packages/revocation-registry/src/": { lines: 100, statements: 100, functions: 100, branches: 100 },
-        "./packages/user-app-core/src/": { lines: 99, statements: 98, functions: 100, branches: 95 },
-        "./packages/user-app-link/src/": { lines: 100, statements: 100, functions: 100, branches: 100 },
-        "./packages/user-client/src/": { lines: 99, statements: 99, functions: 100, branches: 95 },
-        "./packages/wallet/src/": { lines: 99, statements: 98, functions: 97, branches: 87 }
+        global: {
+            branches: 95,
+            functions: 98,
+            lines: 98,
+            statements: 98
+        }
     }
 }
 
