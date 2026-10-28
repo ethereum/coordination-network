@@ -12,12 +12,35 @@ export const contentDirs = [
 
 export const privacyDisclosure = "packages/contracts/docs/privacy-disclosure.md"
 
-export type DocEntry = { label: string; file: string; children: string[] }
+export type DocEntry = { label: string; file: string; children: string[]; description?: string }
 
 const npmScope = "@coordination-network/"
 const packageChildren: Record<string, string[]> = {
     "packages/identity": ["packages/identity/DERIVATION.md"],
     "packages/contracts/src": ["packages/contracts/src/revocation/README.md"]
+}
+
+// One line per package for the /packages index cards, which otherwise cut the README's first paragraph short
+const packageDescriptions: Record<string, string> = {
+    account: "EIP-7702 accounts and Semaphore paymaster proofs for sponsored user operations",
+    circuits: "Noir presentation circuit",
+    contracts: "Solidity contracts: registries, governance, approved-issuer set and paymaster",
+    credential: "Issues credentials and builds and verifies zero-knowledge presentations",
+    "expo-identity-keystore": "Expo module for hardware-backed P-256 keys in the Android Keystore",
+    identity: "Derives networkId and the user's keys on device, plus stealth address helpers",
+    "issuer-set": "Approved-issuer tree and its membership proofs",
+    "network-member-app-core": "Member app flows: enrol, issue, verify, revoke and membership status",
+    "network-member-client": "Member server helpers: issue credentials and write to the registries",
+    "network-member-governance": "Safe transactions that admit or remove a network member",
+    "network-member-proof": "Semaphore proofs that authorise registry writes",
+    "noir-prover-ffi": "React Native binding with the prebuilt Android library",
+    "noir-prover-native": "Native prover for React Native",
+    "revocation-registry": "Revocation tree with membership and non-membership proofs",
+    "user-app-core": "User app engine: identity creation and the deep-link requests",
+    "user-app-link": "Deep-link protocol between the user app and member apps",
+    "user-client": "One-call onboarding: derive keys and build the signed registration request",
+    wallet: "Holder SDK: credential storage, revocation sync and consent-gated presentations",
+    "zk-artifacts": "Compiled credential circuit and its verification key"
 }
 
 // Like Yarn workspaces, skip folders without a package.json. The published contracts package is in src/, not the
@@ -34,13 +57,16 @@ export const packageEntries: DocEntry[] = packageDirs
     .flatMap((dir) => {
         const pkg = JSON.parse(readFileSync(path.join(repoRoot, dir, "package.json"), "utf8"))
 
+        const label = pkg.name.replace(npmScope, "")
+
         return pkg.private
             ? []
             : [
                   {
-                      label: pkg.name.replace(npmScope, ""),
+                      label,
                       file: `${dir}/README.md`,
-                      children: packageChildren[dir] ?? []
+                      children: packageChildren[dir] ?? [],
+                      description: packageDescriptions[label]
                   }
               ]
     })
@@ -57,6 +83,15 @@ export const importedFiles = [
     ...[...packageEntries, ...serviceEntries].flatMap(({ file, children }) => [file, ...children])
 ]
 export const importedPaths = new Set(importedFiles.map((file) => path.join(repoRoot, file)))
+
+const entryDescriptions = new Map(
+    packageEntries.flatMap(({ file, description }) => (description ? [[path.join(repoRoot, file), description]] : []))
+)
+
+// The index card description of an imported README, unless its front matter sets one
+export function docDescription(filePath: string, frontMatter: Record<string, unknown>): string | undefined {
+    return frontMatter.description === undefined ? entryDescriptions.get(filePath) : undefined
+}
 
 const stripNumberPrefix = (name: string) => name.replace(/^\d+\s*[-_.]+\s*(?=[^-_.\s])/, "")
 

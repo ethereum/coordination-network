@@ -4,6 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic"
 import type { Options as DocsOptions } from "@docusaurus/plugin-content-docs"
 import {
     type DocEntry,
+    docDescription,
     docSlug,
     importedFiles,
     packageEntries,
@@ -20,11 +21,12 @@ const darkCodeTheme = themes.oneDark
 // Doc ids follow the file path relative to the plugin root
 const docId = (file: string) => file.replace(/\.md$/, "")
 const docItem = (file: string) => ({ type: "doc" as const, id: docId(file) })
-const entryItem = ({ label, file, children }: DocEntry) =>
+const entryItem = ({ label, file, children, description }: DocEntry) =>
     children.length
         ? {
               type: "category" as const,
               label,
+              description,
               link: { type: "doc" as const, id: docId(file) },
               items: children.map(docItem)
           }
@@ -58,14 +60,28 @@ const config: Config = {
         parseFrontMatter: async (params) => {
             const result = await params.defaultParseFrontMatter(params)
             const slug = docSlug(params.filePath, result.frontMatter)
+            const description = docDescription(params.filePath, result.frontMatter)
 
             if (slug) result.frontMatter.slug = slug
+            if (description) result.frontMatter.description = description
 
             return result
         }
     },
 
-    themes: ["@docusaurus/theme-mermaid"],
+    themes: [
+        "@docusaurus/theme-mermaid",
+        [
+            "@easyops-cn/docusaurus-search-local",
+            {
+                hashed: true,
+                // Matches the docs plugin, which serves at the site root
+                docsRouteBasePath: "/",
+                indexBlog: false,
+                indexPages: false
+            }
+        ]
+    ],
 
     i18n: {
         defaultLocale: "en",
@@ -134,6 +150,25 @@ const config: Config = {
                 editUrl: ({ docPath }) => `https://github.com/ethereum/coordination-network/edit/main/${docPath}`,
                 beforeDefaultRemarkPlugins: [repoLinks]
             } satisfies DocsOptions
+        ],
+        [
+            // Writes llms.txt and llms-full.txt into the build, the machine-readable entry point agents look for
+            "docusaurus-plugin-llms",
+            {
+                docsDir: [
+                    { path: "docs", routeBasePath: "/", label: "Site" },
+                    { path: "../../specs", routeBasePath: "specs", label: "Specs" }
+                ],
+                // Order of the site pages in llms.txt: these four first, then every other page in the plugin's default order
+                includeOrder: [
+                    "docs/intro.mdx",
+                    "docs/architecture.mdx",
+                    "docs/guides/integration.mdx",
+                    "docs/glossary.mdx"
+                ],
+                excludeImports: true,
+                removeDuplicateHeadings: true
+            }
         ]
     ],
 

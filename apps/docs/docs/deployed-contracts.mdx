@@ -9,3 +9,23 @@ import DeployedContracts from "@site/src/components/DeployedContracts"
 Every network uses the canonical ERC-5564 Announcer at `0x55649E01B5Df198D18D95b5cc5051630cfD45564`.
 
 <DeployedContracts />
+
+## What each contract does
+
+The [contracts package](/packages/contracts/src) has the sources and the
+[Phase 1 full architecture](../../../specs/06-full-architecture-phase-1.md#2-components) describes each one in full.
+
+| Contract                       | Purpose                                                                                                           | Specified in                                                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IdentityRegistry`             | Maps each `networkId` to a stealth meta-address. Every write needs an anonymous proof from an approved member.    | [Full architecture, flow 2](../../../specs/06-full-architecture-phase-1.md#42-flow-2-network-id-to-wallet-resolution-on-chain-mapping-with-deduplication) |
+| `NetworkMemberRegistry`        | Each approved member's record, keys and governance signer, and the entry point for join requests.                 | [Full architecture, flow 3](../../../specs/06-full-architecture-phase-1.md#43-flow-3-network-member-admission-governance)                                 |
+| `NetworkMemberGroup`           | The Semaphore group of approved members, which registry and revocation writes prove membership of.                | [Full architecture, flow 3](../../../specs/06-full-architecture-phase-1.md#43-flow-3-network-member-admission-governance)                                 |
+| `NetworkMemberGovernance`      | The Safe module that admits and removes members by majority.                                                      | [Full architecture, flow 3](../../../specs/06-full-architecture-phase-1.md#43-flow-3-network-member-admission-governance)                                 |
+| `GovernanceSafe`               | The members' multisig, one owner seat per member, which owns the registry and the group.                          | [Full architecture, flow 3](../../../specs/06-full-architecture-phase-1.md#43-flow-3-network-member-admission-governance)                                 |
+| `ApprovedIssuerSet`            | The members' credential signing keys. A presentation proves its issuer is in the set without naming it.           | [VC issuance, approved-issuer root](../../../specs/03-vc-issuance.md#approved-issuer-root)                                                                |
+| `Revocation`                   | The revocation service that hosts the network's revocation registry.                                              | [Revocation](../../../specs/04-revocation.md#registry)                                                                                                    |
+| `CredentialRevocationRegistry` | One tree of revoked credentials, shared by all issuers. Verifiers check a presentation's root with `isValidRoot`. | [Revocation](../../../specs/04-revocation.md#registry)                                                                                                    |
+| `SemaphorePaymaster`           | Pays gas for user operations that carry a Semaphore membership proof.                                             | [Stealth addresses, gas sponsorship](../../../specs/05-stealth-addresses.md#gas-sponsorship)                                                              |
+
+The third-party contracts are standard deployments the network uses as they are: the ERC-4337 EntryPoint, the
+canonical ERC-5564 announcer, Semaphore, the Simple7702Account users delegate to, and Safe's MultiSendCallOnly.

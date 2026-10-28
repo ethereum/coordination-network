@@ -22,7 +22,7 @@ Three actors:
 flowchart LR
     Gov["Governance multisig"]
     NM["Issuing network member<br/>(issuer service + key service)"]
-    SSU["Self-sovereign user<br/>(network member app)"]
+    SSU["Self-sovereign user<br/>(user app)"]
     V["Verifying network member<br/>(verifier device)"]
     Chain["Configured chain state<br/>identity + approved issuers + revocation + circuit"]
 
@@ -40,8 +40,8 @@ flowchart LR
 
 Three pieces of software implement the flow:
 
-1. Network member app. Runs on the self-sovereign user's phone. Holds the device secret in the hardware keystore, derives the networkId, generates a P-256 device key inside the secure element, derives the Baby Jubjub holder key and revocation commitment, proves device and account possession and revocation-commitment ownership at issuance, binds the holder-key commitment, stores the credential, and builds the presentation proof.
-2. Issuer service. The network member's backend. Runs the approval check, verifies the issuance signatures, assembles the credential body, signs its Poseidon message with the member's Baby Jubjub EdDSA key, delivers the credential to the app, and keeps the issuance records listed below.
+1. User app (wallet). Runs on the self-sovereign user's phone and serves every network member app over deep links. Holds the device secret in the hardware keystore, derives the networkId, generates a P-256 device key inside the secure element, derives the Baby Jubjub holder key and revocation commitment, proves device and account possession and revocation-commitment ownership at issuance, binds the holder-key commitment, stores the credential, and builds the presentation proof.
+2. Issuer service, part of the network member's backend. Runs the approval check, verifies the issuance signatures, assembles the credential body, signs its Poseidon message with the member's Baby Jubjub EdDSA key, delivers the credential to the app, and keeps the issuance records listed below.
 3. VC SDK. One shared library used by all sides. It strictly parses the credential, constructs the signed message and circuit inputs, generates and verifies the proof, and binds the approved-issuer root and revocation root against configured chain state. The compiled circuit is supplied to it by the deployment and the verifying key is derived from that artifact, so both sides must be given the same current circuit.
 
 ## Credential format
