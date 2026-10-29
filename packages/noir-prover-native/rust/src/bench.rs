@@ -2,6 +2,7 @@
 //! marker lines the host runner scrapes from logcat. The Android app and `examples/bench.rs` both
 //! drive it, so the two print the same lines.
 
+use std::collections::BTreeMap;
 use std::sync::Mutex;
 use std::time::Instant;
 
@@ -13,18 +14,16 @@ use crate::{credential_verification_key, init_srs, prove_credential_blocking, Mo
 /// The runner drops anything longer than this, so a builder never emits it.
 const MAX_LINE_BYTES: usize = 900;
 
-const STEP: &str = "prove";
-
-/// Same 239 values `tests/credential.rs` proves with.
+/// Same 239 values `tests/credential.rs` proves with. A step with no `witness_path` proves these.
 const WITNESS: &str = include_str!("../tests/credential-witness.json");
 
 /// What iteration 0 loads, kept for the warm iterations. The SRS itself is process-global in
-/// barretenberg, so only the verification key lives here.
+/// barretenberg, so only the verification keys live here, one per step.
 struct Loaded {
-    vk: Vec<u8>,
+    vks: BTreeMap<String, Vec<u8>>,
 }
 
-static LOADED: Mutex<Option<Loaded>> = Mutex::new(None);
+static LOADED: Mutex<Loaded> = Mutex::new(Loaded { vks: BTreeMap::new() });
 
 /// One iteration's marker lines. `sizes` is set on the first success only.
 #[derive(Debug, Clone)]
@@ -287,7 +286,8 @@ fn device_line(
 }
 
 /// What one iteration measured. Cold iterations also carry the load breakdown.
-struct IterTimes {
+struct IterTimes<'a> {
+    step: &'a str,
     iter: u32,
     cold: bool,
     load_ms: u64,
@@ -303,9 +303,9 @@ struct IterTimes {
     load_parts: Option<(u64, u64)>,
 }
 
-fn iter_line(t: &IterTimes) -> String {
+fn iter_line(t: &IterTimes<'_>) -> String {
     let mut body = json!({
-        "step": STEP,
+        "step": t.step,
         "iter": t.iter,
         "phase": if t.cold { "cold" } else { "warm" },
         "load_ms": t.load_ms,
@@ -326,11 +326,11 @@ fn iter_line(t: &IterTimes) -> String {
     marker("ITER", body)
 }
 
-fn sizes_line(proof: u64, circuit: u64, srs: u64, vk: u64) -> String {
+fn sizes_line(step: &str, proof: u64, circuit: u64, srs: u64, vk: u64) -> String {
     marker(
         "SIZES",
         json!({
-            "step": STEP,
+            "step": step,
             "proof_bytes": proof,
             "circuit_bytes": circuit,
             "srs_bytes": srs,
@@ -388,14 +388,36 @@ fn witness() -> Vec<String> {
     serde_json::from_str(WITNESS).expect("witness fixture is a JSON array of strings")
 }
 
+/// The flat witness a step proves: the file at `path`. Only the credential step `prove` may leave
+/// `path` empty, which means the witness compiled into this crate.
+fn load_witness(step: &str, path: &str) -> Result<Vec<String>, MoproError> {
+    if path.is_empty() {
+        return if step == "prove" {
+            Ok(witness())
+        } else {
+            Err(MoproError::NoirError(format!("step {step} has no witness_path")))
+        };
+    }
+    let text = std::fs::read_to_string(path)
+        .map_err(|e| MoproError::NoirError(format!("cannot read the witness {path}: {e}")))?;
+    serde_json::from_str(&text)
+        .map_err(|e| MoproError::NoirError(format!("the witness {path} is not a JSON array of strings: {e}")))
+}
+
 fn proof_bytes(hex: &str) -> u64 {
     (hex.len().saturating_sub(2) / 2) as u64
 }
 
-/// Runs iteration `iter` of the credential step and returns its marker lines. Iteration 0 is cold:
+/// Runs iteration `iter` of `step` and returns its marker lines. Iteration 0 is cold:
 /// it reads the circuit, initializes the SRS from `srs_path`, derives the verification key and
 /// proves, all timed, with `load_ms` covering everything before the proof. Later iterations
 /// prove with the state iteration 0 left behind.
+///
+/// `witness_path` is a JSON array of strings, the circuit's inputs flattened in ABI order; empty
+/// means the credential witness compiled into this crate, for the step `prove` only. The SRS is
+/// process-global and first-call-wins, so a process runs one step per SRS: a later step that needs
+/// more points than the first loaded fails in `init_srs`, and one that needs fewer would report a
+/// cold iteration that never read the SRS.
 ///
 /// `prove_ms` is the app's own call, `prove_credential_blocking`, which re-reads `circuit_path`
 /// on every proof, so a warm `prove_ms` includes that parse.
@@ -408,15 +430,19 @@ fn proof_bytes(hex: &str) -> u64 {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn bench_iteration(
     iter: u32,
+    step: String,
     circuit_path: String,
     srs_path: String,
+    witness_path: String,
     low_memory_mode: bool,
     proof_out_path: String,
 ) -> Result<BenchIteration, MoproError> {
     std::thread::Builder::new()
         .name("noir-bench".to_string())
         .stack_size(64 << 20)
-        .spawn(move || run_iteration(iter, &circuit_path, &srs_path, low_memory_mode, &proof_out_path))
+        .spawn(move || {
+            run_iteration(iter, &step, &circuit_path, &srs_path, &witness_path, low_memory_mode, &proof_out_path)
+        })
         .map_err(|e| MoproError::NoirError(format!("cannot start the bench thread: {e}")))?
         .join()
         // Release builds unwind (`panic="unwind"`, per `cargo ndk rustc --release -- --print cfg`):
@@ -427,8 +453,10 @@ pub fn bench_iteration(
 
 fn run_iteration(
     iter: u32,
+    step: &str,
     circuit_path: &str,
     srs_path: &str,
+    witness_path: &str,
     low_memory_mode: bool,
     proof_out_path: &str,
 ) -> Result<BenchIteration, MoproError> {
@@ -446,6 +474,8 @@ fn run_iteration(
         None
     };
 
+    let witness = load_witness(step, witness_path)?;
+
     let mem_available_kb_before = bench_mem_available_kb();
     let rss_per_step = bench_reset_peak_rss();
     let base_rss_kb = bench_current_rss_kb();
@@ -460,32 +490,31 @@ fn run_iteration(
 
     if let Some((hash, circuit_bytes)) = known {
         let t = Instant::now();
-        init_srs(circuit_path.to_string(), srs_path.to_string(), hash)?;
+        let srs_points = init_srs(circuit_path.to_string(), srs_path.to_string(), hash)?;
         let srs_ms = ms(t);
 
         let t = Instant::now();
         let vk = credential_verification_key(circuit_path.to_string(), low_memory_mode)?;
         let vk_ms = ms(t);
 
-        let srs_bytes = std::fs::metadata(srs_path)
-            .map_err(|e| MoproError::NoirError(format!("cannot stat {srs_path}: {e}")))?
-            .len();
+        // Points actually loaded, which for a circuit smaller than its file is less than the file.
+        let srs_bytes = u64::from(srs_points) * 64;
         sizes = Some((circuit_bytes, srs_bytes, vk.len() as u64));
         load_ms = ms(started);
         load_parts = Some((srs_ms, vk_ms));
-        *loaded = Some(Loaded { vk });
+        loaded.vks.insert(step.to_string(), vk);
     }
 
-    let Some(state) = loaded.as_ref() else {
-        return Err(MoproError::NoirError(format!("iteration {iter} ran before iteration 0 loaded")));
+    let Some(vk) = loaded.vks.get(step) else {
+        return Err(MoproError::NoirError(format!("iteration {iter} of {step} ran before its iteration 0 loaded")));
     };
 
     let t = Instant::now();
-    let proof =
-        prove_credential_blocking(circuit_path.to_string(), witness(), state.vk.clone(), low_memory_mode)?;
+    let proof = prove_credential_blocking(circuit_path.to_string(), witness, vk.clone(), low_memory_mode)?;
     let prove_ms = ms(t);
 
     let times = IterTimes {
+        step,
         iter,
         cold,
         load_ms,
@@ -503,13 +532,13 @@ fn run_iteration(
             let document = json!({ "proof": proof.proof, "publicInputs": proof.public_inputs });
             std::fs::write(proof_out_path, document.to_string())
                 .err()
-                .map(|e| bench_error_line(STEP.to_string(), iter, format!("cannot write {proof_out_path}: {e}")))
+                .map(|e| bench_error_line(step.to_string(), iter, format!("cannot write {proof_out_path}: {e}")))
         })
         .flatten();
     let proof_len = proof_bytes(&proof.proof);
     Ok(BenchIteration {
         iter_line: iter_line(&times),
-        sizes_line: sizes.map(|(circuit, srs, vk)| sizes_line(proof_len, circuit, srs, vk)),
+        sizes_line: sizes.map(|(circuit, srs, vk)| sizes_line(step, proof_len, circuit, srs, vk)),
         write_error_line,
     })
 }
@@ -576,8 +605,9 @@ mod tests {
         assert_eq!(body["cpu_max_freq_khz"].as_array().unwrap().len(), MAX_CORES);
     }
 
-    fn times(cold: bool, rss_per_step: bool) -> IterTimes {
+    fn times(cold: bool, rss_per_step: bool) -> IterTimes<'static> {
         IterTimes {
+            step: "prove",
             iter: if cold { 0 } else { 3 },
             cold,
             load_ms: if cold { 900 } else { 0 },
@@ -614,9 +644,42 @@ mod tests {
     }
 
     #[test]
+    fn lines_carry_the_step_they_were_built_for() {
+        let t = IterTimes { step: "sha256", ..times(true, true) };
+        let body: Value = serde_json::from_str(iter_line(&t).strip_prefix("NOIR_ITER ").unwrap()).unwrap();
+        assert_eq!(body["step"], "sha256");
+        let sizes = sizes_line("ecdsa", 1, 2, 3, 4);
+        let body: Value = serde_json::from_str(sizes.strip_prefix("NOIR_SIZES ").unwrap()).unwrap();
+        assert_eq!(body["step"], "ecdsa");
+    }
+
+    #[test]
+    fn only_the_credential_step_may_omit_its_witness() {
+        assert_eq!(load_witness("prove", "").unwrap().len(), 239);
+        let error = load_witness("sha256", "").unwrap_err().to_string();
+        assert!(error.contains("step sha256 has no witness_path"), "got: {error}");
+    }
+
+    #[test]
+    fn a_witness_file_is_a_json_array_of_strings() {
+        let dir = scratch_dir("witness");
+        let good = dir.join("good.json");
+        std::fs::write(&good, r#"["1","2","3"]"#).unwrap();
+        assert_eq!(load_witness("sha256", good.to_str().unwrap()).unwrap(), vec!["1", "2", "3"]);
+
+        let numbers = dir.join("numbers.json");
+        std::fs::write(&numbers, "[1,2]").unwrap();
+        let error = load_witness("sha256", numbers.to_str().unwrap()).unwrap_err().to_string();
+        assert!(error.contains("not a JSON array of strings"), "got: {error}");
+
+        let error = load_witness("sha256", "/nonexistent/w.json").unwrap_err().to_string();
+        assert!(error.contains("cannot read the witness /nonexistent/w.json"), "got: {error}");
+    }
+
+    #[test]
     fn sizes_line_names_each_artifact() {
         let body: Value =
-            serde_json::from_str(sizes_line(14_000, 2_100_000, 8_400_000, 3_700).strip_prefix("NOIR_SIZES ").unwrap())
+            serde_json::from_str(sizes_line("prove", 14_000, 2_100_000, 8_400_000, 3_700).strip_prefix("NOIR_SIZES ").unwrap())
                 .unwrap();
         assert_eq!(body["proof_bytes"], 14_000);
         assert_eq!(body["circuit_bytes"], 2_100_000);

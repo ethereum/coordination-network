@@ -1,0 +1,74 @@
+{
+    "workload": "noir-primitives",
+    "apks": [
+        "app/build/outputs/apk/debug/app-debug.apk",
+        "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
+    ],
+    "package": "org.coordination.nbench",
+    "instrumentation": "org.coordination.nbench.test/androidx.test.runner.AndroidJUnitRunner",
+    "marker_prefix": "NOIR_",
+    "logcat_tags": ["NOIR"],
+    "config_path": "/sdcard/zkbench/org.coordination.nbench/bench_config.json",
+    "push": [
+        {
+            "src": "circuits/sha256.json",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/sha256.json",
+            "sha256": "31c70e45a892bddc6efc22f298eedf3d11d3ea160e5bcaa10f9b6511a988da76"
+        },
+        {
+            "src": "circuits/sha256-witness.json",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/sha256-witness.json",
+            "sha256": "f09da4489bf9a3265a6b9c66b71f8f063ae73536d9c79a76946e1786fb27cacb"
+        },
+        {
+            "src": "circuits/ecdsa.json",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/ecdsa.json",
+            "sha256": "0c8979532e771845316ef11eb8bc80dbb2e0f0704ef68a0ae5ec8795c1311dea"
+        },
+        {
+            "src": "circuits/ecdsa-witness.json",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/ecdsa-witness.json",
+            "sha256": "a3f8acef7d0e66d25df63f1d0d474adc6670f04492b832401c41d7f8beac94f3"
+        },
+        {
+            "src": "../assets/g1-262145.dat",
+            "dest": "/sdcard/zkbench/org.coordination.nbench/g1-262145.dat",
+            "sha256": "8f5cd75519c2e995fa47aa7ecd7b213b9ae13824bc4b0f15025a63acd8c139eb"
+        }
+    ],
+    "runs": [
+        {
+            "name": "noir-sha256",
+            "config": {
+                "steps": ["sha256"],
+                "warm_iters": 5,
+                "cooldown_ms": 10000,
+                "artifacts": {
+                    "sha256": {
+                        "circuit": "sha256.json",
+                        "srs": "g1-262145.dat",
+                        "witness": "sha256-witness.json"
+                    }
+                }
+            },
+            "timeout_s": 900
+        },
+        {
+            "name": "noir-ecdsa",
+            "config": {
+                "steps": ["ecdsa"],
+                "warm_iters": 5,
+                "cooldown_ms": 10000,
+                "artifacts": {
+                    "ecdsa": {
+                        "circuit": "ecdsa.json",
+                        "srs": "g1-262145.dat",
+                        "witness": "ecdsa-witness.json"
+                    }
+                }
+            },
+            "timeout_s": 900
+        }
+    ],
+    "verify": ["../scripts/verify-device-proof.sh", "{out_dir}"]
+}

@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
-# Fetches the G1 prefix of Aztec's structured reference string that the credential circuit needs.
+# Fetches the G1 prefix of Aztec's structured reference string that a circuit needs.
+#
+#   scripts/fetch-srs.sh [points]    131073 (default, the credential circuit), or 262145 for SHA-256
 #
 # barretenberg will range-request this itself when given no path, but it has no cache, so every
 # process start pays the download (23 s, measured). A local file costs 190 ms.
 set -euo pipefail
 
-# 110_573 gates -> dyadic 2^17 -> 131_073 G1 points at 64 bytes each.
-POINTS=131073
+# 110_573 gates -> dyadic 2^17 -> 131_073 G1 points at 64 bytes each. 2^18 + 1 = 262_145 covers
+# the SHA-256 circuit.
+POINTS="${1:-131073}"
+case "$POINTS" in
+    ''|*[!0-9]*) echo "usage: $0 [points]" >&2; exit 2 ;;
+esac
 BYTES=$((POINTS * 64))
 DEST="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/assets/g1-${POINTS}.dat"
 

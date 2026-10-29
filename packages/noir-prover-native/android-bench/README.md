@@ -16,6 +16,26 @@ feature (`rust/src/bench.rs` and its `bench_*` exports). `scripts/build-android.
 copy of `rust/` (`$NOIR_BENCH_SCRATCH`), refuses a library that imports `std::__1`, and drops the
 library and bindings into the gitignored `app/src/main/{jniLibs,kotlin}`.
 
+## Primitives
+
+`bench_workload_primitives.json` (workload `noir-primitives`) runs CSP's SHA-256 over 2 KB and ECDSA
+P-256 verify circuits through the same harness, as steps `sha256` and `ecdsa`. A step other than
+`prove` takes its files from the config's `artifacts` map, relative to the push directory:
+
+```json
+{
+    "steps": ["sha256"],
+    "artifacts": { "sha256": { "circuit": "sha256.json", "srs": "g1-262145.dat", "witness": "sha256-witness.json" } }
+}
+```
+
+`circuits/build.sh` compiles the two circuits with nargo beta.22 and writes the artifacts and the
+flat witnesses; SHA-256 proves a fixed message whose byte i is i mod 256. SHA-256 needs the larger
+SRS: `scripts/fetch-srs.sh 262145`. Barretenberg keeps the first SRS of a process, so a config with an
+`artifacts` entry runs one step per process and the test refuses more. `SIZES` reports `srs_bytes`
+as the points the circuit loaded times 64, not the size of the file. Proofs land in
+`out/<step>.proof`, and `scripts/verify-device-proof.sh` checks each one.
+
 ## Files on the device
 
 Nothing is bundled in the APKs. The runner pushes the circuit, the SRS and `bench_config.json` into
@@ -35,7 +55,7 @@ storage, where a production app keeps its keys.
 
 ## Proof out
 
-Every successful iteration overwrites `/sdcard/zkbench/org.coordination.nbench/out/prove.proof`, JSON
+Every successful iteration overwrites `/sdcard/zkbench/org.coordination.nbench/out/<step>.proof` (`prove.proof` for the credential step), JSON
 of `{"proof", "publicInputs"}`. Pull it and verify it against the SDK verifier and the committed
 circuit:
 

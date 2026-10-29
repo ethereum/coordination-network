@@ -19,6 +19,7 @@ import uniffi.mopro.benchIteration
 import uniffi.mopro.benchStageFile
 
 private const val TAG = "NOIR"
+// The credential step, and the only one a config without an `artifacts` entry can name.
 private const val STEP = "prove"
 
 // The runner pushes the config and inputs here and pulls out/ afterwards; the app needs all-files
@@ -29,6 +30,18 @@ private const val OUT = "$DIR/out"
 private const val CIRCUIT = "circuit.json"
 private const val SRS = "g1-131073.dat"
 
+// File names under DIR for one step. `witness` is empty for the credential step, which proves the
+// witness compiled into the library.
+private data class Artifacts(val circuit: String, val srs: String, val witness: String)
+
+// A step with an entry in the config's `artifacts` map uses it; `prove` without one keeps today's
+// constants. Any other step without an entry is unknown.
+private fun artifactsFor(config: JSONObject, step: String): Artifacts? {
+    val entry = config.optJSONObject("artifacts")?.optJSONObject(step)
+        ?: return if (step == STEP) Artifacts(CIRCUIT, SRS, "") else null
+    return Artifacts(entry.getString("circuit"), entry.getString("srs"), entry.optString("witness", ""))
+}
+
 @RunWith(AndroidJUnit4::class)
 class BenchTest {
     @Test
@@ -38,12 +51,14 @@ class BenchTest {
         // False once the first call into Rust throws, e.g. UnsatisfiedLinkError when the library
         // fails to load. From then on the marker lines are built here, so DONE still prints.
         var rustUsable = true
-        fun fail(iter: Int, e: Throwable) {
+        // What the failure handlers below name: "setup" until a step starts.
+        var current = "setup"
+        fun fail(step: String, iter: Int, e: Throwable) {
             errors++
             if (rustUsable) {
-                Log.e(TAG, benchErrorLine(STEP, iter.toUInt(), e.toString()))
+                Log.e(TAG, benchErrorLine(step, iter.toUInt(), e.toString()))
             } else {
-                val body = JSONObject().put("step", STEP).put("iter", iter).put("error", e.toString().take(120))
+                val body = JSONObject().put("step", step).put("iter", iter).put("error", e.toString().take(120))
                 Log.i(TAG, "NOIR_ERROR $body")
             }
         }
@@ -71,31 +86,55 @@ class BenchTest {
                     val warmIters = config.getInt("warm_iters")
                     val cooldownMs = config.getLong("cooldown_ms")
                     val lowMemory = config.optBoolean("low_memory_mode", false)
+                    // The SRS is first-call-wins in a process, so a second step would report a cold
+                    // iteration that never read it.
+                    val artifactSteps = config.optJSONObject("artifacts")
+                    check(
+                        steps.length() <= 1 ||
+                            (0 until steps.length()).none { artifactSteps?.has(steps.getString(it)) == true }
+                    ) { "a config with an artifacts entry runs one step per process" }
 
                     // The host pulls out/ after the run, and a proof left by an earlier run must not
                     // be mistaken for this one's.
                     val out = java.io.File(OUT)
                     check(out.isDirectory || out.mkdirs()) { "cannot create $OUT" }
-                    val proofFile = java.io.File(out, "prove.proof")
-                    check(!proofFile.exists() || proofFile.delete()) { "cannot delete $proofFile" }
+                    out.listFiles { f -> f.extension == "proof" }?.forEach {
+                        check(it.delete()) { "cannot delete $it" }
+                    }
 
                     // Untimed: the cold iteration then reads app-private storage, as a production app does.
-                    val staged = listOf(CIRCUIT, SRS).map { name ->
+                    fun stage(name: String): String {
                         val dest = java.io.File(context.filesDir, name).path
                         benchStageFile(java.io.File(DIR, name).path, dest)
-                        dest
+                        return dest
                     }
                     for (s in 0 until steps.length()) {
                         val step = steps.getString(s)
-                        if (step != STEP) {
-                            Log.e(TAG, benchErrorLine(step, 0u, "unknown step"))
-                            errors++
+                        current = step
+                        val proofFile = java.io.File(out, "$step.proof")
+                        val circuit: String
+                        val srs: String
+                        val witness: String
+                        try {
+                            val artifacts = artifactsFor(config, step)
+                            if (artifacts == null) {
+                                Log.e(TAG, benchErrorLine(step, 0u, "unknown step"))
+                                errors++
+                                continue
+                            }
+                            circuit = stage(artifacts.circuit)
+                            srs = stage(artifacts.srs)
+                            witness = if (artifacts.witness.isEmpty()) "" else stage(artifacts.witness)
+                        } catch (e: Throwable) {
+                            fail(step, 0, e)
                             continue
                         }
                         for (iter in 0..warmIters) {
                             if (iter > 0) Thread.sleep(cooldownMs)
                             try {
-                                val done = benchIteration(iter.toUInt(), staged[0], staged[1], lowMemory, proofFile.path)
+                                val done = benchIteration(
+                                    iter.toUInt(), step, circuit, srs, witness, lowMemory, proofFile.path
+                                )
                                 Log.i(TAG, done.iterLine)
                                 done.sizesLine?.let { Log.i(TAG, it) }
                                 ok++
@@ -105,18 +144,18 @@ class BenchTest {
                                     errors++
                                 }
                             } catch (e: Throwable) {
-                                fail(iter, e)
+                                fail(step, iter, e)
                                 // A failed cold iteration leaves nothing for the warm ones to reuse.
                                 if (iter == 0) break
                             }
                         }
                     }
                 } catch (e: Throwable) {
-                    fail(0, e)
+                    fail(current, 0, e)
                 }
             }
         } catch (e: Throwable) {
-            fail(0, e)
+            fail(current, 0, e)
         } finally {
             Log.i(TAG, if (rustUsable) benchDoneLine(ok.toUInt(), errors.toUInt()) else "NOIR_DONE {\"ok\":$ok,\"errors\":$errors}")
             wakeLock.release()

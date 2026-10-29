@@ -1,0 +1,64 @@
+{
+    "noir_version": "1.0.0-beta.22+c57152f91260ecdb9faad4efc20abb14b6d2ece7",
+    "hash": "7334488563016095911",
+    "abi": {
+        "parameters": [
+            {
+                "name": "public_key_x",
+                "type": {
+                    "kind": "array",
+                    "length": 32,
+                    "type": { "kind": "integer", "sign": "unsigned", "width": 8 }
+                },
+                "visibility": "private"
+            },
+            {
+                "name": "public_key_y",
+                "type": {
+                    "kind": "array",
+                    "length": 32,
+                    "type": { "kind": "integer", "sign": "unsigned", "width": 8 }
+                },
+                "visibility": "private"
+            },
+            {
+                "name": "signature",
+                "type": {
+                    "kind": "array",
+                    "length": 64,
+                    "type": { "kind": "integer", "sign": "unsigned", "width": 8 }
+                },
+                "visibility": "private"
+            },
+            {
+                "name": "message_hash",
+                "type": {
+                    "kind": "array",
+                    "length": 32,
+                    "type": { "kind": "integer", "sign": "unsigned", "width": 8 }
+                },
+                "visibility": "private"
+            }
+        ],
+        "return_type": { "abi_type": { "kind": "boolean" }, "visibility": "public" },
+        "error_types": {}
+    },
+    "bytecode": "H4sIAAAAAAAA/43VNXMkNgCG4fX5wGdmZmZmZmZme71mWNu7a8Y1s9fMcJlkkkmRSZVJ+pT6CW6uS5kmfVx9cpHJfapezTxSoZFGxqcnl9+PKYfUL4rv9L/mjipVI7njs4VTalWecnRU/0NtTmVRwan+x6YhnbpPq1WYEMiIQe8YZMyg9wz6wKCPDPrEIBMGfWaQKYPMGGTOIAsGWTLIikHWDLJhkC2D7BhkzyAHBjkyyIlBzgxyYZArg9wY5M4gDwZ5MsiLQd4M8mGQL4P8GOTPoAAGBTIoiEHBDAphUCiDwhgUzqAIBkUyKIpB0QyKYVAsg+IYFM+gBAYlMiiJQckMSmFQKoPSGJTOoAwGZTIoi0HZDMphUC6D8hiUz6ACBhUyqIhBxQwqYVApg8oYVM6gCgZVMqiKQdUMqmFQLYPqGFTPoAYGNTKoiUHNDGphUCuD2hjUzqAOBnUyqItB3QxSMqiHQSoG9TKoj0H9DBpg0CCDhhg0zKARBo0yaIxBagaNM2iCQZMM0jBIyyAdg6YYNM2gGQbNMmiOQfMMWmDQIoOWGLTMoBUGiVVK6Sm1Rql1Sm1QapNSW5TaptQOpXYptUepfUodUOqQUkeUOqaUgVInlDql1Bmlzil1QalLSl1R6ppSN5S6pdQdpe4p9UCpR0o9/Zf6pUDVq1XW9akmYhMSNTGXLwpvrFCgjFDvUMao96gPqI+oTygT1GeUKcoMZY6yQFmirFDWKBuULcoOZY9yQDminFDOKBeUK8oN5Y7yQHmivN4eoSwflC/KD+WPCkAFooJQwagQVCgqDBWOikBFoqJQ0agYVCwqDhWPSkAlopJQyagUVCoqDZWOykBlorJeFNmYyMpB5aLyUPmoAlQhqghVjCpBlaLKUOWoClQlqgpVjapB1aLqUPWoBlQjqgnVjGpBtaLaUO2oDlQnqgvVjVKielAqVC+qD9WPGkANooZQw6gR1ChqDKVGjaMmUJMoDUqL0qGmUNOoGdQsag41j1pALaKWUMuolbevWKzK1Mtck7kuc0Pmpswtmdsyd2TuytyTuS/zQOahzCOZxzINMk9kvv3TZZ7LvJB5KfNK5rXMG5m3Mu9k3st8kPko80n/U964WqtTqnV/eiv+fxiJL/qfc16vpkbX2qcZPzOcnhJrnl9RdG+l5mvMc8jv1QW/6fXNHcFxfxXP/TFxkvf1n7O/X5X48s2NFC+KZ4XRO+P3Hz5+MvlsamZuYWllbWNrZ+/g6OTs4urm7uHp5e3j6+cfEBgUHBIaFh4RGRUdExsXn5CYlJySmpaekZmVnZObl19QWFRcUlpWXlFZVV1TW1ff0NjU3NLa1t7R2dWt7FH19vUPDA4Nj4yOqccnJjVa3dT0zOzc/MLi0vKKWBV6sSbWxYbYFFtiW+yIXbEn9sWBOBRH4lgYxIk4FWfiXFyIS3ElrsWNuBV34l48iEfxZDgRzwbDv+P9CsdNHwAA",
+    "debug_symbols": "fZDRDoMgDEX/pc88wHTG+CvLYhCrISFAEJYshn9fNer0YXsq7eXcpneGHrs0ttoOboLmMUMXtDF6bI1TMmpnaTpnBnvbxoBIIzjpRHkZ0EZobDKGwUuatH6avLRrjTKQyhmg7amS4aANLq/MvjT/jYqq3OBbURz4XVx48YcXvN4MhKjLw0EUOT+pk0qHy80gKk7L8mIZtOwMbkkMyapTMPHtd2WPzgensE8BF8NVoxUf",
+    "file_map": {
+        "13": {
+            "source": "/// Verifier for ECDSA Secp256r1 signatures.\n// docs:start:ecdsa_secp256r1\n/// Verifies a ECDSA signature over the secp256r1 curve.\n/// - inputs:\n///     - x coordinate of public key as 32 bytes\n///     - y coordinate of public key as 32 bytes\n///     - the signature, as a 64 bytes array\n///       The signature internally will be represented as `(r, s)`,\n///       where `r` and `s` are fixed-sized big endian scalar values.\n///       As the `secp256r1` has a 256-bit modulus, we have a 64 byte signature\n///       while `r` and `s` will both be 32 bytes.\n///       We expect `s` to be normalized. This means given the curve's order,\n///       `s` should be less than or equal to `order / 2`.\n///       This is done to prevent malleability.\n///       For more context regarding malleability you can reference BIP 0062.\n///     - the hash of the message, as a vector of bytes\n/// - output: false for failure and true for success\npub fn verify_signature(\n    public_key_x: [u8; 32],\n    public_key_y: [u8; 32],\n    signature: [u8; 64],\n    message_hash: [u8; 32],\n) -> bool\n// docs:end:ecdsa_secp256r1\n{\n    _verify_signature(public_key_x, public_key_y, signature, message_hash, true)\n}\n\n#[foreign(ecdsa_secp256r1)]\nfn _verify_signature(\n    public_key_x: [u8; 32],\n    public_key_y: [u8; 32],\n    signature: [u8; 64],\n    message_hash: [u8; 32],\n    predicate: bool,\n) -> bool {}\n\nmod tests {\n    #[test]\n    fn verify() {\n        let mut hashed_message: [u8; 32] = [\n            84, 112, 91, 163, 186, 175, 219, 223, 186, 140, 95, 154, 112, 247, 168, 155, 238, 152,\n            217, 6, 181, 62, 49, 7, 77, 167, 186, 236, 220, 13, 169, 173,\n        ];\n\n        let pub_key_x: [u8; 32] = [\n            85, 15, 71, 16, 3, 243, 223, 151, 195, 223, 80, 106, 199, 151, 246, 114, 31, 177, 161,\n            251, 123, 143, 111, 131, 210, 36, 73, 138, 101, 200, 142, 36,\n        ];\n        let pub_key_y: [u8; 32] = [\n            19, 96, 147, 215, 1, 46, 80, 154, 115, 113, 92, 189, 11, 0, 163, 204, 15, 244, 181, 192,\n            27, 63, 250, 25, 106, 177, 251, 50, 112, 54, 184, 230,\n        ];\n        let signature: [u8; 64] = [\n            44, 112, 168, 208, 132, 182, 43, 252, 92, 224, 54, 65, 202, 249, 247, 42, 212, 218, 140,\n            129, 191, 230, 236, 148, 135, 187, 94, 27, 239, 98, 161, 50, 24, 173, 158, 226, 158,\n            175, 53, 31, 220, 80, 241, 82, 12, 66, 94, 155, 144, 138, 7, 39, 139, 67, 176, 236, 123,\n            135, 39, 120, 193, 78, 7, 132,\n        ];\n        let valid_signature =\n            super::verify_signature(pub_key_x, pub_key_y, signature, hashed_message);\n        assert(valid_signature);\n\n        hashed_message[0] = 0;\n        let valid_signature =\n            super::verify_signature(pub_key_x, pub_key_y, signature, hashed_message);\n        assert(!valid_signature);\n    }\n}\n",
+            "path": "std/ecdsa_secp256r1.nr",
+            "function_locations": [
+                { "start": 1102, "name": "verify_signature" },
+                { "start": 1378, "name": "_verify_signature" },
+                { "start": 1422, "name": "tests::verify" }
+            ]
+        },
+        "51": {
+            "source": "use std::ecdsa_secp256r1::verify_signature;\n\nfn main(public_key_x: [u8; 32], public_key_y: [u8; 32], signature: [u8; 64], message_hash: [u8; 32]) -> pub bool {\n    verify_signature(public_key_x, public_key_y, signature, message_hash)\n}\n",
+            "path": "/Users/moventsai/Projects/wfp/coordination-network-worktrees/bench-android/packages/noir-prover-native/android-bench/circuits/ecdsa/src/main.nr",
+            "function_locations": [{ "start": 158, "name": "main" }]
+        }
+    }
+}
