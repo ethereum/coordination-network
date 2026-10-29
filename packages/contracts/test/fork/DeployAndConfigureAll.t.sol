@@ -44,8 +44,7 @@ abstract contract DeployAndConfigureAllForkTest is Test {
                 paymasterDeposit: PAYMASTER_DEPOSIT,
                 paymasterStake: PAYMASTER_STAKE,
                 paymasterUnstakeDelay: PAYMASTER_UNSTAKE_DELAY,
-                memberAccountKeyX: memberWallet.publicKeyX,
-                memberAccountKeyY: memberWallet.publicKeyY,
+                memberAccountKey: abi.encode(memberWallet.publicKeyX, memberWallet.publicKeyY),
                 networkMemberCommitment: networkMemberCommitment
             })
         );

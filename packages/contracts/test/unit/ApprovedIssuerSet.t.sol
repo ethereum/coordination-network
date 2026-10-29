@@ -3,7 +3,9 @@ pragma solidity ^0.8.34;
 
 import { Vm } from "forge-std/Test.sol";
 import { SNARK_SCALAR_FIELD } from "@zk-kit/lean-imt.sol/Constants.sol";
+import { PoseidonT4 } from "poseidon-solidity/PoseidonT4.sol";
 
+import { DeployedThirdPartyContracts } from "../../script/libraries/DeployedThirdPartyContracts.sol";
 import { ApprovedIssuerSet } from "../../src/ApprovedIssuerSet.sol";
 import { IssuerSetHashes } from "../../src/libraries/IssuerSetHashes.sol";
 import { ApprovedIssuerSetTestBase } from "../utils/ApprovedIssuerSetTestBase.sol";
@@ -297,6 +299,20 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         issuerSet.publishIssuerKey(memberNetworkId, keyX[0], keyY[0]);
     }
 
+    /// @dev tests dead code path. Hash of zero would not occur ever in practice
+    function test_PublishIssuerKey_RevertsWhen_LeafIsZero() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        bytes memory poseidonT4HashCall = abi.encodeWithSelector(PoseidonT4.hash.selector);
+        uint256 zeroLeaf = 0;
+        bytes memory encodedZeroLeaf = abi.encode(zeroLeaf);
+        vm.mockCall(DeployedThirdPartyContracts.POSEIDON_T4, poseidonT4HashCall, encodedZeroLeaf);
+
+        vm.expectRevert(ApprovedIssuerSet.LeafCannotBeZero.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKey(memberNetworkId, keyX[0], keyY[0]);
+    }
+
     function test_publishIssuerKeys_RevertWhen_BatchExceedsTheKeyCap() public {
         _approveMember(memberNetworkId);
         address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
@@ -322,6 +338,22 @@ contract ApprovedIssuerSetUnitTest is ApprovedIssuerSetTestBase {
         vm.store(address(issuerSet), leafCountStorageSlot, bytes32(issuerSet.MAX_LEAVES()));
 
         vm.expectRevert(ApprovedIssuerSet.IssuerSetFull.selector);
+        vm.prank(authAddress);
+        issuerSet.publishIssuerKeys(memberNetworkId, keys);
+    }
+
+    /// @dev tests dead code path. Hash of zero would not occur ever in practice
+    function test_publishIssuerKeys_RevertWhen_LeafIsZero() public {
+        _approveMember(memberNetworkId);
+        address authAddress = registry.networkMemberAuthAddress(memberNetworkId);
+        uint256[2][] memory keys = new uint256[2][](1);
+        keys[0] = [keyX[0], keyY[0]];
+        bytes memory poseidonT4HashCall = abi.encodeWithSelector(PoseidonT4.hash.selector);
+        uint256 zeroLeaf = 0;
+        bytes memory encodedZeroLeaf = abi.encode(zeroLeaf);
+        vm.mockCall(DeployedThirdPartyContracts.POSEIDON_T4, poseidonT4HashCall, encodedZeroLeaf);
+
+        vm.expectRevert(ApprovedIssuerSet.LeafCannotBeZero.selector);
         vm.prank(authAddress);
         issuerSet.publishIssuerKeys(memberNetworkId, keys);
     }

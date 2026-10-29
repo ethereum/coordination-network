@@ -27,8 +27,7 @@ contract DeployAndConfigureAll is Script {
         uint256 paymasterDeposit;
         uint256 paymasterStake;
         uint32 paymasterUnstakeDelay;
-        uint256 memberAccountKeyX;
-        uint256 memberAccountKeyY;
+        bytes memberAccountKey;
         uint256 networkMemberCommitment;
     }
 
@@ -45,10 +44,6 @@ contract DeployAndConfigureAll is Script {
     }
 
     function run() external returns (DeployAll.Deployment memory deployment) {
-        bytes memory memberAccountKey = vm.envBytes("MEMBER_ACCOUNT_PUBLIC_KEY");
-        require(memberAccountKey.length == 64, "MEMBER_ACCOUNT_PUBLIC_KEY must be 64 bytes: X || Y");
-        (uint256 memberAccountKeyX, uint256 memberAccountKeyY) = abi.decode(memberAccountKey, (uint256, uint256));
-
         Configuration memory configuration = Configuration({
             deployer: vm.envAddress("DEPLOYER"),
             owner: vm.envAddress("OWNER"),
@@ -56,8 +51,7 @@ contract DeployAndConfigureAll is Script {
             paymasterDeposit: vm.envUint("PAYMASTER_DEPOSIT"),
             paymasterStake: vm.envUint("PAYMASTER_STAKE"),
             paymasterUnstakeDelay: uint32(vm.envUint("PAYMASTER_UNSTAKE_DELAY")),
-            memberAccountKeyX: memberAccountKeyX,
-            memberAccountKeyY: memberAccountKeyY,
+            memberAccountKey: vm.envBytes("MEMBER_ACCOUNT_PUBLIC_KEY"),
             networkMemberCommitment: vm.envUint("NETWORK_MEMBER_COMMITMENT")
         });
 
@@ -102,8 +96,7 @@ contract DeployAndConfigureAll is Script {
             deployment.governanceSafe,
             configuration.owner,
             deployment.networkMemberGovernance,
-            configuration.memberAccountKeyX,
-            configuration.memberAccountKeyY,
+            configuration.memberAccountKey,
             configuration.networkMemberCommitment,
             configuration.owner
         );

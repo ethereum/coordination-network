@@ -13,9 +13,8 @@ contract DeployIdentityRegistry is DeployBase {
     bytes32 public constant SALT = keccak256("coordination-network.IdentityRegistry.V1.1");
 
     function run() external returns (IdentityRegistry registry) {
-        ISemaphore semaphore = ISemaphore(DeployedThirdPartyContracts.SEMAPHORE);
         uint256 networkMemberGroupId = vm.envUint("NETWORK_MEMBER_GROUP_ID");
-        return deployIdentityRegistry(semaphore, networkMemberGroupId);
+        return deployIdentityRegistry(ISemaphore(DeployedThirdPartyContracts.SEMAPHORE), networkMemberGroupId);
     }
 
     function deployIdentityRegistry(ISemaphore semaphore, uint256 networkMemberGroupId)
