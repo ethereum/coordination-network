@@ -26,7 +26,6 @@ contract DeploySafe is DeployBase {
         if (owners.length == 0) revert NoOwners();
         uint256 threshold = owners.length / 2 + 1;
 
-        SafeProxyFactory safeProxyFactory = SafeProxyFactory(DeployedThirdPartyContracts.SAFE_PROXY_FACTORY);
         bytes memory initializer = abi.encodeCall(
             Safe.setup,
             (
@@ -42,16 +41,17 @@ contract DeploySafe is DeployBase {
         );
         bytes32 salt = keccak256(abi.encodePacked(keccak256(initializer), SALT_NONCE));
         bytes memory proxyInitCode = abi.encodePacked(
-            safeProxyFactory.proxyCreationCode(), uint256(uint160(DeployedThirdPartyContracts.SAFE_SINGLETON))
+            SafeProxyFactory(DeployedThirdPartyContracts.SAFE_PROXY_FACTORY).proxyCreationCode(),
+            uint256(uint160(DeployedThirdPartyContracts.SAFE_SINGLETON))
         );
-        address existingAddress = vm.computeCreate2Address(salt, keccak256(proxyInitCode), address(safeProxyFactory));
+        address existingAddress =
+            vm.computeCreate2Address(salt, keccak256(proxyInitCode), DeployedThirdPartyContracts.SAFE_PROXY_FACTORY);
         if (existingAddress.code.length != 0) return Safe(payable(existingAddress));
 
         vm.startBroadcast();
         uint256 gasBeforeDeployment = gasleft();
-        SafeProxy safeProxy = safeProxyFactory.createProxyWithNonce(
-            DeployedThirdPartyContracts.SAFE_SINGLETON, initializer, SALT_NONCE
-        );
+        SafeProxy safeProxy = SafeProxyFactory(DeployedThirdPartyContracts.SAFE_PROXY_FACTORY)
+            .createProxyWithNonce(DeployedThirdPartyContracts.SAFE_SINGLETON, initializer, SALT_NONCE);
         deploymentGas = gasBeforeDeployment - gasleft();
         vm.stopBroadcast();
 

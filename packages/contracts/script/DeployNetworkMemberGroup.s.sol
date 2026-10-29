@@ -14,8 +14,7 @@ contract DeployNetworkMemberGroup is DeployBase {
 
     function run() external returns (NetworkMemberGroup group) {
         address governanceSafe = vm.envAddress("GOVERNANCE_SAFE");
-        ISemaphore semaphore = ISemaphore(DeployedThirdPartyContracts.SEMAPHORE);
-        return deployNetworkMemberGroup(governanceSafe, semaphore);
+        return deployNetworkMemberGroup(governanceSafe, ISemaphore(DeployedThirdPartyContracts.SEMAPHORE));
     }
 
     function deployNetworkMemberGroup(address safe, ISemaphore semaphore) public returns (NetworkMemberGroup group) {

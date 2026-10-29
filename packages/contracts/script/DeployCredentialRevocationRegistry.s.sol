@@ -14,11 +14,12 @@ contract DeployCredentialRevocationRegistry is DeployBase {
     bytes32 public constant SALT = keccak256("coordination-network.CredentialRevocationRegistry.V1.1");
 
     function run() external returns (CredentialRevocationRegistry credentialRevocationRegistry) {
-        ISemaphore semaphore = ISemaphore(DeployedThirdPartyContracts.SEMAPHORE);
         uint256 networkMemberGroupId = vm.envUint("NETWORK_MEMBER_GROUP_ID");
         IRevocation revocation = IRevocation(vm.envAddress("REVOCATION"));
 
-        return deployCredentialRevocationRegistry(semaphore, networkMemberGroupId, revocation);
+        return deployCredentialRevocationRegistry(
+            ISemaphore(DeployedThirdPartyContracts.SEMAPHORE), networkMemberGroupId, revocation
+        );
     }
 
     function deployCredentialRevocationRegistry(

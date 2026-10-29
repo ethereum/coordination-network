@@ -24,6 +24,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
     address internal owner;
     address internal networkMemberMultisigSigner;
     Vm.Wallet internal memberWallet;
+    bytes internal memberAccountKey;
     bytes32 internal memberNetworkId;
 
     function setUp() public {
@@ -45,6 +46,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
         admitNetworkMemberScript = new AdmitNetworkMember();
         networkMemberMultisigSigner = makeAddr("networkMemberMultisigSigner");
         memberWallet = vm.createWallet("memberAccountKey");
+        memberAccountKey = abi.encode(memberWallet.publicKeyX, memberWallet.publicKeyY);
         memberNetworkId = keccak256(abi.encodePacked(memberWallet.publicKeyX, memberWallet.publicKeyY));
     }
 
@@ -53,8 +55,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             networkMemberMultisigSigner
         );
@@ -75,8 +76,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             alreadySafeOwner
         );
@@ -104,8 +104,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             alreadySafeOwner
         );
@@ -128,8 +127,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             alreadySafeOwner
         );
@@ -147,8 +145,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             alreadySafeOwner
         );
@@ -158,8 +155,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             governanceSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             alreadySafeOwner
         );
@@ -177,8 +173,7 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             otherSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             networkMemberMultisigSigner
         );
@@ -196,8 +191,24 @@ contract AdmitNetworkMemberUnitTest is CanonicalDependencies {
             sharedSafe,
             owner,
             deployment.networkMemberGovernance,
-            memberWallet.publicKeyX,
-            memberWallet.publicKeyY,
+            memberAccountKey,
+            NETWORK_MEMBER_COMMITMENT,
+            networkMemberMultisigSigner
+        );
+    }
+
+    function test_admitNetworkMember_revertsWhen_AccountKeyIsNot64Bytes() public {
+        bytes1 uncompressedKeyPrefix = 0x04;
+        bytes memory uncompressedAccountKey =
+            abi.encodePacked(uncompressedKeyPrefix, memberWallet.publicKeyX, memberWallet.publicKeyY);
+        bytes memory keyLengthError = bytes("MEMBER_ACCOUNT_PUBLIC_KEY must be 64 bytes: X || Y");
+
+        vm.expectRevert(keyLengthError);
+        admitNetworkMemberScript.admitNetworkMember(
+            governanceSafe,
+            owner,
+            deployment.networkMemberGovernance,
+            uncompressedAccountKey,
             NETWORK_MEMBER_COMMITMENT,
             networkMemberMultisigSigner
         );

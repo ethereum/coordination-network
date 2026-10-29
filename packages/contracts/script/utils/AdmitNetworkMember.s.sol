@@ -19,8 +19,6 @@ contract AdmitNetworkMember is SafeTransaction {
         NetworkMemberGovernance networkMemberGovernance =
             NetworkMemberGovernance(vm.envAddress("NETWORK_MEMBER_GOVERNANCE"));
         bytes memory accountKey = vm.envBytes("MEMBER_ACCOUNT_PUBLIC_KEY");
-        require(accountKey.length == 64, "MEMBER_ACCOUNT_PUBLIC_KEY must be 64 bytes: X || Y");
-        (uint256 accountKeyX, uint256 accountKeyY) = abi.decode(accountKey, (uint256, uint256));
         uint256 networkMemberCommitment = vm.envUint("NETWORK_MEMBER_COMMITMENT");
         address networkMemberMultisigSigner = vm.envAddress("NETWORK_MEMBER_MULTISIG_SIGNER");
 
@@ -28,8 +26,7 @@ contract AdmitNetworkMember is SafeTransaction {
             governanceSafe,
             owner,
             networkMemberGovernance,
-            accountKeyX,
-            accountKeyY,
+            accountKey,
             networkMemberCommitment,
             networkMemberMultisigSigner
         );
@@ -39,11 +36,13 @@ contract AdmitNetworkMember is SafeTransaction {
         Safe governanceSafe,
         address owner,
         NetworkMemberGovernance networkMemberGovernance,
-        uint256 accountKeyX,
-        uint256 accountKeyY,
+        bytes memory accountKey,
         uint256 networkMemberCommitment,
         address networkMemberMultisigSigner
     ) public {
+        require(accountKey.length == 64, "MEMBER_ACCOUNT_PUBLIC_KEY must be 64 bytes: X || Y");
+        (uint256 accountKeyX, uint256 accountKeyY) = abi.decode(accountKey, (uint256, uint256));
+
         if (governanceSafe.isOwner(networkMemberMultisigSigner)) {
             admitExistingSafeOwner(
                 governanceSafe,

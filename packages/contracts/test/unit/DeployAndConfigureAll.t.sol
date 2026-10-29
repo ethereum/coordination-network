@@ -38,8 +38,7 @@ contract DeployAndConfigureAllUnitTest is CanonicalDependencies {
             paymasterDeposit: PAYMASTER_DEPOSIT,
             paymasterStake: PAYMASTER_STAKE,
             paymasterUnstakeDelay: PAYMASTER_UNSTAKE_DELAY,
-            memberAccountKeyX: memberWallet.publicKeyX,
-            memberAccountKeyY: memberWallet.publicKeyY,
+            memberAccountKey: abi.encode(memberWallet.publicKeyX, memberWallet.publicKeyY),
             networkMemberCommitment: NETWORK_MEMBER_COMMITMENT
         });
     }
@@ -78,8 +77,7 @@ contract DeployAndConfigureAllUnitTest is CanonicalDependencies {
     function test_deployAndConfigureAll_revertsWhen_DifferentFoundingMemberAdmitted() public {
         deployAndConfigureAllScript.deployAndConfigureAll(configuration);
         Vm.Wallet memory differentMemberWallet = vm.createWallet("differentMemberAccountKey");
-        configuration.memberAccountKeyX = differentMemberWallet.publicKeyX;
-        configuration.memberAccountKeyY = differentMemberWallet.publicKeyY;
+        configuration.memberAccountKey = abi.encode(differentMemberWallet.publicKeyX, differentMemberWallet.publicKeyY);
         configuration.networkMemberCommitment = NETWORK_MEMBER_COMMITMENT + 1;
 
         vm.expectRevert(DeployAndConfigureAll.DifferentFoundingMemberAdmitted.selector);
