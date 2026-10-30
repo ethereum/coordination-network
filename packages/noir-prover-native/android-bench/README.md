@@ -16,6 +16,8 @@ feature (`rust/src/bench.rs` and its `bench_*` exports). `scripts/build-android.
 copy of `rust/` (`$NOIR_BENCH_SCRATCH`), refuses a library that imports `std::__1`, and drops the
 library and bindings into the gitignored `app/src/main/{jniLibs,kotlin}`.
 
+Results from ten phones, run on 28 and 30 October 2026, are in [`results/`](results/README.md).
+
 ## Primitives
 
 `bench_workload_primitives.json` (workload `noir-primitives`) runs CSP's SHA-256 over 2 KB and ECDSA

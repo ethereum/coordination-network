@@ -1,0 +1,418 @@
+{
+ "schema": 1,
+ "device_id": "m2q-36",
+ "tier": "flagship",
+ "serial": "localhost:59404",
+ "tier_forced": false,
+ "provenance": {
+  "commit": "ec69d532cb5ad0ff192fc0f848e42a1cd0020c9d",
+  "predictions_sha256": "347e9117b1b53c70da83f6130622d5a1eb71c698220937f7efbae867b7100c71",
+  "frozen": true
+ },
+ "probe": {
+  "props": {
+   "ro.product.model": "SM-S947U1",
+   "ro.product.manufacturer": "samsung",
+   "ro.soc.model": "SM8850",
+   "ro.soc.manufacturer": "QTI",
+   "ro.build.version.release": "16",
+   "ro.build.version.sdk": "36",
+   "ro.build.fingerprint": "samsung/m2quew/m2q:16/BP4A.251205.006/S947U1UES2AZCM_OYM2AZCM:user/release-keys"
+  },
+  "meminfo": {
+   "MemTotal": 11389716,
+   "MemFree": 907004,
+   "MemAvailable": 6377960,
+   "Buffers": 17316,
+   "Cached": 5386232,
+   "SwapCached": 5552,
+   "Active": 1671416,
+   "Inactive": 5871740,
+   "Unevictable": 15252,
+   "Mlocked": 12840,
+   "SwapTotal": 12582908,
+   "SwapFree": 10742084,
+   "Dirty": 200,
+   "Writeback": 0,
+   "AnonPages": 2204052,
+   "Mapped": 1720136,
+   "Shmem": 42892,
+   "KReclaimable": 371552,
+   "Slab": 726736,
+   "SReclaimable": 155432,
+   "SUnreclaim": 571304,
+   "KernelStack": 120336,
+   "ShadowCallStack": 0,
+   "PageTables": 260196,
+   "SecPageTables": 17036,
+   "NFS_Unstable": 0,
+   "Bounce": 0,
+   "WritebackTmp": 0,
+   "CommitLimit": 18038148,
+   "Committed_AS": 513862300,
+   "VmallocTotal": 261087232,
+   "VmallocUsed": 424476,
+   "VmallocChunk": 0,
+   "Percpu": 13312,
+   "AnonHugePages": 442368,
+   "ShmemHugePages": 0,
+   "ShmemPmdMapped": 0,
+   "FileHugePages": 0,
+   "FilePmdMapped": 0,
+   "CmaTotal": 720896,
+   "CmaFree": 0,
+   "system": 131004,
+   "RbinTotal": 409600,
+   "RbinAlloced": 2432,
+   "GcmaTotal": 479232,
+   "GcmaAlloced": 71040,
+   "GcmaFree": 323928,
+   "GcmaCached": 84264,
+   "DmaHeapPool": 50424,
+   "HugepagePool": 413696,
+   "zram0": 453396,
+   "GpuTotal": 132160,
+   "KgslShmemUsage": 0,
+   "GpuSwap": 0
+  },
+  "thermal_status": 0,
+  "thermal_status_readable": true,
+  "thermal_dump": "IsStatusOverride: false\nThermalEventListeners:\n\tcallbacks: 3\n\tkilled: false\n\tbroadcasts count: -1\nThermalStatusListeners:\n\tcallbacks: 6\n\tkilled: false\n\tbroadcasts count: -1\nThermal Status: 0\nCached temperatures:\n\tTemperature{mValue=0.0, mType=2, mName=SUBBAT, mStatus=0}\n\tTemperature{mValue=44.4, mType=0, mName=AP, mStatus=0}\n\tTemperature{mValue=42.6, mType=5, mName=PA, mStatus=0}\n\tTemperature{mValue=33.4, mType=2, mName=BAT, mStatus=0}\n\tTemperature{mValue=28.8, mType=4, mName=USB, mStatus=0}\n\tTemperature{mValue=36.0, mType=3, mName=SKIN, mStatus=0}\nHAL Ready: true\nHAL connection:\n\tThermalHAL AIDL 3  connected: yes\nCurrent temperatures from HAL:\n\tTemperature{mValue=30.2, mType=0, mName=AP, mStatus=0}\n\tTemperature{mValue=28.9, mType=2, mName=BAT, mStatus=0}\n\tTemperature{mValue=29.8, mType=5, mName=PA, mStatus=0}\n\tTemperature{mValue=31.0, mType=3, mName=SKIN, mStatus=0}\n\tTemperature{mValue=0.0, mType=2, mName=SUBBAT, mStatus=0}\n\tTemperature{mValue=28.0, mType=4, mName=USB, mStatus=0}\nCurrent cooling devices from HAL:\nTemperature static thresholds from HAL:\n\tTemperatureThreshold{mType=2, mName=BAT, mHotThrottlingThresholds=[NaN, NaN, NaN, NaN, NaN, 55.0, 85.0], mColdThrottlingThresholds=[NaN, NaN, NaN, NaN, NaN, NaN, NaN]}\n\tTemperatureThreshold{mType=3, mName=SKIN, mHotThrottlingThresholds=[38.0, 40.0, 42.0, 45.0, 47.0, 60.0, 90.0], mColdThrottlingThresholds=[NaN, NaN, NaN, NaN, NaN, NaN, NaN]}\nTemperature headroom thresholds:\n[NaN, 0.8333333, 0.9, 1.0, 1.0666667, 1.5, 2.5]\n",
+  "clock_offset_ns": -5245692081,
+  "clock_precision_s": 1e-09
+ },
+ "workloads": [
+  {
+   "workload": "noir-credential",
+   "marker_prefix": "NOIR_",
+   "package": "org.coordination.nbench",
+   "apks": [
+    {
+     "file": "app-debug.apk",
+     "sha256": "2dd4daaddeb24594567ba405fd3b152cb344f9df8b4bf199262a7b5fb8b19cb0"
+    },
+    {
+     "file": "app-debug-androidTest.apk",
+     "sha256": "817760707adc54e7945c406c8c4589fe25ab1b919fd6ec9773b5791ba3aabad2"
+    }
+   ],
+   "pushes": [
+    {
+     "dest": "/sdcard/zkbench/org.coordination.nbench/circuit.json",
+     "pinned": "984c2fb3f5de19c4f964e483e66639919474655d45ca22ddca50f5f25a2e32aa",
+     "device_sha256": "984c2fb3f5de19c4f964e483e66639919474655d45ca22ddca50f5f25a2e32aa"
+    },
+    {
+     "dest": "/sdcard/zkbench/org.coordination.nbench/g1-131073.dat",
+     "pinned": "e97e6b2621d3ce99ec3c15e6362b7aaef6bd550b83e241a905a259380ec186a9",
+     "device_sha256": "e97e6b2621d3ce99ec3c15e6362b7aaef6bd550b83e241a905a259380ec186a9"
+    }
+   ],
+   "runs": [
+    {
+     "name": "noir-credential",
+     "attempt": 1,
+     "outcome": "ok",
+     "evidence": [],
+     "thermal_before": 0,
+     "thermal_after": 0,
+     "thermal_gated": false,
+     "thermal_wait_s": 32.21,
+     "thermal_source": "status",
+     "max_zone_c_before": 105.0,
+     "mem_available_kb_before": 6266576,
+     "config": {
+      "steps": [
+       "prove"
+      ],
+      "warm_iters": 5,
+      "cooldown_ms": 10000
+     },
+     "raw_log": "raw/noir-credential-1.log",
+     "logcat_buffer_set": true,
+     "logcat_buffer_error": null,
+     "out_dir": "raw/noir-credential-1-out",
+     "outputs": [
+      {
+       "name": "prove.proof",
+       "size": 29826,
+       "sha256": "270b99008b00e17ac4c6374af573685353bf4b54a3dc0e5fda1a96f10ff572b5"
+      }
+     ],
+     "verified": true,
+     "verify_tail": "{\n  \"proofBytes\": 14656,\n  \"publicInputs\": 7,\n  \"verifyMs\": 304,\n  \"result\": {\n    \"ok\": true,\n    \"approvedIssuerRoot\": \"10224771717435018334448043380923677678563180565362953811594455438309604514778\",\n    \"revocationRoot\": \"12104979023148761136980817807725896488169044590602063911785767014846483413579\"\n  }\n}",
+     "verify_error": null,
+     "pull_failed": false,
+     "timed_out": false,
+     "start_host_ns": 1793159543592463000,
+     "samples": [
+      {
+       "t_host_ns": 1793159543592539000,
+       "thermal": 0,
+       "mem_available_kb": 6264056,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        2611200,
+        2611200,
+        1670400,
+        1670400,
+        1555200,
+        1555200,
+        3398400,
+        3398400
+       ]
+      },
+      {
+       "t_host_ns": 1793159554043576000,
+       "thermal": 0,
+       "mem_available_kb": 6192868,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1228800,
+        1785600,
+        1996800,
+        2361600,
+        2112000,
+        1555200,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159564463264000,
+       "thermal": 0,
+       "mem_available_kb": 6166160,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1228800,
+        1440000,
+        1555200,
+        1785600,
+        1900800,
+        1785600,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159574869816000,
+       "thermal": 0,
+       "mem_available_kb": 6217096,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1113600,
+        1785600,
+        1785600,
+        1785600,
+        2361600,
+        2496000,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159585435907000,
+       "thermal": 0,
+       "mem_available_kb": 6229816,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1113600,
+        1670400,
+        2112000,
+        2112000,
+        2112000,
+        2227200,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159596001257000,
+       "thermal": 0,
+       "mem_available_kb": 6225252,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1555200,
+        1440000,
+        1113600,
+        1555200,
+        1996800,
+        1440000,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159604936331000,
+       "thermal": 0,
+       "mem_available_kb": 6296896,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        2611200,
+        2611200,
+        2227200,
+        1670400,
+        1440000,
+        1228800,
+        883200,
+        883200
+       ]
+      }
+     ]
+    },
+    {
+     "name": "noir-credential-lowmem",
+     "attempt": 1,
+     "outcome": "ok",
+     "evidence": [],
+     "thermal_before": 0,
+     "thermal_after": 0,
+     "thermal_gated": false,
+     "thermal_wait_s": 32.23,
+     "thermal_source": "status",
+     "max_zone_c_before": 105.0,
+     "mem_available_kb_before": 6302188,
+     "config": {
+      "steps": [
+       "prove"
+      ],
+      "warm_iters": 5,
+      "cooldown_ms": 10000,
+      "low_memory_mode": true
+     },
+     "raw_log": "raw/noir-credential-lowmem-1.log",
+     "logcat_buffer_set": true,
+     "logcat_buffer_error": null,
+     "out_dir": "raw/noir-credential-lowmem-1-out",
+     "outputs": [
+      {
+       "name": "prove.proof",
+       "size": 29826,
+       "sha256": "a98e17fbdf188dbf93973cb292028606e0162409851fab1889f98f5b8fbae236"
+      }
+     ],
+     "verified": true,
+     "verify_tail": "{\n  \"proofBytes\": 14656,\n  \"publicInputs\": 7,\n  \"verifyMs\": 300,\n  \"result\": {\n    \"ok\": true,\n    \"approvedIssuerRoot\": \"10224771717435018334448043380923677678563180565362953811594455438309604514778\",\n    \"revocationRoot\": \"12104979023148761136980817807725896488169044590602063911785767014846483413579\"\n  }\n}",
+     "verify_error": null,
+     "pull_failed": false,
+     "timed_out": false,
+     "start_host_ns": 1793159644047697000,
+     "samples": [
+      {
+       "t_host_ns": 1793159644047770000,
+       "thermal": 0,
+       "mem_available_kb": 6295476,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        2496000,
+        1670400,
+        1670400,
+        1900800,
+        2227200,
+        1996800,
+        3398400,
+        3398400
+       ]
+      },
+      {
+       "t_host_ns": 1793159654473530000,
+       "thermal": 0,
+       "mem_available_kb": 6179928,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1670400,
+        1785600,
+        1785600,
+        2112000,
+        2361600,
+        2611200,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159664848955000,
+       "thermal": 0,
+       "mem_available_kb": 6184584,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        2899200,
+        2899200,
+        2227200,
+        2112000,
+        2745600,
+        2745600,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159675258567000,
+       "thermal": 0,
+       "mem_available_kb": 6174776,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1228800,
+        1555200,
+        1440000,
+        1555200,
+        1785600,
+        1900800,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159685681766000,
+       "thermal": 0,
+       "mem_available_kb": 6215592,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1228800,
+        1555200,
+        1555200,
+        1785600,
+        1900800,
+        1785600,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159696169816000,
+       "thermal": 0,
+       "mem_available_kb": 6203560,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        1228800,
+        1440000,
+        1900800,
+        2227200,
+        2361600,
+        2496000,
+        883200,
+        883200
+       ]
+      },
+      {
+       "t_host_ns": 1793159705694563000,
+       "thermal": 0,
+       "mem_available_kb": 6293932,
+       "max_zone_c": 105.0,
+       "cpu_khz": [
+        2227200,
+        2227200,
+        2227200,
+        2227200,
+        2227200,
+        2227200,
+        883200,
+        883200
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

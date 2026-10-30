@@ -1,0 +1,101 @@
+--------- beginning of events
+--------- beginning of main
+--------- beginning of system
+10-29 20:28:34.153  1369  3094 I ActivityManager: Force stopping org.coordination.nbench appid=10296 user=0: start instr
+10-29 20:28:34.166  1369  1570 I am_proc_start: [0,26759,10296,org.coordination.nbench,added application,org.coordination.nbench]
+10-29 20:28:34.166  1369  1570 I ActivityManager: Start proc 26759:org.coordination.nbench/u0a296 for added application org.coordination.nbench
+10-29 20:28:34.180 26759 26759 I dination.nbench: Late-enabling -Xcheck:jni
+10-29 20:28:34.212 26759 26759 I dination.nbench: Using CollectorTypeCMC GC.
+10-29 20:28:34.227  1369  3094 I am_proc_bound: [0,26759,org.coordination.nbench]
+10-29 20:28:34.233 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10296; state: ENABLED
+10-29 20:28:34.233 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10296; state: ENABLED
+10-29 20:28:34.241 26759 26759 W ActivityThread: Package uses different ABI(s) than its instrumentation: package[org.coordination.nbench]: arm64-v8a, null instrumentation[org.coordination.nbench.test]: null, null
+10-29 20:28:34.244 26759 26759 W dination.nbench: ClassLoaderContext shared library size mismatch. Expected=2, found=0 (PCL[]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]} | PCL[])
+10-29 20:28:34.245 26759 26759 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[] | PCL[/system/framework/android.test.runner.jar*1472416011])
+10-29 20:28:34.247 26759 26759 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=2 (PCL[] | PCL[/system/framework/android.test.runner.jar*1472416011:/system/framework/android.test.mock.jar*679195752])
+10-29 20:28:34.247 26759 26759 W ziparchive: Unable to open '/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.dm': No such file or directory
+10-29 20:28:34.247 26759 26759 W ziparchive: Unable to open '/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.dm': No such file or directory
+10-29 20:28:34.256 26759 26759 W ziparchive: Unable to open '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.dm': No such file or directory
+10-29 20:28:34.256 26759 26759 W ziparchive: Unable to open '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.dm': No such file or directory
+10-29 20:28:34.289 26759 26759 D nativeloader: Configuring clns-6 for other apk /system/framework/android.test.runner.jar:/system/framework/android.test.mock.jar:/system/framework/android.test.base.jar:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/lib/arm64:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/lib/arm64:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!/lib/arm64-v8a:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/org.coordination.nbench
+10-29 20:28:34.303 26759 26759 V GraphicsEnvironment: Currently set values for:
+10-29 20:28:34.303 26759 26759 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[com.android.angle, com.linecorp.b612.android, com.campmobile.snow, com.google.android.apps.tachyon]
+10-29 20:28:34.303 26759 26759 V GraphicsEnvironment:   angle_gl_driver_selection_values=[angle, native, native, native]
+10-29 20:28:34.304 26759 26759 V GraphicsEnvironment: org.coordination.nbench is not listed in per-application setting
+10-29 20:28:34.304 26759 26759 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-29 20:28:34.307 26759 26759 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 20:28:34.309 26759 26759 D nativeloader: Configuring clns-7 for other apk /system/framework/android.test.mock.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/lib/arm64:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 20:28:34.309 26759 26759 D nativeloader: Extending system_exposed_libraries: libedgetpu_dba.google.so
+10-29 20:28:34.309 26759 26759 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 20:28:34.311 26759 26759 D nativeloader: Configuring clns-8 for other apk /system/framework/android.test.runner.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/lib/arm64:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 20:28:34.311 26759 26759 D nativeloader: Extending system_exposed_libraries: libedgetpu_dba.google.so
+10-29 20:28:34.312 26759 26759 W dination.nbench: ClassLoaderContext shared library size mismatch. Expected=2, found=3 (PCL[]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]} | PCL[]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]#PCL[/system/framework/android.test.runner.jar*1472416011]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]}};PCL[/system/framework/android.test.runner.jar*1472416011:/system/framework/android.test.mock.jar*679195752:/system/framework/android.test.base.jar*2003782297:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk*1144079803:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes2.dex*342232046:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes3.dex*849473781:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk*3645186006:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes2.dex*3370077231:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes3.dex*3204554542:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes4.dex*3271484022])
+10-29 20:28:34.313 26759 26759 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[] | PCL[/system/framework/android.test.runner.jar*1472416011]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]#PCL[/system/framework/android.test.runner.jar*1472416011]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]}};PCL[/system/framework/android.test.runner.jar*1472416011:/system/framework/android.test.mock.jar*679195752:/system/framework/android.test.base.jar*2003782297:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk*1144079803:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes2.dex*342232046:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes3.dex*849473781:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk*3645186006:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes2.dex*3370077231:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes3.dex*3204554542:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes4.dex*3271484022])
+10-29 20:28:34.314 26759 26759 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=2 (PCL[] | PCL[/system/framework/android.test.runner.jar*1472416011:/system/framework/android.test.mock.jar*679195752]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]#PCL[/system/framework/android.test.runner.jar*1472416011]{PCL[/system/framework/android.test.base.jar*2003782297]#PCL[/system/framework/android.test.mock.jar*679195752]}};PCL[/system/framework/android.test.runner.jar*1472416011:/system/framework/android.test.mock.jar*679195752:/system/framework/android.test.base.jar*2003782297:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk*1144079803:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes2.dex*342232046:/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!classes3.dex*849473781:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk*3645186006:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes2.dex*3370077231:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes3.dex*3204554542:/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!classes4.dex*3271484022])
+10-29 20:28:34.314 26759 26759 W ziparchive: Unable to open '/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.dm': No such file or directory
+10-29 20:28:34.314 26759 26759 W ziparchive: Unable to open '/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.dm': No such file or directory
+10-29 20:28:34.322 26759 26759 W ziparchive: Unable to open '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.dm': No such file or directory
+10-29 20:28:34.322 26759 26759 W ziparchive: Unable to open '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.dm': No such file or directory
+10-29 20:28:34.359 26759 26759 I AndroidJUnitRunner: newApplication android.app.Application
+10-29 20:28:34.360 26759 26759 I AndroidJUnitRunner: onCreate Bundle[EMPTY_PARCEL]
+10-29 20:28:34.361 26759 26759 D AndroidJUnitRunner: Use the raw file system for managing file I/O.
+10-29 20:28:34.367 26759 26759 V TestEventClient: No service name argument was given (testDiscoveryService, testRunEventService or orchestratorService)
+10-29 20:28:34.367 26759 26784 D AndroidJUnitRunner: onStart is called.
+10-29 20:28:34.372 26759 26784 I InstrConnection: Could not send broadcast or register receiver (isolatedProcess?)
+10-29 20:28:34.374 26759 26784 D TestRequestBuilder: Using class path scanning to discover tests
+10-29 20:28:34.374 26759 26784 I TestRequestBuilder: Scanning classpath to find tests in paths [/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk]
+10-29 20:28:34.375 26759 26784 W dination.nbench: Opening an oat file without a class loader. Are you using the deprecated DexFile APIs?
+10-29 20:28:34.479 26759 26784 I TestRunner: run started: 1 tests
+10-29 20:28:34.480 26759 26784 I TestRunner: started: bench(org.coordination.nbench.BenchTest)
+10-29 20:28:34.689 26759 26784 I NOIR    : NOIR_DEVICE {"big_cores":[4,5,6,7],"cpu_max_freq_khz":[1950000,1950000,1950000,1950000,2600000,2600000,2600000,3105000],"manufacturer":"Google","mem_available_kb":10961248,"mem_total_kb":15926036,"model":"Pixel 9 Pro","sdk":"34","soc_manufacturer":"Google","soc_model":"Tensor G4","threads":7}
+10-29 20:28:34.698 26759 26784 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-29 20:28:34.732 26759 26793 D vulkan  : searching for layers in '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/lib/arm64'
+10-29 20:28:34.733 26759 26793 D vulkan  : searching for layers in '/data/app/~~DEdEYVEZqaYsVKt7MGrkTg==/org.coordination.nbench.test-IK4FFFOghkXNqv8JcCEmcQ==/base.apk!/lib/arm64-v8a'
+10-29 20:28:34.733 26759 26793 D vulkan  : searching for layers in '/data/app/~~A9_x00KpzvDCkysRuJTdLQ==/org.coordination.nbench-nEgnCrS2pajYTTXDCpWv6g==/base.apk!/lib/arm64-v8a'
+10-29 20:28:34.739 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: PRE_ON_CREATE
+10-29 20:28:34.740 26759 26759 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-29 20:28:34.743 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 279646685; UID 10296; state: DISABLED
+10-29 20:28:34.744 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10296; state: ENABLED
+10-29 20:28:34.744 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 63938206; UID 10296; state: DISABLED
+10-29 20:28:34.746 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 332679525; UID 10296; state: DISABLED
+10-29 20:28:34.753 26759 26759 I wm_on_create_called: [25446064,org.coordination.nbench.MainActivity,performCreate,13]
+10-29 20:28:34.753 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: CREATED
+10-29 20:28:34.754 26759 26759 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=org.coordination.nbench.MainActivity@44a4193
+10-29 20:28:34.754 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: STARTED
+10-29 20:28:34.754 26759 26759 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=org.coordination.nbench.MainActivity@44a4193
+10-29 20:28:34.754 26759 26759 I wm_on_start_called: [25446064,org.coordination.nbench.MainActivity,handleStartActivity,0]
+10-29 20:28:34.756 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: RESUMED
+10-29 20:28:34.756 26759 26759 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=org.coordination.nbench.MainActivity@44a4193
+10-29 20:28:34.756 26759 26759 I wm_on_resume_called: [25446064,org.coordination.nbench.MainActivity,RESUME_ACTIVITY,0]
+10-29 20:28:34.759 26759 26759 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10296; state: DISABLED
+10-29 20:28:34.764 26759 26759 I wm_on_top_resumed_gained_called: [25446064,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 20:28:34.783 26759 26759 I viewroot_draw_event: [VRI[MainActivity],reportDrawFinished seqId=0]
+10-29 20:28:36.843 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":182416,"iter":0,"load_ms":580,"low_memory_mode":false,"mem_available_kb_before":10981272,"peak_rss_kb":267708,"phase":"cold","prove_ms":1005,"srs_ms":119,"step":"ecdsa","total_ms":1586,"vk_ms":461}
+10-29 20:28:36.843 26759 26784 I NOIR    : NOIR_SIZES {"circuit_bytes":6058,"proof_bytes":14656,"srs_bytes":4194368,"step":"ecdsa","vk_bytes":3680}
+10-29 20:28:47.958 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":231728,"iter":1,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":10961736,"peak_rss_kb":268644,"phase":"warm","prove_ms":1088,"step":"ecdsa","total_ms":1088}
+10-29 20:28:59.049 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":236488,"iter":2,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":10942980,"peak_rss_kb":267284,"phase":"warm","prove_ms":1048,"step":"ecdsa","total_ms":1048}
+10-29 20:29:10.179 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":235548,"iter":3,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":10942376,"peak_rss_kb":265700,"phase":"warm","prove_ms":1086,"step":"ecdsa","total_ms":1086}
+10-29 20:29:21.292 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":235028,"iter":4,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":10935232,"peak_rss_kb":267564,"phase":"warm","prove_ms":1074,"step":"ecdsa","total_ms":1074}
+--------- beginning of radio
+10-29 20:29:32.417 26759 26784 I NOIR    : NOIR_ITER {"base_rss_kb":235280,"iter":5,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":10921380,"peak_rss_kb":266816,"phase":"warm","prove_ms":1082,"step":"ecdsa","total_ms":1082}
+10-29 20:29:32.446 26759 26759 I wm_on_top_resumed_lost_called: [25446064,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 20:29:32.447 26759 26759 I wm_on_paused_called: [25446064,org.coordination.nbench.MainActivity,performPause,0]
+10-29 20:29:32.447 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: PAUSED
+10-29 20:29:32.448 26759 26759 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=org.coordination.nbench.MainActivity@44a4193
+10-29 20:29:32.469  1369  1565 I am_pss  : [26759,10296,org.coordination.nbench,124284928,117477376,0,260194304,0,2,9]
+10-29 20:29:32.528 26759 26759 D VRI[MainActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-29 20:29:32.537 26759 26759 I viewroot_draw_event: [VRI[MainActivity],Not drawing due to not visible]
+10-29 20:29:32.538 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: STOPPED
+10-29 20:29:32.538 26759 26759 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=org.coordination.nbench.MainActivity@44a4193
+10-29 20:29:32.538 26759 26759 I wm_on_stop_called: [25446064,org.coordination.nbench.MainActivity,LIFECYCLER_STOP_ACTIVITY,0]
+10-29 20:29:32.539 26759 26759 I wm_on_destroy_called: [25446064,org.coordination.nbench.MainActivity,performDestroy,0]
+10-29 20:29:32.539 26759 26759 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@44a4193 in: DESTROYED
+10-29 20:29:32.539 26759 26759 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-29 20:29:32.541 26759 26759 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@5bbb471
+10-29 20:29:32.543 26759 26784 I NOIR    : NOIR_DONE {"errors":0,"ok":6}
+10-29 20:29:32.544 26759 26784 I TestRunner: finished: bench(org.coordination.nbench.BenchTest)
+10-29 20:29:32.552 26759 26784 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+10-29 20:29:32.564  1369  4821 I ActivityManager: Force stopping org.coordination.nbench appid=10296 user=0: finished inst
+10-29 20:29:32.568  1369  4821 I ActivityManager: Killing 26759:org.coordination.nbench/u0a296 (adj 0): stop org.coordination.nbench due to finished inst
+10-29 20:29:32.568  1369  4821 I am_kill : [0,26759,org.coordination.nbench,0,stop org.coordination.nbench due to finished inst,196968]
+10-29 20:29:32.597  1369  4821 V ActivityManager: Got obituary of 26759:org.coordination.nbench

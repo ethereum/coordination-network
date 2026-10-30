@@ -4,3 +4,5 @@ local.properties
 # Written by scripts/build-android-bench.sh
 app/src/main/jniLibs/
 app/src/main/kotlin/
+# The phone results keep their trimmed logcat files, which the root .gitignore's *.log would drop
+!results/**/*.log

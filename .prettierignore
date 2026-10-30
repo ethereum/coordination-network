@@ -62,3 +62,6 @@ packages/contracts/deployments
 
 # bench circuit artifacts and witnesses, pinned by sha256 in bench_workload_primitives.json
 packages/noir-prover-native/android-bench/circuits/*.json
+
+# phone bench results, kept byte-for-byte as exported
+packages/noir-prover-native/android-bench/results

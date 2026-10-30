@@ -1,0 +1,157 @@
+--------- beginning of main
+--------- beginning of system
+10-29 20:28:09.951  2513  3699 I ActivityManager: Force stopping org.coordination.nbench appid=10311 user=0: start instr
+--------- beginning of events
+10-29 20:28:09.963  2513  2826 I am_proc_start: [0,3523,10311,org.coordination.nbench,added application,org.coordination.nbench]
+10-29 20:28:09.963  2513  2826 I ActivityManager: Start proc 3523:org.coordination.nbench/u0a311 for added application org.coordination.nbench
+10-29 20:28:09.979  3523  3523 I dination.nbench: Late-enabling -Xcheck:jni
+10-29 20:28:09.993  3523  3523 I dination.nbench: Using CollectorTypeCC GC.
+10-29 20:28:10.006  3523  3523 D ActivityThread: setConscryptValidator
+10-29 20:28:10.006  3523  3523 D ActivityThread: setConscryptValidator - put
+10-29 20:28:10.010  2513  3699 I am_proc_bound: [0,3523,org.coordination.nbench]
+10-29 20:28:10.025  3523  3523 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10311; state: ENABLED
+10-29 20:28:10.026  3523  3523 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10311; state: ENABLED
+10-29 20:28:10.038  3523  3523 W ActivityThread: Package uses different ABI(s) than its instrumentation: package[org.coordination.nbench]: arm64-v8a, null instrumentation[org.coordination.nbench.test]: null, null
+10-29 20:28:10.041  3523  3523 W dination.nbench: ClassLoaderContext shared library size mismatch. Expected=2, found=0 (PCL[]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]} | PCL[])
+10-29 20:28:10.042  3523  3523 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[] | PCL[/system/framework/android.test.runner.jar*4168958247])
+10-29 20:28:10.043  3523  3523 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=2 (PCL[] | PCL[/system/framework/android.test.runner.jar*4168958247:/system/framework/android.test.mock.jar*1563465130])
+10-29 20:28:10.043  3523  3523 W ziparchive: Unable to open '/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.dm': No such file or directory
+10-29 20:28:10.043  3523  3523 W ziparchive: Unable to open '/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.dm': No such file or directory
+10-29 20:28:10.050  3523  3523 W ziparchive: Unable to open '/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.dm': No such file or directory
+10-29 20:28:10.050  3523  3523 W ziparchive: Unable to open '/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.dm': No such file or directory
+10-29 20:28:10.089  3523  3523 D nativeloader: Configuring clns-4 for other apk /system/framework/android.test.runner.jar:/system/framework/android.test.mock.jar:/system/framework/android.test.base.jar:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/lib/arm64:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/lib/arm64:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!/lib/arm64-v8a:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/org.coordination.nbench
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment: Currently set values for:
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment: ANGLE GameManagerService for org.coordination.nbench: false
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment: org.coordination.nbench is not listed in per-application setting
+10-29 20:28:10.099  3523  3523 V GraphicsEnvironment: App is not on the allowlist for updatable production driver.
+10-29 20:28:10.102  3523  3523 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 20:28:10.104  3523  3523 D nativeloader: Configuring clns-5 for other apk /system/framework/android.test.mock.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/lib/arm64:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 20:28:10.104  3523  3523 D nativeloader: Extending system_exposed_libraries: libhumantracking.arcsoft.so:libPortraitDistortionCorrection.arcsoft.so:libPortraitDistortionCorrectionCali.arcsoft.so:libface_landmark.arcsoft.so:libFacialStickerEngine.arcsoft.so:libfrtracking_engine.arcsoft.so:libFaceRecognition.arcsoft.so:libveengine.arcsoft.so:lib_pet_detection.arcsoft.so:libae_bracket_hdr.arcsoft.so:libaiclearzoom_raw.arcsoft.so:libacz_hhdr.arcsoft.so:libhybrid_high_dynamic_range.arcsoft.so:libimage_enhancement.arcsoft.so:liblow_light_hdr.arcsoft.so:libmacroclearshot_raw.arcsoft.so:libhigh_dynamic_range.arcsoft.so:libsuperresolution_raw.arcsoft.so:libobjectcapture_jni.arcsoft.so:libobjectcapture.arcsoft.so:libFacialAttributeDetection.arcsoft.so:libaudiomirroring_jni.audiomirroring.samsung.so:libBeauty_v4.camera.samsung.so:libexifa.camera.samsung.so:libjpega.camera.samsung.so:libOpenCv.camera.samsung.so:libVideoClassifier.camera.samsung.so:libImageScreener.camera.samsung.so:libMyFilter.camera.samsung.so:libtflite2.myfilters.camera.samsung.so:libHIDTSna
+10-29 20:28:10.104  3523  3523 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 20:28:10.106  3523  3523 D nativeloader: Configuring clns-6 for other apk /system/framework/android.test.runner.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/lib/arm64:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 20:28:10.106  3523  3523 D nativeloader: Extending system_exposed_libraries: libhumantracking.arcsoft.so:libPortraitDistortionCorrection.arcsoft.so:libPortraitDistortionCorrectionCali.arcsoft.so:libface_landmark.arcsoft.so:libFacialStickerEngine.arcsoft.so:libfrtracking_engine.arcsoft.so:libFaceRecognition.arcsoft.so:libveengine.arcsoft.so:lib_pet_detection.arcsoft.so:libae_bracket_hdr.arcsoft.so:libaiclearzoom_raw.arcsoft.so:libacz_hhdr.arcsoft.so:libhybrid_high_dynamic_range.arcsoft.so:libimage_enhancement.arcsoft.so:liblow_light_hdr.arcsoft.so:libmacroclearshot_raw.arcsoft.so:libhigh_dynamic_range.arcsoft.so:libsuperresolution_raw.arcsoft.so:libobjectcapture_jni.arcsoft.so:libobjectcapture.arcsoft.so:libFacialAttributeDetection.arcsoft.so:libaudiomirroring_jni.audiomirroring.samsung.so:libBeauty_v4.camera.samsung.so:libexifa.camera.samsung.so:libjpega.camera.samsung.so:libOpenCv.camera.samsung.so:libVideoClassifier.camera.samsung.so:libImageScreener.camera.samsung.so:libMyFilter.camera.samsung.so:libtflite2.myfilters.camera.samsung.so:libHIDTSna
+10-29 20:28:10.107  3523  3523 W dination.nbench: ClassLoaderContext shared library size mismatch. Expected=2, found=3 (PCL[]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]} | PCL[]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]#PCL[/system/framework/android.test.runner.jar*4168958247]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]}};PCL[/system/framework/android.test.runner.jar*4168958247:/system/framework/android.test.mock.jar*1563465130:/system/framework/android.test.base.jar*836642756:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk*1144079803:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes2.dex*342232046:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes3.dex*849473781:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk*3645186006:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes2.dex*3370077231:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes3.dex*3204554542:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes4.dex*3271484022])
+10-29 20:28:10.108  3523  3523 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[] | PCL[/system/framework/android.test.runner.jar*4168958247]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]#PCL[/system/framework/android.test.runner.jar*4168958247]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]}};PCL[/system/framework/android.test.runner.jar*4168958247:/system/framework/android.test.mock.jar*1563465130:/system/framework/android.test.base.jar*836642756:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk*1144079803:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes2.dex*342232046:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes3.dex*849473781:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk*3645186006:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes2.dex*3370077231:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes3.dex*3204554542:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes4.dex*3271484022])
+10-29 20:28:10.108  3523  3523 W dination.nbench: ClassLoaderContext classpath size mismatch. expected=0, found=2 (PCL[] | PCL[/system/framework/android.test.runner.jar*4168958247:/system/framework/android.test.mock.jar*1563465130]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]#PCL[/system/framework/android.test.runner.jar*4168958247]{PCL[/system/framework/android.test.base.jar*836642756]#PCL[/system/framework/android.test.mock.jar*1563465130]}};PCL[/system/framework/android.test.runner.jar*4168958247:/system/framework/android.test.mock.jar*1563465130:/system/framework/android.test.base.jar*836642756:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk*1144079803:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes2.dex*342232046:/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk!classes3.dex*849473781:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk*3645186006:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes2.dex*3370077231:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes3.dex*3204554542:/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.apk!classes4.dex*3271484022])
+10-29 20:28:10.109  3523  3523 W ziparchive: Unable to open '/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.dm': No such file or directory
+10-29 20:28:10.109  3523  3523 W ziparchive: Unable to open '/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.dm': No such file or directory
+10-29 20:28:10.115  3523  3523 W ziparchive: Unable to open '/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.dm': No such file or directory
+10-29 20:28:10.115  3523  3523 W ziparchive: Unable to open '/data/app/~~b-IEeWUqCzC73ySVcR3Drg==/org.coordination.nbench-DrT6YzsFrtnW9goaaFf5CQ==/base.dm': No such file or directory
+10-29 20:28:10.179  3523  3523 I AndroidJUnitRunner: newApplication android.app.Application
+10-29 20:28:10.180  3523  3523 I AndroidJUnitRunner: onCreate Bundle[EMPTY_PARCEL]
+10-29 20:28:10.181  3523  3523 D AndroidJUnitRunner: Use the raw file system for managing file I/O.
+10-29 20:28:10.187  3523  3523 V TestEventClient: No service name argument was given (testDiscoveryService, testRunEventService or orchestratorService)
+10-29 20:28:10.188  3523  3595 D AndroidJUnitRunner: onStart is called.
+10-29 20:28:10.200  3523  3595 I InstrConnection: Could not send broadcast or register receiver (isolatedProcess?)
+10-29 20:28:10.207  3523  3595 D TestRequestBuilder: Using class path scanning to discover tests
+10-29 20:28:10.208  3523  3595 I TestRequestBuilder: Scanning classpath to find tests in paths [/data/app/~~DzE4wYJNA2pfh74wUiLK3g==/org.coordination.nbench.test-1q_FRjyjam6uSYce2ZTNKg==/base.apk]
+10-29 20:28:10.210  3523  3595 W dination.nbench: Opening an oat file without a class loader. Are you using the deprecated DexFile APIs?
+10-29 20:28:10.310  3523  3595 I TestRunner: run started: 1 tests
+10-29 20:28:10.311  3523  3595 I TestRunner: started: bench(org.coordination.nbench.BenchTest)
+10-29 20:28:10.526  3523  3595 I NOIR    : NOIR_DEVICE {"big_cores":[3,4,5,6,7],"cpu_max_freq_khz":[2016000,2016000,2016000,2803200,2803200,2803200,2803200,3360000],"manufacturer":"samsung","mem_available_kb":7045648,"mem_total_kb":11294224,"model":"SM-S918B","sdk":"34","soc_manufacturer":"QTI","soc_model":"SM8550","threads":6}
+10-29 20:28:10.532  3523  3595 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: QUALCOMM build                   : 7b26bdd942, Iab69c31769
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Build Date                       : 08/28/23
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: OpenGL ES Shader Compiler Version: E031.41.03.44
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Local Branch                     : 
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Remote Branch                    : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.13.2.0.11.00.00.855.659
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Remote Branch                    : NONE
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Reconstruct Branch               : NOTHING
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Build Config                     : S P 14.1.4 AArch64
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+10-29 20:28:10.567  3523  3627 I AdrenoGLES-0: Driver Version                   : 0676.42
+10-29 20:28:10.571  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: PRE_ON_CREATE
+10-29 20:28:10.571  3523  3523 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-29 20:28:10.576  3523  3627 I AdrenoGLES-0: PFP: 0x01740158, ME: 0x00000000
+10-29 20:28:10.577  3523  3523 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10311; state: ENABLED
+10-29 20:28:10.579  3523  3627 W Adreno-AppProfiles: Could not find QSPM HAL service. Skipping adreno profile processing.
+10-29 20:28:10.580  3523  3627 I AdrenoUtils: <ReadGpuID:407>: Reading chip ID through GSL
+10-29 20:28:10.585  3523  3523 I DecorView: setWindowBackground: isPopOver=false color=fffeeee3 d=android.graphics.drawable.ColorDrawable@e5cc7f2
+10-29 20:28:10.590  3523  3523 I wm_on_create_called: [35617293,org.coordination.nbench.MainActivity,performCreate,19]
+10-29 20:28:10.590  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: CREATED
+10-29 20:28:10.590  3523  3523 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=org.coordination.nbench.MainActivity@7594a42
+10-29 20:28:10.590  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: STARTED
+10-29 20:28:10.590  3523  3523 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=org.coordination.nbench.MainActivity@7594a42
+10-29 20:28:10.590  3523  3523 I wm_on_start_called: [35617293,org.coordination.nbench.MainActivity,handleStartActivity,0]
+10-29 20:28:10.593  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: RESUMED
+10-29 20:28:10.593  3523  3523 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=org.coordination.nbench.MainActivity@7594a42
+10-29 20:28:10.593  3523  3523 I wm_on_resume_called: [35617293,org.coordination.nbench.MainActivity,RESUME_ACTIVITY,0]
+10-29 20:28:10.595  3523  3523 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10311; state: DISABLED
+10-29 20:28:10.597  3523  3523 W libc    : Access denied finding property "persist.dm.passive.display_brightness"
+10-29 20:28:10.597  3523  3523 W libc    : Access denied finding property "persist.dm.passive.ambient_brightness"
+10-29 20:28:10.598  3523  3627 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+10-29 20:28:10.602  3523  3523 D InsetsController: onStateChanged: host=org.coordination.nbench/org.coordination.nbench.MainActivity from=android.view.ViewRootImpl.setView:1717 state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2316), mDisplayCutout=DisplayCutout{insets=Rect(0, 75 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(513, 0 - 567, 75), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2316 physicalDisplayWidth=1080 physicalDisplayHeight=2316 density={2.8125} cutoutSpec={M 0,0 H -9.466666666666667 V 26.66666666666667‬ H 9.466666666666667 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=0, center=Point(0, 0)}, RoundedCorner{position=TopRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomRight, radius=0, center=Point(0, 0)}, RoundedCorner{position=BottomLeft, radius=0, center=Point(0, 0)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2316), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(956, 0 - 1080, 75) rotation=0}, mDisplayShape=DisplayShape{ spec=1667685767 displayWidth=1440 displayHeight=3088 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mVisible=false mFlags=[]}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,75] mVisible=true mFlags=[]}, InsetsSource: {232c0000 mType=statusBars mFrame=[0,0][1080,75] mVisible=true mFlags=[]}, InsetsSource: {232c0005 mType=mandatorySystemGestures mFrame=[0,0][1080,109] mVisible=true mFlags=[]}, InsetsSource: {232c0006 mType=tappableElement mFrame=[0,0][1080,75] mVisible=true mFlags=[]}, InsetsSource: {42450001 mType=navigationBars mFrame=[0,2181][1080,2316] mVisible=true mFlags=[]}, InsetsSource: {42450004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]}, InsetsSource: {42450005 mType=mandatorySystemGestures mFrame=[0,2181][1080,2316] mVisible=true mFlags=[]}, InsetsSource: {42450006 mType=tappableElement mFrame=[0,2181][1080,2316] mVisible=true mFlags=[]}, InsetsSource: {42450024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags=[]} }
+10-29 20:28:10.602  3523  3523 I ViewRootImpl@353b331[MainActivity]: synced displayState. AttachInfo displayState=2
+10-29 20:28:10.602  3523  3523 I ViewRootImpl@353b331[MainActivity]: setView = com.android.internal.policy.DecorView@5ff516d TM=true
+10-29 20:28:10.602  3523  3523 I IDS_TAG : Starting IDS observe window
+10-29 20:28:10.603  3523  3523 I IDS_TAG : Getting Shared Preference for android.app.Application@fd311a2 uid = 10311
+10-29 20:28:10.604  3523  3523 I IDS_TAG : App android.app.Application@fd311a2 has not finished training
+10-29 20:28:10.605  3523  3523 I wm_on_top_resumed_gained_called: [35617293,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 20:28:10.605  3523  3523 I IDS_TAG : Closing IDS observe window
+10-29 20:28:10.605  3523  3523 I IDS_TAG : Getting Shared Preference for android.app.Application@fd311a2 uid = 10311
+10-29 20:28:10.605  3523  3523 I IDS_TAG : IDS count updated to 2 for android.app.Application@fd311a2
+10-29 20:28:10.617  3523  3523 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= ViewRootImpl@353b331[MainActivity] mNativeObject= 0xb40000724c835b00 sc.mNativeObject= 0xb40000724c7b66c0 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:2979 android.view.ViewRootImpl.relayoutWindow:9998 android.view.ViewRootImpl.performTraversals:4056 android.view.ViewRootImpl.doTraversal:3239 android.view.ViewRootImpl$TraversalRunnable.run:11197 android.view.Choreographer$CallbackRecord.run:1650 android.view.Choreographer$CallbackRecord.run:1659 android.view.Choreographer.doCallbacks:1129 android.view.Choreographer.doFrame:1055 android.view.Choreographer$FrameDisplayEventReceiver.run:1622 
+10-29 20:28:10.617  3523  3523 I BLASTBufferQueue_Java: update, w= 1080 h= 2316 mName = ViewRootImpl@353b331[MainActivity] mNativeObject= 0xb40000724c835b00 sc.mNativeObject= 0xb40000724c7b66c0 format= -1 caller= android.graphics.BLASTBufferQueue.<init>:89 android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:2979 android.view.ViewRootImpl.relayoutWindow:9998 android.view.ViewRootImpl.performTraversals:4056 android.view.ViewRootImpl.doTraversal:3239 android.view.ViewRootImpl$TraversalRunnable.run:11197 
+10-29 20:28:10.618  3523  3523 I ViewRootImpl@353b331[MainActivity]: Relayout returned: old=(0,0,1080,2316) new=(0,0,1080,2316) req=(1080,2316)0 dur=5 res=0x403 s={true 0xb40000724c812800} ch=true seqId=0
+10-29 20:28:10.618  3523  3523 I ViewRootImpl@353b331[MainActivity]: performConfigurationChange setNightDimText nightDimLevel=0
+10-29 20:28:10.618  3523  3523 D ViewRootImpl@353b331[MainActivity]: mThreadedRenderer.initialize() mSurface={isValid=true 0xb40000724c812800} hwInitialized=true
+10-29 20:28:10.619  3523  3523 D ViewRootImpl@353b331[MainActivity]: reportNextDraw android.view.ViewRootImpl.performTraversals:4658 android.view.ViewRootImpl.doTraversal:3239 android.view.ViewRootImpl$TraversalRunnable.run:11197 android.view.Choreographer$CallbackRecord.run:1650 android.view.Choreographer$CallbackRecord.run:1659 
+10-29 20:28:10.620  3523  3523 D ViewRootImpl@353b331[MainActivity]: Setup new sync=wmsSync-ViewRootImpl@353b331[MainActivity]#0
+10-29 20:28:10.620  3523  3523 D ViewRootImpl@353b331[MainActivity]: Creating new active sync group ViewRootImpl@353b331[MainActivity]#1
+10-29 20:28:10.620  3523  3523 D ViewRootImpl@353b331[MainActivity]: registerCallbacksForSync syncBuffer=false
+10-29 20:28:10.622  3523  3660 D ViewRootImpl@353b331[MainActivity]: Received frameDrawingCallback syncResult=0 frameNum=1.
+10-29 20:28:10.622  3523  3660 I ViewRootImpl@353b331[MainActivity]: mWNT: t=0xb4000071f6fe0800 mBlastBufferQueue=0xb40000724c835b00 fn= 1 caller= android.view.ViewRootImpl$8.onFrameDraw:13614 android.view.ThreadedRenderer$1.onFrameDraw:788 <bottom of call stack> 
+10-29 20:28:10.622  3523  3660 D ViewRootImpl@353b331[MainActivity]: Setting up sync and frameCommitCallback
+10-29 20:28:10.626  3523  3627 I BLASTBufferQueue: [ViewRootImpl@353b331[MainActivity]#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+10-29 20:28:10.627  3523  3627 D ViewRootImpl@353b331[MainActivity]: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+10-29 20:28:10.627  3523  3627 D OpenGLRenderer: CFMS:: SetUp Pid : 3523    Tid : 3627
+10-29 20:28:10.627  3523  3523 D ViewRootImpl@353b331[MainActivity]: reportDrawFinished
+10-29 20:28:10.628  3523  3523 I ViewRootImpl@353b331[MainActivity]: registerCallbackForPendingTransactions
+10-29 20:28:10.631  3523  3523 D InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=2
+10-29 20:28:10.631  3523  3523 D InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=1
+10-29 20:28:10.633  3523  3523 I wm_on_idle_called: {org.coordination.nbench/org.coordination.nbench.MainActivity}
+10-29 20:28:10.633  3523  3663 I ViewRootImpl@353b331[MainActivity]: mWNT: t=0xb4000071f6fe1e80 mBlastBufferQueue=0xb40000724c835b00 fn= 2 caller= android.view.ViewRootImpl$6.onFrameDraw:5539 android.view.ViewRootImpl$2.onFrameDraw:2103 android.view.ThreadedRenderer$1.onFrameDraw:788 
+10-29 20:28:10.639  3523  3523 I ViewRootImpl@353b331[MainActivity]: MSG_WINDOW_FOCUS_CHANGED 1 0
+10-29 20:28:10.640  3523  3523 D ViewRootImpl@353b331[MainActivity]: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb40000724c812800}
+10-29 20:28:10.640  3523  3523 D InputMethodManagerUtils: startInputInner - Id : 0
+10-29 20:28:10.640  3523  3523 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+10-29 20:28:10.643  3523  3523 D InputMethodManagerUtils: startInputInner - Id : 0
+10-29 20:28:10.646  3523  3523 D InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=false, type=8
+10-29 20:28:10.969  3523  3523 I ViewRootImpl@353b331[MainActivity]: onDisplayChanged oldDisplayState=2 newDisplayState=2
+--------- beginning of radio
+10-29 20:28:12.092  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":144544,"iter":0,"load_ms":344,"low_memory_mode":false,"mem_available_kb_before":7073900,"peak_rss_kb":239812,"phase":"cold","prove_ms":720,"srs_ms":72,"step":"ecdsa","total_ms":1065,"vk_ms":272}
+10-29 20:28:12.092  3523  3595 I NOIR    : NOIR_SIZES {"circuit_bytes":6058,"proof_bytes":14656,"srs_bytes":4194368,"step":"ecdsa","vk_bytes":3680}
+10-29 20:28:22.909  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":241264,"iter":1,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":7053408,"peak_rss_kb":310000,"phase":"warm","prove_ms":790,"step":"ecdsa","total_ms":790}
+10-29 20:28:33.703  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":310616,"iter":2,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":7034584,"peak_rss_kb":315100,"phase":"warm","prove_ms":761,"step":"ecdsa","total_ms":761}
+10-29 20:28:44.496  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":312680,"iter":3,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":7027336,"peak_rss_kb":313296,"phase":"warm","prove_ms":765,"step":"ecdsa","total_ms":765}
+10-29 20:28:55.259  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":312980,"iter":4,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":7026952,"peak_rss_kb":313360,"phase":"warm","prove_ms":738,"step":"ecdsa","total_ms":738}
+10-29 20:29:06.050  3523  3595 I NOIR    : NOIR_ITER {"base_rss_kb":313044,"iter":5,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":7023796,"peak_rss_kb":313424,"phase":"warm","prove_ms":765,"step":"ecdsa","total_ms":765}
+10-29 20:29:06.065  3523  3523 I wm_on_top_resumed_lost_called: [35617293,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 20:29:06.087  3523  3523 I wm_on_paused_called: [35617293,org.coordination.nbench.MainActivity,performPause,0]
+10-29 20:29:06.087  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: PAUSED
+10-29 20:29:06.087  3523  3523 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=org.coordination.nbench.MainActivity@7594a42
+10-29 20:29:06.110  3523  3523 I ViewRootImpl@353b331[MainActivity]: MSG_WINDOW_FOCUS_CHANGED 0 0
+10-29 20:29:06.199  3523  3523 I ViewRootImpl@353b331[MainActivity]: handleAppVisibility mAppVisible = true visible = false
+10-29 20:29:06.214  3523  3523 I ViewRootImpl@353b331[MainActivity]: Relayout returned: old=(0,0,1080,2316) new=(0,0,1080,2316) req=(1080,2316)8 dur=4 res=0x402 s={false 0x0} ch=true seqId=0
+10-29 20:29:06.215  3523  3523 I ViewRootImpl@353b331[MainActivity]: stopped(true) old = false
+10-29 20:29:06.215  3523  3523 D ViewRootImpl@353b331[MainActivity]: WindowStopped on org.coordination.nbench/org.coordination.nbench.MainActivity set to true
+10-29 20:29:06.215  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: STOPPED
+10-29 20:29:06.216  3523  3523 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=org.coordination.nbench.MainActivity@7594a42
+10-29 20:29:06.216  3523  3523 I wm_on_stop_called: [35617293,org.coordination.nbench.MainActivity,LIFECYCLER_STOP_ACTIVITY,1]
+10-29 20:29:06.216  3523  3523 I wm_on_destroy_called: [35617293,org.coordination.nbench.MainActivity,performDestroy,0]
+10-29 20:29:06.216  3523  3523 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@7594a42 in: DESTROYED
+10-29 20:29:06.216  3523  3523 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-29 20:29:06.217  3523  3523 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda21@ea1511c
+10-29 20:29:06.218  3523  3595 I NOIR    : NOIR_DONE {"errors":0,"ok":6}
+10-29 20:29:06.218  3523  3523 I ViewRootImpl@353b331[MainActivity]: dispatchDetachedFromWindow
+10-29 20:29:06.219  3523  3595 I TestRunner: finished: bench(org.coordination.nbench.BenchTest)
+10-29 20:29:06.220  3523  3523 D InputTransport: Input channel destroyed: '4e910cc', fd=106
+10-29 20:29:06.221  3523  3595 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+10-29 20:29:06.221  3523  3523 D InputTransport: Input channel destroyed: 'ClientS', fd=131
+10-29 20:29:06.224  2513  3699 I ActivityManager: Force stopping org.coordination.nbench appid=10311 user=0: finished inst
+10-29 20:29:06.225  2513  3699 I ActivityManager: Killing 3523:org.coordination.nbench/u0a311 (adj 0): stop org.coordination.nbench due to finished inst
+10-29 20:29:06.225  2513  3699 I am_kill : [0,3523,org.coordination.nbench,0,stop org.coordination.nbench due to finished inst]
+10-29 20:29:06.228  2513  3699 D ActivityManager: proc ProcessRecord{7f76899 3523:org.coordination.nbench/u0a311} already removed. so we skip next process.
+10-29 20:29:06.241  2513  5605 V ActivityManager: Got obituary of 3523:org.coordination.nbench

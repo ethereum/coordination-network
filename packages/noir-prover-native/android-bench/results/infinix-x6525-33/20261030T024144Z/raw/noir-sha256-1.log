@@ -1,0 +1,126 @@
+--------- beginning of events
+--------- beginning of main
+--------- beginning of system
+10-29 19:42:28.683  1305  2395 I ActivityManager: Force stopping org.coordination.nbench appid=10213 user=0: start instr
+10-29 19:42:28.690  1305  2395 D ActivityManager: PROFILE_FROM_SHELL is disabled for ProcessRecord{46ca60d 0:org.coordination.nbench/u0a213}
+10-29 19:42:28.692  1305  1358 D ActivityManager: asking zygote to start proc:ProcessRecord{46ca60d 0:org.coordination.nbench/u0a213}
+10-29 19:42:28.707  1305  1358 I am_proc_start: [0,22937,10213,org.coordination.nbench,added application,org.coordination.nbench]
+10-29 19:42:28.707  1305  1358 I ActivityManager: Start proc 22937:org.coordination.nbench/u0a213 for added application org.coordination.nbench
+10-29 19:42:28.719 22937 22937 I dination.nbench: Late-enabling -Xcheck:jni
+10-29 19:42:28.740 22937 22937 I dination.nbench: Using CollectorTypeCMC GC.
+10-29 19:42:28.768 22937 22937 W ziparchive: Unable to open '/system_ext/framework/unisoc-framework.dm': No such file or directory
+10-29 19:42:28.768 22937 22937 W ziparchive: Unable to open '/system_ext/framework/unisoc-framework.dm': No such file or directory
+10-29 19:42:28.776  1305  2395 I am_proc_bound: [0,22937,org.coordination.nbench]
+10-29 19:42:28.791 22937 22937 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10213; state: ENABLED
+10-29 19:42:28.796 22937 22937 D TranClassInfo: instance successfully. com.transsion.hubcore.graphics.TranGraphicImpl@a91370a from com.transsion.hubcore.graphics.ITranGraphic
+10-29 19:42:28.797 22937 22937 D os.SingleLiceFactory: instance successfully. com.transsion.typeface.v1.TypefaceLice@bce4fa from android.graphics.IGraphicLice
+10-29 19:42:28.797 22937 22937 D os.LiceInfo: instance successfully. com.transsion.graphics.GraphicLice@a55ab7b from android.graphics.IGraphicLice
+10-29 19:42:28.806 22937 22937 W ActivityThread: Package uses different ABI(s) than its instrumentation: package[org.coordination.nbench]: arm64-v8a, null instrumentation[org.coordination.nbench.test]: null, null
+10-29 19:42:28.820 22937 22937 W ziparchive: Unable to open '/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.dm': No such file or directory
+10-29 19:42:28.820 22937 22937 W ziparchive: Unable to open '/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.dm': No such file or directory
+10-29 19:42:28.840 22937 22937 W ziparchive: Unable to open '/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.dm': No such file or directory
+10-29 19:42:28.840 22937 22937 W ziparchive: Unable to open '/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.dm': No such file or directory
+10-29 19:42:28.916 22937 22937 D nativeloader: Configuring clns-4 for other apk /system/framework/android.test.runner.jar:/system/framework/android.test.mock.jar:/system/framework/android.test.base.jar:/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.apk:/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/lib/arm64:/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/lib/arm64:/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.apk!/lib/arm64-v8a:/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/org.coordination.nbench
+10-29 19:42:28.934 22937 22937 V GraphicsEnvironment: ANGLE Developer option for 'org.coordination.nbench' set to: 'default'
+10-29 19:42:28.935 22937 22937 V GraphicsEnvironment: ANGLE GameManagerService for org.coordination.nbench: false
+10-29 19:42:28.936 22937 22937 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-29 19:42:28.945 22937 22937 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 19:42:28.949 22937 22937 D nativeloader: Configuring clns-5 for other apk /system/framework/android.test.mock.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/lib/arm64:/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 19:42:28.950 22937 22937 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-29 19:42:28.955 22937 22937 D nativeloader: Configuring clns-6 for other apk /system/framework/android.test.runner.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/lib/arm64:/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/lib/arm64, permitted_path=/data:/mnt/expand
+10-29 19:42:28.964 22937 22937 W ziparchive: Unable to open '/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.dm': No such file or directory
+10-29 19:42:28.964 22937 22937 W ziparchive: Unable to open '/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.dm': No such file or directory
+10-29 19:42:28.982 22937 22937 W ziparchive: Unable to open '/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.dm': No such file or directory
+10-29 19:42:28.982 22937 22937 W ziparchive: Unable to open '/data/app/~~pWmdv_JkLbcPnkR1Fm3NvQ==/org.coordination.nbench-QRhrO15NofxBB4PRBIolrQ==/base.dm': No such file or directory
+10-29 19:42:29.068 22937 22937 I LoadedApk: No resource references to update in package com.transsion.theme.icon
+10-29 19:42:29.068 22937 22937 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-29 19:42:29.070 22937 22937 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-29 19:42:29.070 22937 22937 I AndroidJUnitRunner: newApplication android.app.Application
+10-29 19:42:29.072 22937 22937 I AndroidJUnitRunner: onCreate Bundle[EMPTY_PARCEL]
+10-29 19:42:29.074 22937 22937 D AndroidJUnitRunner: Use the raw file system for managing file I/O.
+10-29 19:42:29.090 22937 22937 V TestEventClient: No service name argument was given (testDiscoveryService, testRunEventService or orchestratorService)
+10-29 19:42:29.091 22937 22955 D AndroidJUnitRunner: onStart is called.
+10-29 19:42:29.114 22937 22955 D TestRequestBuilder: Using class path scanning to discover tests
+10-29 19:42:29.114 22937 22955 I TestRequestBuilder: Scanning classpath to find tests in paths [/data/app/~~FKXyCNmX8BU69t7ZN2yPjQ==/org.coordination.nbench.test-wVlVF3RLipKcwsh0VTzHww==/base.apk]
+10-29 19:42:29.116 22937 22955 W dination.nbench: Opening an oat file without a class loader. Are you using the deprecated DexFile APIs?
+10-29 19:42:29.371 22937 22955 I TestRunner: run started: 1 tests
+10-29 19:42:29.373 22937 22955 I TestRunner: started: bench(org.coordination.nbench.BenchTest)
+10-29 19:42:29.629 22937 22955 I NOIR    : NOIR_DEVICE {"big_cores":[0,1,2,3,4,5,6,7],"cpu_max_freq_khz":[1612000,1612000,1612000,1612000,1612000,1612000,1612000,1612000],"manufacturer":"INFINIX","mem_available_kb":2494880,"mem_total_kb":3861784,"model":"Infinix X6525","sdk":"33","soc_manufacturer":"Spreadtrum","soc_model":"T606","threads":8}
+10-29 19:42:29.640 22937 22955 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-29 19:42:29.724  1305  2702 I ActivityManager: Applaunch form com.transsion.XOSLauncher to org.coordination.nbench
+10-29 19:42:29.740 22937 22937 D ActivityThread: ++ activityComponent:org.coordination.nbench/org.coordination.nbench.MainActivity counts:1 ALEAK_CLEAR_SUPPORT:true
+10-29 19:42:29.745 22937 22937 D TranClassInfo: instance successfully. com.transsion.hubcore.app.TranActivityImpl@be01b0e from com.transsion.hubcore.app.ITranActivity
+10-29 19:42:29.745 22937 22937 D TranActivityAppturboImpl: attach
+10-29 19:42:29.745 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: PRE_ON_CREATE
+10-29 19:42:29.746 22937 22937 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-29 19:42:29.748 22937 22937 D TranClassInfo: instance successfully. com.transsion.hubcore.view.TranViewImpl@de99b3c from com.transsion.hubcore.view.ITranView
+10-29 19:42:29.772 22937 22937 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10213; state: ENABLED
+10-29 19:42:29.775 22937 22937 D os.SingleLice: instance successfully. com.transsion.dragdrop.v1.DragDropLice@6b97441 from com.transsion.dragdrop.DragDropLiceFactory
+10-29 19:42:29.775 22937 22937 D os.SingleLiceFactory: instance successfully. com.transsion.dragdrop.v1.DragDropLice@6b97441 from android.view.IViewLice
+10-29 19:42:29.775 22937 22937 D os.LiceInfo: instance successfully. com.transsion.view.ViewLice@9a87de6 from android.view.IViewLice
+10-29 19:42:29.778 22937 22937 D TranClassInfo: instance successfully. com.transsion.hubcore.internal.TranInternalViewImpl@e8137d from com.transsion.hubcore.internal.ITranInternalView
+10-29 19:42:29.779 22937 22937 D os.SingleLiceFactory: using com.android.internal.IInternalViewLice$DefaultImpl@86e9272 instead of com.transsion.freeform.FreeformLiceFactory  from com.android.internal.IInternalViewLice
+10-29 19:42:29.779 22937 22937 D os.SingleLice: instance successfully. com.transsion.whitenavigation.v1.WhiteNavigationLice@ddf46c3 from com.transsion.whitenavigation.WhiteNavigationLiceFactory
+10-29 19:42:29.779 22937 22937 D os.SingleLiceFactory: instance successfully. com.transsion.whitenavigation.v1.WhiteNavigationLice@ddf46c3 from com.android.internal.IInternalViewLice
+10-29 19:42:29.780 22937 22937 D os.SingleLiceFactory: using com.android.internal.IInternalViewLice$DefaultImpl@86e9272 instead of com.transsion.screenshothelper.ScreenShotHelperImplLiceFactory  from com.android.internal.IInternalViewLice
+10-29 19:42:29.780 22937 22937 D os.LiceInfo: instance successfully. com.transsion.internal.InternalViewLice@d72bb40 from com.android.internal.IInternalViewLice
+10-29 19:42:29.820 22937 22937 I wm_on_create_called: [140534050,org.coordination.nbench.MainActivity,performCreate]
+10-29 19:42:29.820 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: CREATED
+10-29 19:42:29.820 22937 22952 D ActivityThreadLice: received OSMessage 110001
+10-29 19:42:29.821 22937 22952 D ActivityThreadLice: send OSMessage 110001 to [-1]
+10-29 19:42:29.822 22937 22937 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=org.coordination.nbench.MainActivity@17df92f
+10-29 19:42:29.825 22937 22952 D OSServiceManager: update local os service os.activity from null to android.os.BinderProxy@d7e9c04
+10-29 19:42:29.828 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: STARTED
+10-29 19:42:29.829 22937 22937 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=org.coordination.nbench.MainActivity@17df92f
+10-29 19:42:29.829 22937 22937 I wm_on_start_called: [140534050,org.coordination.nbench.MainActivity,handleStartActivity]
+10-29 19:42:29.835 22937 22937 D TranActivityAppturboImpl: onResumeHork
+10-29 19:42:29.839 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: RESUMED
+10-29 19:42:29.839 22937 22937 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=org.coordination.nbench.MainActivity@17df92f
+10-29 19:42:29.839 22937 22937 I wm_on_resume_called: [140534050,org.coordination.nbench.MainActivity,RESUME_ACTIVITY]
+10-29 19:42:29.849 22937 22937 I SurfaceFactory: [static] sSurfaceFactory = com.transsion.rt.SurfaceFactoryImpl@b4b7470
+10-29 19:42:29.850 22937 22937 W libc    : Access denied finding property "ro.vendor.game_aisr_enable"
+10-29 19:42:29.872 22937 22937 I wm_on_top_resumed_gained_called: [140534050,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 19:42:29.898 22937 22937 D VRI[MainActivity]: performTraversals relayoutWindow: maybeSyncSeqId=-1 ,mSyncSeqId=0 ,relayoutResult=3
+10-29 19:42:29.932 22937 22983 I mali_gralloc: register: id=0x383000000b6, importpid=-1
+10-29 19:42:29.936 22937 22983 I mali_gralloc: register: id=0x383000000b7, importpid=-1
+10-29 19:42:29.956 22937 22983 I mali_gralloc: register: id=0x383000000b8, importpid=-1
+10-29 19:42:29.959 22937 22983 I mali_gralloc: register: id=0x383000000b9, importpid=-1
+10-29 19:42:30.074 22937 22966 W Parcel  : Expecting binder but got null!
+10-29 19:42:30.095 22937 22937 W libc    : Access denied finding property "persist.unipnp.debug"
+10-29 19:42:30.095 22937 22937 W libc    : Access denied finding property "persist.unipnp.debug"
+10-29 19:42:30.096 22937 22937 W ziparchive: Unable to open '/system_ext/framework/unipnp-framework.dm': No such file or directory
+10-29 19:42:30.096 22937 22937 W ziparchive: Unable to open '/system_ext/framework/unipnp-framework.dm': No such file or directory
+--------- beginning of radio
+10-29 19:42:47.502 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":174512,"iter":0,"load_ms":6913,"low_memory_mode":false,"mem_available_kb_before":2466572,"peak_rss_kb":395032,"phase":"cold","prove_ms":10217,"srs_ms":2034,"step":"sha256","total_ms":17131,"vk_ms":4878}
+10-29 19:42:47.502 22937 22955 I NOIR    : NOIR_SIZES {"circuit_bytes":552915,"proof_bytes":14656,"srs_bytes":16777280,"step":"sha256","vk_bytes":3680}
+10-29 19:43:07.831 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":225696,"iter":1,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":2460076,"peak_rss_kb":227120,"phase":"warm","prove_ms":10262,"step":"sha256","total_ms":10262}
+10-29 19:43:28.323 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":197140,"iter":2,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":2495500,"peak_rss_kb":232768,"phase":"warm","prove_ms":10424,"step":"sha256","total_ms":10424}
+10-29 19:43:48.709 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":197176,"iter":3,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":2499356,"peak_rss_kb":232940,"phase":"warm","prove_ms":10320,"step":"sha256","total_ms":10320}
+10-29 19:44:08.985 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":468836,"iter":4,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":2228864,"peak_rss_kb":468900,"phase":"warm","prove_ms":10254,"step":"sha256","total_ms":10254}
+10-29 19:44:29.544 22937 22955 I NOIR    : NOIR_ITER {"base_rss_kb":197472,"iter":5,"load_ms":0,"low_memory_mode":false,"mem_available_kb_before":2497560,"peak_rss_kb":233136,"phase":"warm","prove_ms":10494,"step":"sha256","total_ms":10494}
+10-29 19:44:29.573 22937 22937 I wm_on_top_resumed_lost_called: [140534050,org.coordination.nbench.MainActivity,topStateChangedWhenResumed]
+10-29 19:44:29.581 22937 22937 I wm_on_paused_called: [140534050,org.coordination.nbench.MainActivity,performPause]
+10-29 19:44:29.581 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: PAUSED
+10-29 19:44:29.582 22937 22937 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=org.coordination.nbench.MainActivity@17df92f
+10-29 19:44:29.629  1305  1338 I am_pss  : [22937,10213,org.coordination.nbench,361358336,347889664,159744,479842304,0,2,30]
+10-29 19:44:29.643 22937 22966 I mali_gralloc: unregister: id=0x383000000b8, base=0x0, importpid=22937
+10-29 19:44:29.643 22937 22966 I mali_gralloc: unregister: id=0x383000000b7, base=0x0, importpid=22937
+10-29 19:44:29.662 22937 22937 D VRI[MainActivity]: performTraversals relayoutWindow: maybeSyncSeqId=-1 ,mSyncSeqId=0 ,relayoutResult=2
+10-29 19:44:29.664 22937 22937 I mali_gralloc: unregister: id=0x383000000b9, base=0x0, importpid=22937
+10-29 19:44:29.664 22937 22937 I mali_gralloc: unregister: id=0x383000000b6, base=0x0, importpid=22937
+10-29 19:44:29.689  1305  2702 I ActivityManager: Applaunch form org.coordination.nbench to org.coordination.nbench.test
+10-29 19:44:29.826 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: STOPPED
+10-29 19:44:29.827 22937 22937 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=org.coordination.nbench.MainActivity@17df92f
+10-29 19:44:29.827 22937 22937 I wm_on_stop_called: [140534050,org.coordination.nbench.MainActivity,LIFECYCLER_STOP_ACTIVITY]
+10-29 19:44:29.869 22937 22937 D ActivityThread: mToDestroying.remove:ActivityRecord{dd031d2 token=android.os.BinderProxy@2c002d3 {org.coordination.nbench/org.coordination.nbench.MainActivity}}
+10-29 19:44:29.869 22937 22937 I wm_on_destroy_called: [140534050,org.coordination.nbench.MainActivity,performDestroy]
+10-29 19:44:29.869 22937 22937 D LifecycleMonitor: Lifecycle status change: org.coordination.nbench.MainActivity@17df92f in: DESTROYED
+10-29 19:44:29.870 22937 22937 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-29 19:44:29.896 22937 22955 I NOIR    : NOIR_DONE {"errors":0,"ok":6}
+10-29 19:44:29.899 22937 22955 I TestRunner: finished: bench(org.coordination.nbench.BenchTest)
+10-29 19:44:29.903 22937 22955 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+10-29 19:44:29.918  1305  3602 I ActivityManager: Force stopping org.coordination.nbench appid=10213 user=0: finished inst
+10-29 19:44:29.920  1305  3602 I ActivityManager: Killing 22937:org.coordination.nbench/u0a213 (adj 0): stop org.coordination.nbench due to finished inst
+10-29 19:44:29.921  1305  3602 I am_kill : [0,22937,org.coordination.nbench,0,stop org.coordination.nbench due to finished inst]
+10-29 19:44:29.930  1305  1359 I libprocessgroup: Successfully killed process cgroup uid 10213 pid 22937 in 7ms
+10-29 19:44:29.983  1305  3605 V ActivityManager: Got obituary of 22937:org.coordination.nbench
