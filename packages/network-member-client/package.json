@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/network-member-client",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "Issues a UserApproval credential and its Merkle path into the approved-issuer set for network-member apps, refreshable as the set changes.",
     "license": "MIT",
     "repository": {

@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/identity",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "Deterministic device key derivation for the coordination network: networkId and the four-key secp256k1 model (account, spending, viewing, auth) from one device secret, plus a hardware-rooted Baby Jubjub EdDSA/Semaphore-commitment fifth key.",
     "license": "MIT",
     "repository": {

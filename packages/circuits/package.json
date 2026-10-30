@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/circuits",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "The coordination network's Noir circuits: the credential presentation circuit proving an approved issuer's signature, the credential policy, holder, device and revocation key possession, and revocation non-membership.",
     "license": "MIT",
     "repository": {

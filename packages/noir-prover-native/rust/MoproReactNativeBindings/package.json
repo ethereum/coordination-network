@@ -1,6 +1,6 @@
 {
   "name": "@coordination-network/noir-prover-ffi",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "React Native bindings for the native Noir UltraHonk prover, with the Android arm64-v8a library included.",
   "license": "MIT",
   "repository": {

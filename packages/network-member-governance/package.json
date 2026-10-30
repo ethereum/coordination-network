@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/network-member-governance",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "Governance Safe transactions for the network member registry: build the admission or removal transaction, sign it as an approved network member, and aggregate the signatures the Safe accepts on chain.",
     "license": "MIT",
     "repository": {

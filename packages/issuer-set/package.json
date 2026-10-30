@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/issuer-set",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "Approved-issuer set in TypeScript: publish network members' credential signing keys into the LeanIMT accumulator (dynamic depth, capacity 2^20) spec 03 defines, and generate the membership proofs a credential circuit consumes, as the set itself or as a mirror of one held on chain.",
     "license": "MIT",
     "repository": {
