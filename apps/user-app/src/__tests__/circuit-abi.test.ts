@@ -1,3 +1,5 @@
+import { readFileSync } from "fs"
+import { resolve } from "path"
 import credentialCircuit from "../generated/credential-abi.json"
 
 // `scripts/sync-assets.sh` generates this file. It once wrapped the ABI in an envelope, which the
@@ -15,5 +17,13 @@ describe("the generated credential ABI", () => {
         expect(names).toContain("current_time")
         expect(names).toContain("challenge")
         expect(names).toContain("credential")
+    })
+
+    it("matches the circuit asset to the installed zk-artifacts package", () => {
+        const npmCircuit = require.resolve("@coordination-network/zk-artifacts/credential/circuit.json", {
+            paths: [resolve(__dirname, "../..")]
+        })
+        const synced = readFileSync(resolve(__dirname, "../../assets/credential.noir"))
+        expect(synced.equals(readFileSync(npmCircuit))).toBe(true)
     })
 })

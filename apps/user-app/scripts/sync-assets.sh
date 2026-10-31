@@ -9,9 +9,9 @@ set -euo pipefail
 APP="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROOT="$(cd "$APP/../.." && pwd)"
 
-# Read @coordination-network/zk-artifacts' committed file by path: the package resolves it through
-# import.meta.url, which this script has no runtime to evaluate.
-CIRCUIT="$ROOT/packages/zk-artifacts/credential/circuit.json"
+# Resolve the circuit through zk-artifacts' package export: its loader uses import.meta.url, which
+# this script has no runtime to evaluate.
+CIRCUIT="$(cd "$APP" && node -p 'require.resolve("@coordination-network/zk-artifacts/credential/circuit.json")')"
 SRS="$ROOT/packages/noir-prover-native/assets/g1-131073.dat"
 
 [ -f "$SRS" ] || "$ROOT/packages/noir-prover-native/scripts/fetch-srs.sh"

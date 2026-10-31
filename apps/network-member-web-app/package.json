@@ -10,7 +10,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@coordination-network/user-app-link": "workspace:^",
+        "@coordination-network/user-app-link": "^0.2.0",
         "react": "19.1.0",
         "react-dom": "19.1.0"
     },

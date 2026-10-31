@@ -3,11 +3,7 @@ import type { Config } from "jest"
 const config: Config = {
     preset: "ts-jest",
     testEnvironment: "node",
-    roots: ["<rootDir>/tests"],
-    moduleNameMapper: {
-        "@coordination-network/(.*)/(.*)": "<rootDir>/../../packages/$1/src/$2",
-        "@coordination-network/(.*)": "<rootDir>/../../packages/$1/src"
-    }
+    roots: ["<rootDir>/tests"]
 }
 
 export default config

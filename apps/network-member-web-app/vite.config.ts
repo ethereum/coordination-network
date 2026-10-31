@@ -4,18 +4,6 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 
 export default defineConfig({
-    resolve: {
-        alias: [
-            {
-                find: "@coordination-network/user-app-link/web",
-                replacement: resolve(import.meta.dirname, "../../packages/user-app-link/src/web.ts")
-            },
-            {
-                find: "@coordination-network/user-app-link",
-                replacement: resolve(import.meta.dirname, "../../packages/user-app-link/src/index.ts")
-            }
-        ]
-    },
     plugins: [
         react(),
         {
