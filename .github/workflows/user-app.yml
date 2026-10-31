@@ -19,7 +19,6 @@ jobs:
         steps:
             - uses: actions/checkout@v5
             - uses: ./.github/actions/setup
-            - run: yarn build
             # circuit-abi.test.ts imports the gitignored src/generated/credential-abi.json this writes.
             - run: apps/user-app/scripts/sync-assets.sh
             - run: yarn workspace user-app test
