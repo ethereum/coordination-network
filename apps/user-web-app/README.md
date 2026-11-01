@@ -11,6 +11,8 @@ from the private file printed by the relay; it is kept only in this tab's sessio
 See the [relay setup](../integration-testbed/README.md#browser-link-relay-e1--l7) for pairing links
 and explicit LAN settings.
 
+Run `yarn build:libraries` before `yarn workspace user-web-app test`: the tests import the issuer service from source.
+
 ## Browser security model
 
 This demo deliberately uses one software P-256 key for both possession signatures and the ECDH

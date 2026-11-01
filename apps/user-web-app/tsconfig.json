@@ -4,6 +4,7 @@
         "declaration": true,
         "jsx": "react-jsx",
         "rootDir": "../..",
+        "paths": {},
         "lib": ["ES2020", "DOM", "WebWorker"],
         "types": ["jest", "node"]
     },

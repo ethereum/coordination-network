@@ -9,13 +9,12 @@
         "android:b": "EXPO_PUBLIC_MEMBER_ID=member-b REACT_NATIVE_PACKAGER_HOSTNAME=127.0.0.1 expo run:android --port 8083",
         "prebuild:a": "EXPO_PUBLIC_MEMBER_ID=member-a expo prebuild --platform android",
         "prebuild:b": "EXPO_PUBLIC_MEMBER_ID=member-b expo prebuild --platform android",
-        "test": "jest",
-        "eas-build-post-install": "yarn workspaces foreach -A -t --no-private run build"
+        "test": "jest"
     },
     "dependencies": {
         "@coordination-network/app-ui": "workspace:^",
-        "@coordination-network/network-member-app-core": "workspace:^",
-        "@coordination-network/user-app-link": "workspace:^",
+        "@coordination-network/network-member-app-core": "^0.2.0",
+        "@coordination-network/user-app-link": "^0.2.0",
         "@expo-google-fonts/ibm-plex-mono": "^0.4.1",
         "@expo-google-fonts/ibm-plex-sans": "^0.4.1",
         "@expo/vector-icons": "^15.0.3",

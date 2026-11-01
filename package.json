@@ -36,6 +36,7 @@
         "coverage:zk-artifacts": "yarn workspace @coordination-network/zk-artifacts coverage",
         "coverage:contracts": "yarn workspace coordination-network-contracts coverage",
         "coverage:contracts:check": "tsx scripts/check-lcov.ts",
+        "check:app-deps": "tsx scripts/check-app-deps.ts",
         "lint:eslint": "eslint . --ext .js,.ts,.tsx",
         "lint:contracts": "yarn workspace coordination-network-contracts lint",
         "lint": "yarn lint:eslint && yarn lint:contracts",

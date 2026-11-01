@@ -562,8 +562,11 @@ dashboard's `stack.json`, and pair each member app from its own QR in the `yarn 
 ### Pinned SDK bundle
 
 The published `@coordination-network/*` packages all share one version, shown in the [packages](#-packages) table.
-`app-ui` stays private because only the reference apps use it. The apps build every package from source, so
-pin a demo run to a commit rather than to `main`.
+The reference apps install that version from npm, pinned in `yarn.lock`, while the stack, testbeds and services
+run from source at your checkout. `app-ui` stays private because only the reference apps use it.
+
+To try an app against unreleased packages, point its dependency at `workspace:^` and run `yarn build:libraries`.
+The user app then also needs the prover library from `packages/noir-prover-native/scripts/fetch-android-libs.sh`.
 
 ## 🛠 Install
 
@@ -673,6 +676,15 @@ git push && git push origin v<version>
 ```
 
 Pushing the tag triggers a workflow that builds the packages, publishes them on [npm](https://www.npmjs.com/) and releases a new version on Github with its changelogs automatically.
+
+Once the packages are on npm, move the reference apps to the new version in a follow-up pull request. Update each
+published `@coordination-network` dependency in their `package.json` files, for example:
+
+```bash
+yarn workspace user-app add @coordination-network/noir-prover-ffi@^<version>
+```
+
+Then commit `yarn.lock`.
 
 ## Standards used
 
