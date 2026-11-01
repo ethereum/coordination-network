@@ -15,6 +15,9 @@ jobs:
             - uses: actions/checkout@v5
             - uses: ./.github/actions/setup
 
+            - name: Check reference app dependencies
+              run: yarn check:app-deps
+
             - name: Lint and format
               run: yarn style
 
