@@ -59,7 +59,7 @@ The recording used a deployment made with this guide. Its contracts on Sepolia:
 
 You need:
 
-- Node 22.18 or later, Yarn 4, Foundry 1.8.5, `jq` and `gh`.
+- Node 22.18 or later, Yarn 4, Foundry 1.8.5 and `jq`.
 - Docker, for the optional SDK run.
 - For the phone apps: JDK 17, SDK platform 36, NDK 27.1.12297006 and `adb`.
 - An arm64 phone with USB debugging on.
@@ -68,11 +68,9 @@ You need:
 Four terminals are enough: the first runs everything except the phone apps, including the stack, and the other three
 each run one phone app.
 
-Log in to GitHub, because the User wallet's prover library downloads through `gh` while the repository is private.
-Then install and build from the repository root:
+Install and build from the repository root:
 
 ```sh
-gh auth login
 yarn
 yarn setup:foundry
 yarn build:libraries && yarn build:contracts
@@ -277,11 +275,9 @@ adb devices     # lists your phone as "device"
 
 If the phone shows as `unauthorized`, accept the debugging prompt on its screen.
 
-In the same terminal, the first script below downloads the User wallet's native prover library, which its build
-needs. The second copies in the circuit and setup files the User wallet bundles.
+In the same terminal, run the script below. It copies in the circuit and setup files the User wallet bundles.
 
 ```sh
-packages/noir-prover-native/scripts/fetch-android-libs.sh
 apps/user-app/scripts/sync-assets.sh
 ```
 
