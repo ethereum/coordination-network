@@ -2,6 +2,8 @@
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
+The site is published at https://coordination-network.ethereum.foundation.
+
 ## Installation
 
 This app is part of the repo's Yarn workspaces, so install dependencies from the repo root:

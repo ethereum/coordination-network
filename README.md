@@ -46,6 +46,10 @@
 
 <div align="center">
     <h4>
+        <a href="https://coordination-network.ethereum.foundation">
+            📘 Docs
+        </a>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
         <a href="/specs/06-full-architecture-phase-1.md">
             🏛 Architecture
         </a>
