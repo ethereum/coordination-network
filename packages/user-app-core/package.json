@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/user-app-core",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "The three user-app-link operations a user app serves, over injected device, storage and proving ports.",
     "license": "MIT",
     "repository": {

@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/revocation-registry",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "LeanIMT+ revocation registry in TypeScript: revoke credential commitments and generate membership and non-membership proofs, as the registry itself or as a mirror of one held elsewhere.",
     "license": "MIT",
     "repository": {

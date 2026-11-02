@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/expo-identity-keystore",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Expo Module wrapping the Android Keystore for hardware-backed P-256 keys (sign, signDigest, ECDH), plus an in-memory SoftwareKeystore for iOS/Expo Go/jest.",
     "license": "MIT",
     "repository": {

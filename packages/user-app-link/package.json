@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/user-app-link",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Deep-link protocol between the user app (keys, credentials, proving) and network member apps on the same device.",
     "license": "MIT",
     "repository": {

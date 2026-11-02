@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/network-member-app-core",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "A network member app's flows - enrol, issue, deliver, verify, revoke, and network membership - over a link client, its member server and a swappable business module.",
     "license": "MIT",
     "repository": {

@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/user-client",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Single-call onboarding and registration for the coordination network: derive device keys, encode the meta-stealth address, and register networkId -> metaStealthAddress on IdentityRegistry.",
     "license": "MIT",
     "repository": {

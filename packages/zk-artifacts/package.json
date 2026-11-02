@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/zk-artifacts",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Compiled zero-knowledge artifacts for the coordination network: the credential circuit's ACIR bytecode and ABI, and its Barretenberg UltraHonk verification key.",
     "license": "MIT",
     "repository": {

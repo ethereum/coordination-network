@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/network-member-proof",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Generates the Semaphore membership proofs that authorise an IdentityRegistry or CredentialRevocationRegistry write as an approved network member, bound to that exact update.",
     "license": "MIT",
     "repository": {

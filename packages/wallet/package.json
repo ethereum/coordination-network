@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/wallet",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Wallet SDK for the coordination network: device key management, credential storage, consent-gated presentation and revocation sync.",
     "license": "MIT",
     "repository": {
