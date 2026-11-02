@@ -9,30 +9,12 @@
     <a href="https://github.com/ethereum" target="_blank">
         <img src="https://img.shields.io/badge/project-ethereum-blue.svg?style=flat-square">
     </a>
-    <!-- Shields.io cannot read a private repo, so it renders "repo not found".
-         Swap back to the commented badge below once the repository is public.
     <a href="https://github.com/ethereum/coordination-network/blob/main/LICENSE">
-        <img alt="Github license" src="https://img.shields.io/github/license/ethereum/coordination-network">
+        <img alt="Github license" src="https://img.shields.io/github/license/ethereum/coordination-network?style=flat-square">
     </a>
-    -->
-    <a href="https://github.com/ethereum/coordination-network/blob/main/LICENSE">
-        <img alt="Github license" src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square">
-    </a>
-    <!-- Shields.io cannot read a private repo, so it renders "repo or workflow not found".
-         Swap back to the commented badge below once the repository is public.
     <a href="https://github.com/ethereum/coordination-network/actions?query=workflow%3Aproduction">
         <img alt="GitHub Workflow test" src="https://img.shields.io/github/actions/workflow/status/ethereum/coordination-network/production.yml?branch=main&style=flat-square&logo=github&label=test">
     </a>
-    -->
-    <a href="https://github.com/ethereum/coordination-network/actions/workflows/production.yml">
-        <img alt="GitHub Workflow test" src="https://github.com/ethereum/coordination-network/actions/workflows/production.yml/badge.svg?branch=main">
-    </a>
-    <!-- Coveralls uploads are disabled while the repository is private.
-         Uncomment together with the Coveralls step in the workflows once it is public.
-    <a href="https://coveralls.io/github/ethereum/coordination-network">
-        <img alt="Coveralls" src="https://img.shields.io/coverallsCoverage/github/ethereum/coordination-network?style=flat-square&logo=coveralls&label=coverage%20(ts)">
-    </a>
-    -->
     <a href="https://eslint.org/">
         <img alt="Linter eslint" src="https://img.shields.io/badge/linter-eslint-8080f2?style=flat-square&logo=eslint">
     </a>
