@@ -3,7 +3,11 @@
     "version": "0.2.0",
     "description": "The three user-app-link operations a user app serves, over injected device, storage and proving ports.",
     "license": "MIT",
-    "repository": "https://github.com/ethereum/coordination-network",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ethereum/coordination-network.git",
+        "directory": "packages/user-app-core"
+    },
     "homepage": "https://github.com/ethereum/coordination-network/tree/main/packages/user-app-core",
     "bugs": "https://github.com/ethereum/coordination-network/issues",
     "sideEffects": false,
