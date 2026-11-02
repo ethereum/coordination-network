@@ -42,8 +42,7 @@ const config: Config = {
         v4: true // Improve compatibility with the upcoming Docusaurus v4
     },
 
-    // TODO: set the production url of the docs site
-    url: "https://your-docusaurus-site.example.com",
+    url: "https://coordination-network.ethereum.foundation",
     baseUrl: "/",
 
     organizationName: "ethereum",
