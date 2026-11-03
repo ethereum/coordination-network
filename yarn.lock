@@ -2295,20 +2295,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/credential@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/credential@npm:0.2.0"
+"@coordination-network/credential@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/credential@npm:0.2.1"
   dependencies:
     "@aztec/bb.js": "npm:5.0.0"
-    "@coordination-network/identity": "npm:^0.2.0"
-    "@coordination-network/issuer-set": "npm:^0.2.0"
+    "@coordination-network/identity": "npm:^0.2.1"
+    "@coordination-network/issuer-set": "npm:^0.2.1"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     "@noir-lang/noir_js": "npm:1.0.0-beta.22"
     "@semaphore-protocol/identity": "npm:^4.14.5"
     poseidon-lite: "npm:0.3.0"
     viem: "npm:^2.55.11"
-  checksum: 10/15138b40f86c714902273fc6f5a9bafd3a75c3fe766466a33bb248e2e737e3491c218b4afee16c33f1a993de297fb6f5d9f8a2091995e33f62ebe1a5c1402326
+  checksum: 10/eafce05dcdfcdbd5d4df6e53f714335bb3e4f86651414fc27064406cceece4b2dfdcdb77166d0a8113859a7f89cd9322576ecff70588c4e3e72774571e294f7b
   languageName: node
   linkType: hard
 
@@ -2335,14 +2335,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/expo-identity-keystore@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/expo-identity-keystore@npm:0.2.0"
+"@coordination-network/expo-identity-keystore@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/expo-identity-keystore@npm:0.2.1"
   dependencies:
     "@noble/curves": "npm:^1.9.7"
   peerDependencies:
     expo-modules-core: "*"
-  checksum: 10/44a5be0633540076afb241f17208ac86224b0666563054d7335600fc8a909d8d63f9bfd1a4e2cb868ec6223d37bad5dd370243f38f7cef3601d6874db15c47eb
+  checksum: 10/72ee6a13f35f9fbdca1c884c6df93df709cf2693c4e439431e7dcc2c5f9ed430a9e4068eff2f6c47dd1e5d84d229a6c895cef4e897d416fd0f655b11308a49a8
   languageName: node
   linkType: hard
 
@@ -2358,15 +2358,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/identity@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/identity@npm:0.2.0"
+"@coordination-network/identity@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/identity@npm:0.2.1"
   dependencies:
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     "@zk-kit/eddsa-poseidon": "npm:1.0.4"
     poseidon-lite: "npm:0.3.0"
-  checksum: 10/3007d101de71fc2c079b7efd0aedff1869a0b4639e5c3aa660b35d6337dc163eec98ed8ad9b1689523a628b7dc44d06ea424c03b55de5e9985391d7962b1b4ac
+  checksum: 10/29d2dee817f664a81a8a6b7f01ebf65fc48598d1aa46c1db7abe2b0fa61dbe5e3a0ed9718d2e3af65357a72f75004e0779764a1a6ec9ee4d41284323bf76f0e7
   languageName: node
   linkType: hard
 
@@ -2413,14 +2413,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/issuer-set@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/issuer-set@npm:0.2.0"
+"@coordination-network/issuer-set@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/issuer-set@npm:0.2.1"
   dependencies:
     "@zk-kit/baby-jubjub": "npm:1.0.3"
     "@zk-kit/lean-imt": "npm:2.2.5"
     poseidon-lite: "npm:0.3.0"
-  checksum: 10/0d1b8ac58077a57ba1d5ec1cdac6adb89ceb3b9de312e011304fe7a35ef5fc0b48bfd3b5fbb5c54a004609e609fc46e22b2b4599baaad95ba125d1de0db5b12f
+  checksum: 10/61d74b670552dd1ff8e3ab14bbd02d7afa1359017dbe02d6fa320f2d7a3ab89486c025bd60519153fb2b798303dd074d754d137966a3a2ebd50f387875355949
   languageName: node
   linkType: hard
 
@@ -2441,13 +2441,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/network-member-app-core@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/network-member-app-core@npm:0.2.0"
+"@coordination-network/network-member-app-core@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/network-member-app-core@npm:0.2.1"
   dependencies:
-    "@coordination-network/user-app-link": "npm:^0.2.0"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
     zod: "npm:^4.3.11"
-  checksum: 10/c80ab021152f4c4008fe7ebe96cd07675bbd8463b8b9a70b68ef183e9f8df08eaf26529f04ce45f07ff50b9ad1f4ae318ba6e0e066943c86b564217e1db8f0a7
+  checksum: 10/11f659977ed0921a8100e854ad99b01c4c4fee75d6d8eca30513aab2424d8ef21cdb8f1db87dd9f3c3b140b95645a37736a232a42a63776192738b6a8a647ffe
   languageName: node
   linkType: hard
 
@@ -2532,16 +2532,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/noir-prover-ffi@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/noir-prover-ffi@npm:0.2.0"
+"@coordination-network/noir-prover-ffi@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/noir-prover-ffi@npm:0.2.1"
   dependencies:
     "@ubjs/core": "npm:0.31.0-5"
     uniffi-bindgen-react-native: "npm:0.31.0-5"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/9326dfd36befb473a3cb8b3ed6dbf8d4d54a508c6b78330dfc958ffc3c2bd204cca6f25fd86befba927af3a7365fa5163241deeb12c147fa929625908d164091
+  checksum: 10/cafd7cacca7efb53caa71363ce0e465475821bebf29224aa2aeb2dffd9f50beb248a725a004293d995f9e880bdeb8df11d0b2457f1e30b797a46185913862eba
   languageName: node
   linkType: hard
 
@@ -2558,14 +2558,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/noir-prover-native@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/noir-prover-native@npm:0.2.0"
+"@coordination-network/noir-prover-native@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/noir-prover-native@npm:0.2.1"
   dependencies:
-    "@coordination-network/credential": "npm:^0.2.0"
-    "@coordination-network/wallet": "npm:^0.2.0"
+    "@coordination-network/credential": "npm:^0.2.1"
+    "@coordination-network/wallet": "npm:^0.2.1"
     "@noir-lang/noir_js": "npm:1.0.0-beta.22"
-  checksum: 10/e1a83c84e77ded88a355c81e119bd60539dd87ed907c24a5af2806bc42aae5c2c3a605b3373fbbd49f2a5204fbcb5dfd93ac933710a24efba45535fbd832b051
+  checksum: 10/9f6f40bff130ce62df591e2f9b4ffded8ecba50e14dd6e02d8a02851a4dbd36f132e6aea4376f03b429e4cd3cd9ab9367f0148d87546b3b3f4685c27a1326177
   languageName: node
   linkType: hard
 
@@ -2600,13 +2600,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/revocation-registry@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/revocation-registry@npm:0.2.0"
+"@coordination-network/revocation-registry@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/revocation-registry@npm:0.2.1"
   dependencies:
     "@zk-kit/lean-imt-plus": "npm:0.1.2"
     poseidon-lite: "npm:0.3.0"
-  checksum: 10/ba65b6164f9ce0fae56d2e23b53a47f7cebdab61caba4db9ae3f27aa70ae5d90991951094a3ac3dd62f036747ebca00e2903a5f77918aa6fe4c970529737bb30
+  checksum: 10/8405afa6ff58dbc961c91d865b9cc3d94816d5e5d170aa1e63c8f602dae6eb9cb51de291cd777f67e7e8903d328158690119b6ff58ade56821cf88d3d6226f9f
   languageName: node
   linkType: hard
 
@@ -2638,20 +2638,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/user-app-core@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/user-app-core@npm:0.2.0"
+"@coordination-network/user-app-core@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/user-app-core@npm:0.2.1"
   dependencies:
-    "@coordination-network/credential": "npm:^0.2.0"
-    "@coordination-network/identity": "npm:^0.2.0"
-    "@coordination-network/issuer-set": "npm:^0.2.0"
-    "@coordination-network/revocation-registry": "npm:^0.2.0"
-    "@coordination-network/user-app-link": "npm:^0.2.0"
-    "@coordination-network/user-client": "npm:^0.2.0"
-    "@coordination-network/wallet": "npm:^0.2.0"
+    "@coordination-network/credential": "npm:^0.2.1"
+    "@coordination-network/identity": "npm:^0.2.1"
+    "@coordination-network/issuer-set": "npm:^0.2.1"
+    "@coordination-network/revocation-registry": "npm:^0.2.1"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
+    "@coordination-network/user-client": "npm:^0.2.1"
+    "@coordination-network/wallet": "npm:^0.2.1"
     "@semaphore-protocol/identity": "npm:4.14.5"
     zod: "npm:^4.3.11"
-  checksum: 10/91a50bae210e3732bb3fc9e3bd9645e1e7b36c3fd3489ec1dee3a617591d6fa6b48b54e9dcd63c777e40f9f3d6fdf1872a7edeb977be50c769cfa10f86ba71d6
+  checksum: 10/9574f92ce2e29f2f1f6678c3e404cf90b6f9266807975f09fed75984b75f30268ac6cb373e93dff6a017288fb93edb64a97b31b6fe91deec99bb1c247074741d
   languageName: node
   linkType: hard
 
@@ -2679,12 +2679,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/user-app-link@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/user-app-link@npm:0.2.0"
+"@coordination-network/user-app-link@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/user-app-link@npm:0.2.1"
   dependencies:
     zod: "npm:^4.3.11"
-  checksum: 10/2cfea41b50f05c27c2b578bd37a25c90c90dd13832cc6cc80b48dad51ebbdc210459e1b02203f737c1834a05c63ae969da98ac826be0fa3781892bb26d0286a6
+  checksum: 10/e9a69c23d0eedb21b9cd316e6c2c7d800823eccbc79e2083a1f15d5438b9e49ee5bfb984a1dc763834210282bfd23361dd8b8e868ca87a45783d651fd2f2c449
   languageName: node
   linkType: hard
 
@@ -2703,14 +2703,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/user-client@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/user-client@npm:0.2.0"
+"@coordination-network/user-client@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/user-client@npm:0.2.1"
   dependencies:
-    "@coordination-network/identity": "npm:^0.2.0"
+    "@coordination-network/identity": "npm:^0.2.1"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/d9bf651372c009c8316465c5ebb7365eadef28ac7db135255c087224189716d8116fb088fdbfc27b229a77aa458027653fed8a18e2edfb9b069a33a98791638d
+  checksum: 10/b642af9fd71fc43c363dda1db9d839eb1e4ed837779453c59c3c6fd9193d7a758cf2f381b8d8c46e5d916ed40c529bf5f2de18a8dd6cfa9676ccf90ec05bfb80
   languageName: node
   linkType: hard
 
@@ -2737,17 +2737,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/wallet@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/wallet@npm:0.2.0"
+"@coordination-network/wallet@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/wallet@npm:0.2.1"
   dependencies:
-    "@coordination-network/credential": "npm:^0.2.0"
-    "@coordination-network/identity": "npm:^0.2.0"
-    "@coordination-network/issuer-set": "npm:^0.2.0"
-    "@coordination-network/revocation-registry": "npm:^0.2.0"
+    "@coordination-network/credential": "npm:^0.2.1"
+    "@coordination-network/identity": "npm:^0.2.1"
+    "@coordination-network/issuer-set": "npm:^0.2.1"
+    "@coordination-network/revocation-registry": "npm:^0.2.1"
     "@noble/hashes": "npm:^1.8.0"
     "@semaphore-protocol/identity": "npm:4.14.5"
-  checksum: 10/8411058cd5bfc0b1c056f076c55a86090dd78e6df6789600ba686c5713128353e535bcda7d56116f8c69fd4d478fc1cd471ee10ebf30eb8c274275b9a9f2a3e6
+  checksum: 10/fd43b191776f15c6b988a62f2c01e24ed000d0d2f78189132c926aa9d715afe4da3fbab6b849c930d72bfcddfe374609b23eb1a9df511db01b160592adf4ceb0
   languageName: node
   linkType: hard
 
@@ -2772,12 +2772,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@coordination-network/zk-artifacts@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@coordination-network/zk-artifacts@npm:0.2.0"
+"@coordination-network/zk-artifacts@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@coordination-network/zk-artifacts@npm:0.2.1"
   peerDependencies:
     "@noir-lang/noir_js": 1.0.0-beta.22
-  checksum: 10/24e499983ce84382964c7099e40d66f22b078889f3e5d183aa01f27a86cdc1cbdb978ab0d2658a31df04bc8b53f7e8ab3c67bf1d5e360de2d755d5d3b6cf9f83
+  checksum: 10/c271a4a85ab6ef22229937bca50fe95814bddce6a888f2db3ba4936994db0032893bccb9e10f3d70a7134db4aa2f7e52bac953519a3ae82564f3e38a219b2360
   languageName: node
   linkType: hard
 
@@ -21400,8 +21400,8 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@coordination-network/app-ui": "workspace:^"
-    "@coordination-network/network-member-app-core": "npm:^0.2.0"
-    "@coordination-network/user-app-link": "npm:^0.2.0"
+    "@coordination-network/network-member-app-core": "npm:^0.2.1"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
     "@expo-google-fonts/ibm-plex-mono": "npm:^0.4.1"
     "@expo-google-fonts/ibm-plex-sans": "npm:^0.4.1"
     "@expo/vector-icons": "npm:^15.0.3"
@@ -21432,7 +21432,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "network-member-web-app@workspace:apps/network-member-web-app"
   dependencies:
-    "@coordination-network/user-app-link": "npm:^0.2.0"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
     "@types/jest": "npm:^30.0.0"
     "@types/react": "npm:^19.1.10"
     "@types/react-dom": "npm:^19.1.7"
@@ -28132,15 +28132,15 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@coordination-network/app-ui": "workspace:^"
-    "@coordination-network/credential": "npm:^0.2.0"
-    "@coordination-network/expo-identity-keystore": "npm:^0.2.0"
-    "@coordination-network/identity": "npm:^0.2.0"
-    "@coordination-network/noir-prover-ffi": "npm:^0.2.0"
-    "@coordination-network/noir-prover-native": "npm:^0.2.0"
-    "@coordination-network/user-app-core": "npm:^0.2.0"
-    "@coordination-network/user-app-link": "npm:^0.2.0"
-    "@coordination-network/wallet": "npm:^0.2.0"
-    "@coordination-network/zk-artifacts": "npm:^0.2.0"
+    "@coordination-network/credential": "npm:^0.2.1"
+    "@coordination-network/expo-identity-keystore": "npm:^0.2.1"
+    "@coordination-network/identity": "npm:^0.2.1"
+    "@coordination-network/noir-prover-ffi": "npm:^0.2.1"
+    "@coordination-network/noir-prover-native": "npm:^0.2.1"
+    "@coordination-network/user-app-core": "npm:^0.2.1"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
+    "@coordination-network/wallet": "npm:^0.2.1"
+    "@coordination-network/zk-artifacts": "npm:^0.2.1"
     "@expo-google-fonts/ibm-plex-mono": "npm:^0.4.1"
     "@expo-google-fonts/ibm-plex-sans": "npm:^0.4.1"
     "@expo/prebuild-config": "npm:~54.0.9"
@@ -28177,14 +28177,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "user-web-app@workspace:apps/user-web-app"
   dependencies:
-    "@coordination-network/credential": "npm:^0.2.0"
-    "@coordination-network/identity": "npm:^0.2.0"
-    "@coordination-network/issuer-set": "npm:^0.2.0"
-    "@coordination-network/revocation-registry": "npm:^0.2.0"
-    "@coordination-network/user-app-link": "npm:^0.2.0"
-    "@coordination-network/user-client": "npm:^0.2.0"
-    "@coordination-network/wallet": "npm:^0.2.0"
-    "@coordination-network/zk-artifacts": "npm:^0.2.0"
+    "@coordination-network/credential": "npm:^0.2.1"
+    "@coordination-network/identity": "npm:^0.2.1"
+    "@coordination-network/issuer-set": "npm:^0.2.1"
+    "@coordination-network/revocation-registry": "npm:^0.2.1"
+    "@coordination-network/user-app-link": "npm:^0.2.1"
+    "@coordination-network/user-client": "npm:^0.2.1"
+    "@coordination-network/wallet": "npm:^0.2.1"
+    "@coordination-network/zk-artifacts": "npm:^0.2.1"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     "@semaphore-protocol/identity": "npm:4.14.5"
