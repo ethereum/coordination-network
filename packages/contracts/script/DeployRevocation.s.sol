@@ -3,7 +3,7 @@ pragma solidity ^0.8.34;
 
 import { console } from "forge-std/Script.sol";
 
-import { Revocation } from "../src/revocation/Revocation.sol";
+import { Revocation } from "../src/revocation/poseidon/Revocation.sol";
 import { DeployBase } from "./base/DeployBase.sol";
 
 contract DeployRevocation is DeployBase {

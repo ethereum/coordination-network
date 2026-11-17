@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
-import { SNARK_SCALAR_FIELD } from "@zk-kit/lean-imt-plus.sol/Constants.sol";
 import { RevocationTestBase } from "../utils/RevocationTestBase.sol";
 
 contract RevocationFuzzTest is RevocationTestBase {
@@ -12,7 +11,7 @@ contract RevocationFuzzTest is RevocationTestBase {
         uint256 count;
 
         for (uint256 i = 0; i < rawCommitments.length; ++i) {
-            uint256 commitment = bound(rawCommitments[i], 1, SNARK_SCALAR_FIELD - 1);
+            uint256 commitment = bound(rawCommitments[i], 1, maxCommitment());
 
             if (revocation.isRevoked(registryId, commitment)) continue;
 

@@ -2289,7 +2289,8 @@ __metadata:
     "@account-abstraction/contracts": "npm:^0.8.0"
     "@openzeppelin/contracts": "npm:^5.6.1"
     "@semaphore-protocol/contracts": "npm:^4.14.5"
-    "@zk-kit/lean-imt-plus.sol": "npm:0.1.1"
+    "@zk-kit/lean-imt-plus-sha256.sol": "npm:0.1.0"
+    "@zk-kit/lean-imt-plus.sol": "npm:0.1.2"
     "@zk-kit/lean-imt-sha256.sol": "npm:0.1.0"
     "@zk-kit/lean-imt.sol": "npm:^2.0.1"
     poseidon-solidity: "npm:^0.0.5"
@@ -2632,6 +2633,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@coordination-network/revocation-registry@workspace:packages/revocation-registry"
   dependencies:
+    "@noble/hashes": "npm:^1.8.0"
     "@rollup/plugin-typescript": "npm:^12.3.0"
     "@zk-kit/lean-imt-plus": "npm:0.1.2"
     poseidon-lite: "npm:0.3.0"
@@ -10164,12 +10166,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zk-kit/lean-imt-plus.sol@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@zk-kit/lean-imt-plus.sol@npm:0.1.1"
+"@zk-kit/lean-imt-plus-sha256.sol@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@zk-kit/lean-imt-plus-sha256.sol@npm:0.1.0"
+  checksum: 10/fcf868875d21a3fd9766b1c0fec44d7dfbed99e013868da6ae2e219b2d415b01692c3a5beae59fef59116f7a19392c417effa168539b28ac7eabe456c07f343e
+  languageName: node
+  linkType: hard
+
+"@zk-kit/lean-imt-plus.sol@npm:0.1.2":
+  version: 0.1.2
+  resolution: "@zk-kit/lean-imt-plus.sol@npm:0.1.2"
   dependencies:
     poseidon-solidity: "npm:0.0.5"
-  checksum: 10/782d5e37fc4a5daf94bbe178c50baca46a96f4d63c2b88188491913bfbc375f86a613023b5c8a8ebc099233d74e600205d1a768c9ab02cb67d889e7ae0e59561
+  checksum: 10/28c1c849cb06df6fd51e77de92697ae3b525df5a59bdd14eba31125b1e2367ca4397d70a49eaa6f17231a055f2abf37056d139ca2028a2c02613704f11a5b7fd
   languageName: node
   linkType: hard
 
@@ -12655,7 +12664,8 @@ __metadata:
     "@semaphore-protocol/group": "npm:^4.14.5"
     "@semaphore-protocol/identity": "npm:^4.14.5"
     "@semaphore-protocol/proof": "npm:^4.14.5"
-    "@zk-kit/lean-imt-plus.sol": "npm:0.1.1"
+    "@zk-kit/lean-imt-plus-sha256.sol": "npm:0.1.0"
+    "@zk-kit/lean-imt-plus.sol": "npm:0.1.2"
     "@zk-kit/lean-imt-sha256.sol": "npm:0.1.0"
     "@zk-kit/lean-imt.sol": "npm:^2.0.1"
     forge-std: "github:foundry-rs/forge-std#v1.16.2"

@@ -3,7 +3,7 @@ pragma solidity ^0.8.34;
 
 import { Script, console } from "forge-std/Script.sol";
 
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 
 contract CreateRevocationRegistry is Script {
     function run() external returns (uint256 registryId) {

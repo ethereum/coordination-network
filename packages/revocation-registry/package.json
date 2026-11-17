@@ -36,6 +36,7 @@
         "build": "rimraf dist types && rollup -c rollup.config.mjs"
     },
     "dependencies": {
+        "@noble/hashes": "^1.8.0",
         "@zk-kit/lean-imt-plus": "0.1.2",
         "poseidon-lite": "0.3.0"
     },
