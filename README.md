@@ -231,6 +231,25 @@ The full component view, key model and flows are in [06 · Full Architecture](sp
         </tr>
         <tr>
             <td>
+                <a href="/packages/issuer-registry">
+                    @coordination-network/issuer-registry
+                </a>
+            </td>
+            <td>
+                <!-- NPM version -->
+                <a href="https://npmjs.org/package/@coordination-network/issuer-registry">
+                    <img src="https://img.shields.io/npm/v/@coordination-network/issuer-registry.svg?style=flat-square" />
+                </a>
+            </td>
+            <td>
+                <!-- Downloads -->
+                <a href="https://npmjs.org/package/@coordination-network/issuer-registry">
+                    <img src="https://img.shields.io/npm/dm/@coordination-network/issuer-registry.svg?style=flat-square" />
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <a href="/packages/issuer-set">
                     @coordination-network/issuer-set
                 </a>

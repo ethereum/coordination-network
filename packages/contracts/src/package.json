@@ -1,7 +1,7 @@
 {
     "name": "@coordination-network/contracts",
     "version": "0.2.1",
-    "description": "The coordination network's Solidity contracts: the network member registry and its governance, the identity registry, the approved-issuer set, the revocation registries and the Semaphore paymaster.",
+    "description": "The coordination network's Solidity contracts: the network member registry and its governance, the identity registry, the approved-issuer set, the issuer registries, the revocation registries and the Semaphore paymaster.",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -13,6 +13,7 @@
     "files": [
         "*.sol",
         "revocation",
+        "issuer-registry",
         "base",
         "interfaces",
         "libraries"
@@ -27,7 +28,8 @@
         "zero-knowledge",
         "revocation",
         "merkle-tree",
-        "non-membership-proof"
+        "non-membership-proof",
+        "issuer-hiding"
     ],
     "publishConfig": {
         "access": "public"
@@ -38,6 +40,7 @@
         "@semaphore-protocol/contracts": "^4.14.5",
         "@zk-kit/lean-imt-plus-sha256.sol": "0.1.0",
         "@zk-kit/lean-imt-plus.sol": "0.1.2",
+        "@zk-kit/lean-imt-sha256.sol": "0.1.0",
         "@zk-kit/lean-imt.sol": "^2.0.1",
         "poseidon-solidity": "^0.0.5"
     }
