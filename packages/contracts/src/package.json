@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/contracts",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "The coordination network's Solidity contracts: the network member registry and its governance, the identity registry, the approved-issuer set, the issuer registries, the revocation registries and the Semaphore paymaster.",
     "license": "MIT",
     "repository": {

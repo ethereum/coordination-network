@@ -1,6 +1,6 @@
 {
     "name": "@coordination-network/issuer-registry",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "LeanIMT issuer registry in TypeScript: approve issuer commitments and generate the membership proofs that hide which approved issuer signed a credential, as the registry itself or as a mirror of one held elsewhere.",
     "license": "MIT",
     "repository": {
