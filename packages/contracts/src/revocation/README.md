@@ -1,18 +1,58 @@
 # Revocation contracts
 
-On-chain revocation registries built on [LeanIMT+](https://pse.dev/blog/lean-imt-plus-efficient-merkle-tree-for-membership-and-non-membership-proofs).
-
-An issuer revokes a credential by publishing its revocation commitment. A holder proves their credential is still valid by proving, in zero knowledge, that their commitment is _absent_ from the registry. The verifier never learns which credential was presented, and never contacts the issuer.
+On-chain revocation registries built on [LeanIMT+](https://pse.dev/blog/lean-imt-plus-efficient-merkle-tree-for-membership-and-non-membership-proofs). An issuer revokes a credential by publishing its commitment; a holder proves in zero knowledge that their commitment is _absent_, so the verifier never learns which credential was presented.
 
 ## Contracts
 
-| Contract                               | Role                                                                                                                                                                                                   |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `RevocationRegistries`                 | Abstract base. Owns one LeanIMT+ per registry, gates writes behind a per-registry admin, and exposes the reads a holder rebuilds the tree from. Inherit it to put revocation inside your own protocol. |
-| `Revocation`                           | Deployable service on top of the base. Anyone can create a registry and become its admin, and each registry keeps a bounded history of accepted roots.                                                 |
-| `IRevocationRegistries`, `IRevocation` | Interfaces. Integrate against these.                                                                                                                                                                   |
+| Contract                               | Role                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `Revocation`                           | Deployable service over Poseidon (BN254) trees.                                                      |
+| `Sha256Revocation`                     | Deployable service over SHA-256 trees, for circuits over other fields (e.g. OpenAC over secq256r1).  |
+| `PoseidonRevocationRegistries`         | Hash binding: owns the Poseidon trees. Inherit it to embed revocation in your own protocol.          |
+| `Sha256RevocationRegistries`           | Hash binding: owns the SHA-256 trees.                                                                |
+| `RevocationService`                    | Policy: anyone can create a registry; each keeps a bounded history of accepted roots. Picks no hash. |
+| `RevocationRegistries`                 | Hash-agnostic core: per-registry admins, writes and events. Not inherited directly.                  |
+| `IRevocation`, `IRevocationRegistries` | Interfaces. Integrate against these.                                                                 |
 
-The split exists so the primitive and the policy can vary independently. `RevocationRegistries` owns the data structure and the access control that every revocation service needs. `Revocation` adds one particular policy on top: open registry creation and a bounded root history. A protocol that wants different policy, such as registries created only by governance or roots accepted on a different rule, inherits the base and writes its own.
+A deployable combines one policy with one hash binding:
+
+```solidity
+contract Revocation is RevocationService, PoseidonRevocationRegistries { }
+```
+
+```text
+revocation/
+├── interfaces/   shared
+├── base/         shared: RevocationRegistries, RevocationService
+├── poseidon/     PoseidonRevocationRegistries, Revocation
+└── sha256/       Sha256RevocationRegistries, Sha256Revocation
+```
+
+## Hashes
+
+The contract, the off-chain registry and the circuit must all use the same hash, or roots will not match:
+
+| Deployable         | zk-kit package             | Values      | Off-chain scheme | Circuit                                 |
+| ------------------ | -------------------------- | ----------- | ---------------- | --------------------------------------- |
+| `Revocation`       | `lean-imt-plus.sol`        | `< p_BN254` | `poseidonScheme` | Poseidon LeanIMT+ over BN254            |
+| `Sha256Revocation` | `lean-imt-plus-sha256.sol` | `< 2^256`   | `sha256Scheme`   | `LeanIMTPlusSha256` (circom), any field |
+
+SHA-256 leaves are `sha256(value || nextValue || 1)` and nodes `sha256(left || right)` over 32-byte words.
+
+**SHA-256 with field-element commitments.** `Sha256Revocation` stores any non-zero `uint256` unreduced, since it cannot know the circuit's field. If commitments are field elements (e.g. Poseidon outputs) rather than SHA-256 digests:
+
+1. Revoke the canonical value `c mod p`, or the revocation never matches what the circuit computes.
+2. The circuit must enforce `value < p` when splitting the commitment into `[hi, lo]` limbs. Otherwise a holder whose `c` is revoked can prove `c + p` absent (possible for any commitment under BN254).
+
+Off chain, an issuer can enforce this with `{ ...sha256Scheme, bound: p }`, which leaves roots unchanged. Mirrors rebuilding from chain should keep `sha256Scheme`.
+
+### Adding a hash
+
+1. Add the hash's zk-kit LeanIMT+ package to `package.json` and `foundry.toml` remappings.
+2. Copy `poseidon/PoseidonRevocationRegistries.sol` to `<hash>/<Hash>RevocationRegistries.sol` with the new package.
+3. Add `<hash>/<Hash>Revocation.sol`: `contract <Hash>Revocation is RevocationService, <Hash>RevocationRegistries { }`.
+4. Run the shared suites against it (see `test/unit/Sha256Revocation.t.sol`) and pin its roots against the TypeScript scheme (see `test/integration/Sha256CrossLanguageRoot.t.sol`).
+5. Add a deploy script.
 
 ## Usage
 
@@ -20,57 +60,27 @@ The split exists so the primitive and the policy can vary independently. `Revoca
 yarn add @coordination-network/contracts
 ```
 
-### Integrating
+**Verifying.** `isValidRoot` is the only on-chain call a verifier needs; the commitment never appears.
 
 ```solidity
 import { IRevocation } from "@coordination-network/contracts/revocation/interfaces/IRevocation.sol";
 
-contract MyVerifier {
-    IRevocation public immutable revocation;
-
-    function verify(uint256 registryId, uint256 revocationRoot, bytes calldata zkProof) external view {
-        // 1. verify the zero-knowledge proof; it outputs the revocation root it was built against
-        // 2. check that root is one this registry currently accepts
-        require(revocation.isValidRoot(registryId, revocationRoot), "stale or unknown revocation root");
-    }
-}
+// after verifying the zk proof, which outputs the root it was built against:
+require(revocation.isValidRoot(registryId, revocationRoot), "stale or unknown revocation root");
 ```
 
-`isValidRoot` is the only on-chain read a privacy-preserving verification needs. The commitment never appears, which is what keeps presentations unlinkable.
-
-### Revoking
-
-Every mutation takes the physical index of the affected leaf's predecessor. The library validates that index in `O(1)` but does not search for it, which is what keeps a write at `O(depth)` storage writes. Compute it off chain with [`@coordination-network/revocation-registry`](https://github.com/ethereum/coordination-network/tree/main/packages/revocation-registry):
+**Revoking.** Writes take the predecessor's physical index, validated in `O(1)` instead of searched for. Compute it with [`@coordination-network/revocation-registry`](https://github.com/ethereum/coordination-network/tree/main/packages/revocation-registry) against the current state; if another write lands first, the call reverts and the index must be recomputed.
 
 ```ts
-const lowLeafIndex = tree.lowLeafIndexOf(revocationCommitment)
+const lowLeafIndex = registry.lowLeafIndexOf(revocationCommitment)
+// revocation.revoke(registryId, revocationCommitment, lowLeafIndex)
 ```
 
-then
+`revokeMany` is cheaper than separate revocations, since each internal node is rehashed once per batch.
 
-```solidity
-revocation.revoke(registryId, revocationCommitment, lowLeafIndex);
-```
-
-The index is only valid against the tree state the transaction executes in. If another revocation lands first the transaction reverts and the index must be recomputed.
-
-`revokeMany` rehashes each affected internal node once for the whole batch instead of once per commitment, so a batch costs less than the same revocations sent one at a time, and the saving grows with batch size.
-
-### The root history
-
-A holder builds their proof against the root they last saw. A revocation landing between proof generation and verification would otherwise invalidate an honest proof, so each registry keeps accepting a superseded root for `rootDuration` seconds (one hour by default, configurable per registry).
-
-The current root never expires; it is accepted for as long as it stays current, however long that is. When a revocation replaces it, the registry stamps that moment and the old root remains acceptable for `rootDuration` seconds from then. Every root therefore gets the same window, starting when it stops being current, which is exactly the interval in which a proof built against it can still be in flight.
-
-This also bounds the risk the window creates. A credential revoked at some moment is absent from every earlier root and present in every later one, so the newest root that still lets it verify is the one its own revocation replaced. That root expires `rootDuration` seconds later, and older roots were superseded earlier and expire sooner. A revoked credential can therefore keep verifying for at most `rootDuration` after its revocation, whatever the registry's history.
-
-`rootDuration` may be zero, which turns the grace period off: only the current root is accepted, and every proof in flight when a revocation lands is invalidated. That is the strictest setting, for a registry where a credential revoked seconds ago must not be presentable at all, and it costs failed presentations an honest holder cannot avoid. The comparison is strict on both ends, so a zero window rejects a root superseded in the same block rather than leaving a one-timestamp gap.
+**Root history.** A superseded root stays accepted for `rootDuration` seconds (1 hour by default, per registry), so proofs in flight survive a new revocation. The window starts when a root stops being current, so a revoked credential keeps verifying for at most `rootDuration` after its revocation. `rootDuration = 0` accepts only the current root.
 
 ## Build
-
-The contracts are deployed and tested inside the
-[coordination-network](https://github.com/ethereum/coordination-network) monorepo, in the
-`coordination-network-contracts` Foundry project:
 
 ```bash
 yarn build:contracts
@@ -79,9 +89,8 @@ yarn test:contracts
 
 ## Notes
 
-- Commitments must be non-zero and below the BN254 scalar field order. Zero is reserved for the sentinel leaf and for tombstones.
-- There is deliberately no on-chain Merkle proof verifier. Verifying a plaintext proof would reveal the commitment, and a caller willing to do that can just call `isRevoked`, which is cheaper and answers the same question. The private path is a zero-knowledge proof verified elsewhere, whose root is checked with `isValidRoot`.
-- Registries are isolated. One deployment serves many issuers, and an admin can only write to its own registry.
-- Admin transfers are two-step, so a typo cannot strand a registry.
-- `unrevoke` and `updateRevocationCommitment` are for correcting mistakes, such as a commitment revoked in error or an invalid value written to the tree. Like every write here, they are visible to anyone reading the chain. `unrevoke` shows that a commitment is no longer revoked. `updateRevocationCommitment` shows the old and new commitments together, so an observer can tell one replaced the other. Whether that link reveals anything depends on how the commitments are generated and handled in your use case. If two commitments should not appear related, use `unrevoke` and a separate `revoke` instead, spaced apart in time, since two writes landing back to back can be linked by their timing alone.
-- `test/integration/CrossLanguageRoot.t.sol` pins the contract's roots against the TypeScript package. Any drift in the hashing or the insertion rules fails a test on both sides.
+- Commitments must be non-zero (zero marks the sentinel and tombstones) and within the hash's range.
+- There is no on-chain Merkle proof verifier: a plaintext proof would reveal the commitment, and `isRevoked` already answers that question.
+- Registries are isolated: an admin can only write to its own. Admin transfers are two-step.
+- `unrevoke` and `updateRevocationCommitment` are for correcting mistakes, and are public. `updateRevocationCommitment` links the old and new commitments; use `unrevoke` plus a later, separate `revoke` if they must not look related.
+- `test/integration/CrossLanguageRoot.t.sol` and `Sha256CrossLanguageRoot.t.sol` pin the roots against the TypeScript package.

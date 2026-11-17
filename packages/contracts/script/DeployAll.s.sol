@@ -13,7 +13,7 @@ import { NetworkMemberGovernance } from "../src/NetworkMemberGovernance.sol";
 import { NetworkMemberGroup } from "../src/NetworkMemberGroup.sol";
 import { NetworkMemberRegistry } from "../src/NetworkMemberRegistry.sol";
 import { IRevocation } from "../src/revocation/interfaces/IRevocation.sol";
-import { Revocation } from "../src/revocation/Revocation.sol";
+import { Revocation } from "../src/revocation/poseidon/Revocation.sol";
 import { SemaphorePaymaster } from "../src/SemaphorePaymaster.sol";
 
 import { DeployedThirdPartyContracts } from "./libraries/DeployedThirdPartyContracts.sol";

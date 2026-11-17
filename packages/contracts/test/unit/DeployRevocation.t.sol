@@ -2,7 +2,7 @@
 pragma solidity ^0.8.34;
 
 import { DeployRevocation } from "../../script/DeployRevocation.s.sol";
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 import { CanonicalDependencies } from "../utils/CanonicalDependencies.sol";
 
 contract DeployRevocationUnitTest is CanonicalDependencies {

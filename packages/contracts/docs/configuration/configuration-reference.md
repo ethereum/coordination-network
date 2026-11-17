@@ -70,10 +70,10 @@ proves its credential was signed by one of them without saying which.
 
 The revocation tree holds every revoked credential. A presentation proves its credential is not in it.
 
-| Value                                                              | Default             | Changed by             | What it does                                                                                               |
-| ------------------------------------------------------------------ | ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [`DEFAULT_ROOT_DURATION`](../../src/revocation/Revocation.sol#L26) | 1 hour              | hardcoded (`constant`) | How long a replaced revocation root verifies.<br>A revoked credential still verifies for up to the window. |
-| [`REVOCATION_MAX_DEPTH`](../../../circuits/src/main.nr#L13)        | 20, about 1 million | hardcoded              | Most revocations a presentation can prove against.<br>Past it, no user can build a presentation.           |
+| Value                                                                          | Default             | Changed by             | What it does                                                                                               |
+| ------------------------------------------------------------------------------ | ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`DEFAULT_ROOT_DURATION`](../../src/revocation/base/RevocationService.sol#L14) | 1 hour              | hardcoded (`constant`) | How long a replaced revocation root verifies.<br>A revoked credential still verifies for up to the window. |
+| [`REVOCATION_MAX_DEPTH`](../../../circuits/src/main.nr#L13)                    | 20, about 1 million | hardcoded              | Most revocations a presentation can prove against.<br>Past it, no user can build a presentation.           |
 
 ## Network member client
 

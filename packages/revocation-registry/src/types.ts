@@ -1,22 +1,33 @@
-import type { LeanIMTPlusLeaf, LeanIMTPlusProof } from "@zk-kit/lean-imt-plus"
+import type { LeanIMTPlusHashFunctions, LeanIMTPlusLeaf, LeanIMTPlusProof } from "@zk-kit/lean-imt-plus"
 
-/** Anything that can be coerced to a field element with `BigInt()`. */
+/** Anything `BigInt()` accepts. */
 export type BigNumberish = bigint | number | string
 
 /**
- * A revocation proof. Structurally a LeanIMT+ proof: a Merkle proof of a single
- * indexed leaf plus a `proofType` that says which extra check the verifier runs.
- *
- * - `proofType: 0` (membership): `leaf.value === value`, so the commitment is in
- *   the registry and the credential is revoked.
- * - `proofType: 1` (non-membership): `leaf` is the low leaf of `value`, so the
- *   commitment is absent and the credential is not revoked.
- *
- * `root` is the value the verifier must independently accept as one the
- * authoritative registry currently publishes. The proof proves nothing on its
- * own: its root is supplied by whoever built it.
+ * `proofType: 0` proves the commitment is revoked, `proofType: 1` that it is
+ * not. `root` is set by the prover, so the verifier must check it independently.
  */
 export type RevocationProof = LeanIMTPlusProof<bigint>
 
-/** An indexed leaf of the revocation tree: a commitment and its successor. */
+/** A commitment and its successor in sorted order. */
 export type RevocationLeaf = LeanIMTPlusLeaf<bigint>
+
+/**
+ * The hash functions and field a registry works over. Roots only match a
+ * contract or circuit using the same scheme.
+ *
+ * Both hashes must accept every value below {@link bound}, the internal hash
+ * must accept every hash output, and the leaf hash `(value, nextValue, TAG_LEAF)`
+ * must be domain-separated from the internal hash `(left, right)`, or a node
+ * could pass as a leaf.
+ */
+export interface RevocationScheme {
+    readonly hashes: LeanIMTPlusHashFunctions<bigint>
+    /**
+     * Exclusive upper bound on every commitment and leaf value, such as the field
+     * order or `2^n` for an n-bit hash. Hash outputs are not checked against it.
+     */
+    readonly bound: bigint
+    /** Names {@link bound} in error messages. */
+    readonly boundDescription?: string
+}

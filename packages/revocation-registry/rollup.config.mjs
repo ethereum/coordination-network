@@ -2,7 +2,7 @@ import typescript from "@rollup/plugin-typescript"
 import cleanup from "rollup-plugin-cleanup"
 import { dts } from "rollup-plugin-dts"
 
-const external = /^(@zk-kit|poseidon-lite)/
+const external = /^(@noble|@zk-kit|poseidon-lite)/
 
 /** @type {import('rollup').RollupOptions[]} */
 const config = [

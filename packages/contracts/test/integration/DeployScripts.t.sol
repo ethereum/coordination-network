@@ -28,7 +28,7 @@ import { ApprovedIssuerSet } from "../../src/ApprovedIssuerSet.sol";
 import { NetworkMemberGovernance } from "../../src/NetworkMemberGovernance.sol";
 import { NetworkMemberGroup } from "../../src/NetworkMemberGroup.sol";
 import { NetworkMemberRegistry } from "../../src/NetworkMemberRegistry.sol";
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 import { SemaphorePaymaster } from "../../src/SemaphorePaymaster.sol";
 import { NetworkMemberRegistryTestBase } from "../utils/NetworkMemberRegistryTestBase.sol";
 

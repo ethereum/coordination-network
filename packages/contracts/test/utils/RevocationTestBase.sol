@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { SNARK_SCALAR_FIELD } from "@zk-kit/lean-imt-plus.sol/Constants.sol";
+import { RevocationService } from "../../src/revocation/base/RevocationService.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 import { CanonicalDependencies } from "./CanonicalDependencies.sol";
 
 /// @dev Shared fixture. Also stands in for the off-chain half of the protocol: the contract validates
@@ -10,7 +12,7 @@ import { CanonicalDependencies } from "./CanonicalDependencies.sol";
 /// because tests keep registries tiny; the package answers the same questions against its own ordered
 /// index instead of walking every slot.
 abstract contract RevocationTestBase is CanonicalDependencies {
-    Revocation internal revocation;
+    RevocationService internal revocation;
 
     address internal admin = makeAddr("admin");
     address internal stranger = makeAddr("stranger");
@@ -18,10 +20,20 @@ abstract contract RevocationTestBase is CanonicalDependencies {
     uint256 internal registryId;
 
     function setUp() public virtual {
-        revocation = new Revocation();
+        revocation = deployRevocation();
 
         vm.prank(admin);
         registryId = revocation.createRegistry();
+    }
+
+    /// @dev The deployable under test. Each hash's suite overrides it with its own deployable.
+    function deployRevocation() internal virtual returns (RevocationService) {
+        return new Revocation();
+    }
+
+    /// @dev The largest commitment the deployable's tree accepts.
+    function maxCommitment() internal pure virtual returns (uint256) {
+        return SNARK_SCALAR_FIELD - 1;
     }
 
     /// @dev The physical index of the leaf that precedes `value` in sorted order.

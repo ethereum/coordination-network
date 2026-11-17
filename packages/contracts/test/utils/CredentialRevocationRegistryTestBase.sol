@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 import { IRevocation } from "../../src/revocation/interfaces/IRevocation.sol";
 import { stdJson } from "forge-std/StdJson.sol";
 import { Semaphore } from "@semaphore-protocol/contracts/Semaphore.sol";

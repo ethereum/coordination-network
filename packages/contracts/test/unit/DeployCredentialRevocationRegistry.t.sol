@@ -7,7 +7,7 @@ import { DeployCredentialRevocationRegistry } from "../../script/DeployCredentia
 import { DeployedThirdPartyContracts } from "../../script/libraries/DeployedThirdPartyContracts.sol";
 import { CredentialRevocationRegistry } from "../../src/CredentialRevocationRegistry.sol";
 import { IRevocation } from "../../src/revocation/interfaces/IRevocation.sol";
-import { Revocation } from "../../src/revocation/Revocation.sol";
+import { Revocation } from "../../src/revocation/poseidon/Revocation.sol";
 import { CanonicalDependencies } from "../utils/CanonicalDependencies.sol";
 
 contract DeployCredentialRevocationRegistryUnitTest is CanonicalDependencies {
