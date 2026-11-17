@@ -204,6 +204,27 @@ contract RevocationTest is RevocationTestBase {
         assertEq(revocation.getRootSupersededAt(registryId, rootBeforeUpdate), block.timestamp);
     }
 
+    function test_aRootThatBecomesCurrentAgainLosesItsOldStamp() public {
+        revoke(registryId, A);
+        uint256 originalRoot = revocation.getRevocationRoot(registryId);
+
+        uint256 aPredecessor = predecessorIndex(registryId, A);
+        vm.prank(admin);
+        revocation.updateRevocationCommitment(registryId, A, B, aPredecessor, 0);
+        assertEq(revocation.getRootSupersededAt(registryId, originalRoot), block.timestamp);
+
+        vm.warp(block.timestamp + 1 days);
+
+        // Updates reuse the slot, so swapping back restores the original root.
+        uint256 bPredecessor = predecessorIndex(registryId, B);
+        vm.prank(admin);
+        revocation.updateRevocationCommitment(registryId, B, A, bPredecessor, 0);
+
+        assertEq(revocation.getRevocationRoot(registryId), originalRoot);
+        assertEq(revocation.getRootSupersededAt(registryId, originalRoot), 0);
+        assertTrue(revocation.isValidRoot(registryId, originalRoot));
+    }
+
     function test_revokeMany_supersedesThePreviousRoot() public {
         revoke(registryId, A);
         uint256 rootBeforeRevokeMany = revocation.getRevocationRoot(registryId);

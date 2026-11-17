@@ -60,9 +60,10 @@ abstract contract RevocationService is IRevocation, RevocationRegistries {
     function revoke(uint256 registryId, uint256 revocationCommitment, uint256 lowLeafIndex) external override {
         uint256 oldRoot = getRevocationRoot(registryId);
 
-        _revoke(registryId, revocationCommitment, lowLeafIndex);
+        uint256 newRoot = _revoke(registryId, revocationCommitment, lowLeafIndex);
 
         _supersedeRoot(registryId, oldRoot);
+        _claimRoot(registryId, newRoot);
     }
 
     /// @inheritdoc IRevocation
@@ -72,18 +73,20 @@ abstract contract RevocationService is IRevocation, RevocationRegistries {
     {
         uint256 oldRoot = getRevocationRoot(registryId);
 
-        _revokeMany(registryId, revocationCommitments, lowLeafIndices);
+        uint256 newRoot = _revokeMany(registryId, revocationCommitments, lowLeafIndices);
 
         _supersedeRoot(registryId, oldRoot);
+        _claimRoot(registryId, newRoot);
     }
 
     /// @inheritdoc IRevocation
     function unrevoke(uint256 registryId, uint256 revocationCommitment, uint256 predecessorIndex) external override {
         uint256 oldRoot = getRevocationRoot(registryId);
 
-        _unrevoke(registryId, revocationCommitment, predecessorIndex);
+        uint256 newRoot = _unrevoke(registryId, revocationCommitment, predecessorIndex);
 
         _supersedeRoot(registryId, oldRoot);
+        _claimRoot(registryId, newRoot);
     }
 
     /// @inheritdoc IRevocation
@@ -96,11 +99,12 @@ abstract contract RevocationService is IRevocation, RevocationRegistries {
     ) external override {
         uint256 oldRoot = getRevocationRoot(registryId);
 
-        _updateRevocationCommitment(
+        uint256 newRoot = _updateRevocationCommitment(
             registryId, oldRevocationCommitment, newRevocationCommitment, oldPredecessorIndex, newPredecessorIndex
         );
 
         _supersedeRoot(registryId, oldRoot);
+        _claimRoot(registryId, newRoot);
     }
 
     /// @inheritdoc IRevocation
@@ -147,5 +151,11 @@ abstract contract RevocationService is IRevocation, RevocationRegistries {
     /// `rootDuration` after that credential's revocation.
     function _supersedeRoot(uint256 registryId, uint256 oldRoot) private {
         registries[registryId].rootSupersededAt[oldRoot] = block.timestamp;
+    }
+
+    /// @dev Clears the stamp of the root a write just made current, since a root can recur (e.g. A→B→A
+    /// via updates). Call after {_supersedeRoot}.
+    function _claimRoot(uint256 registryId, uint256 newRoot) private {
+        delete registries[registryId].rootSupersededAt[newRoot];
     }
 }
