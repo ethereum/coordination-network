@@ -1,66 +1,74 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.34;
 
-import { InternalLeanIMTPlus, LeanIMTPlusData } from "@zk-kit/lean-imt-plus.sol/InternalLeanIMTPlus.sol";
 import { IRevocationRegistries } from "../interfaces/IRevocationRegistries.sol";
 
 /// @title RevocationRegistries
-/// @notice Base contract that owns the revocation trees. Inherit it to build a revocation service.
-/// @dev This is the reusable half of the package: it holds one LeanIMT+ per registry, gates every
-/// write behind a per-registry admin, and exposes the read surface a holder needs to rebuild a tree
-/// off chain. It deliberately knows nothing about root histories, expiry or proof systems, so a
-/// consumer can layer its own policy on top. {Revocation} is the reference layer.
+/// @notice Hash-agnostic base for revocation registries: per-registry admins, the write flow and its
+/// events. Policy such as root histories belongs to a layer on top, like {RevocationService}.
+/// @dev Inherit a hash binding such as {PoseidonRevocationRegistries}, not this contract: the binding
+/// owns the tree storage and implements the tree reads and the four write hooks below.
 ///
-/// Every mutation takes the physical index of the affected leaf's predecessor as an argument. The
-/// LeanIMT+ library validates that index in O(1) but does not search for it, which is what keeps a
-/// write at O(depth) storage writes. Compute it off chain with the revocation-registry package:
-/// `RevocationRegistry.lowLeafIndexOf` for a revocation, `RevocationRegistry.predecessorIndexOf` for an
-/// un-revocation or an update. It must be computed against the same tree state the transaction will
-/// execute in; if another write lands first the transaction reverts and the index must be
-/// recomputed.
+/// Every write takes the predecessor's physical index, which the LeanIMT+ library validates in O(1)
+/// instead of searching. Compute it off chain against the state the transaction will execute in
+/// (`lowLeafIndexOf` / `predecessorIndexOf` in the revocation-registry package); if another write
+/// lands first, the transaction reverts and the index must be recomputed.
 abstract contract RevocationRegistries is IRevocationRegistries {
-    using InternalLeanIMTPlus for LeanIMTPlusData;
-
-    /// @dev The LeanIMT+ backing each registry. Its leaves are the revoked commitments.
-    mapping(uint256 registryId => LeanIMTPlusData tree) internal revocationTrees;
-
-    /// @dev The admin of each registry. It can be an account or a contract, and is the only address
-    /// allowed to revoke in that registry. The zero address means the registry does not exist.
+    /// @dev The zero address means the registry does not exist.
     mapping(uint256 registryId => address admin) internal registryAdmins;
 
-    /// @dev An admin that has been proposed for a registry and has not accepted yet.
     mapping(uint256 registryId => address pendingAdmin) internal pendingRegistryAdmins;
 
-    /// @dev Restricts a call to the registry admin.
-    /// @param registryId The id of the registry.
+    // Write hooks, implemented by the hash binding. Each returns the new root, and the leaf index an
+    // event needs, so the base never reads the tree back after a write.
+
+    /// @return index The physical index of the new leaf.
+    function _treeInsert(uint256 registryId, uint256 value, uint256 lowLeafIndex)
+        internal
+        virtual
+        returns (uint256 index, uint256 root);
+
+    /// @dev `lowLeafIndices` are against the state after the earlier values are inserted.
+    function _treeInsertMany(uint256 registryId, uint256[] calldata values, uint256[] calldata lowLeafIndices)
+        internal
+        virtual
+        returns (uint256 root);
+
+    /// @return index The physical index of the slot the value occupied, now a tombstone.
+    function _treeRemove(uint256 registryId, uint256 value, uint256 predecessorIndex)
+        internal
+        virtual
+        returns (uint256 index, uint256 root);
+
+    /// @return index The physical index of the slot, which the new value reuses.
+    function _treeUpdate(
+        uint256 registryId,
+        uint256 oldValue,
+        uint256 newValue,
+        uint256 oldPredecessorIndex,
+        uint256 newPredecessorIndex
+    ) internal virtual returns (uint256 index, uint256 root);
+
     modifier onlyRegistryAdmin(uint256 registryId) {
         _onlyRegistryAdmin(registryId);
         _;
     }
 
-    /// @dev Requires the registry to exist.
-    /// @param registryId The id of the registry.
     modifier onlyExistingRegistry(uint256 registryId) {
         _onlyExistingRegistry(registryId);
         _;
     }
 
-    /// @dev The body of {onlyRegistryAdmin}, kept out of the modifier so the check is compiled
-    /// once and jumped to rather than inlined at every guarded function.
-    /// @param registryId The id of the registry.
+    // Modifier bodies live in functions so they are compiled once instead of inlined at every use.
     function _onlyRegistryAdmin(uint256 registryId) internal view {
         if (registryAdmins[registryId] != msg.sender) revert CallerIsNotTheRegistryAdmin();
     }
 
-    /// @dev The body of {onlyExistingRegistry}, kept out of the modifier for the same reason.
-    /// @param registryId The id of the registry.
     function _onlyExistingRegistry(uint256 registryId) internal view {
         if (registryAdmins[registryId] == address(0)) revert RegistryDoesNotExist();
     }
 
-    /// @dev Creates a registry. The caller is responsible for allocating an unused `registryId`.
-    /// @param registryId The id of the new registry.
-    /// @param admin The address allowed to revoke in it.
+    /// @dev The caller must allocate an unused `registryId`.
     function _createRegistry(uint256 registryId, address admin) internal virtual {
         if (admin == address(0)) revert ZeroAdmin();
 
@@ -70,18 +78,13 @@ abstract contract RevocationRegistries is IRevocationRegistries {
         emit RegistryAdminUpdated(registryId, address(0), admin);
     }
 
-    /// @dev Proposes a new registry admin. The transfer is two-step: it only takes effect once the
-    /// proposed admin calls {_acceptRegistryAdmin}, so a typo cannot strand a registry.
-    /// @param registryId The id of the registry.
-    /// @param newAdmin The proposed admin.
+    /// @dev Two-step: takes effect on {_acceptRegistryAdmin}, so a typo cannot strand a registry.
     function _updateRegistryAdmin(uint256 registryId, address newAdmin) internal virtual onlyRegistryAdmin(registryId) {
         pendingRegistryAdmins[registryId] = newAdmin;
 
         emit RegistryAdminPending(registryId, msg.sender, newAdmin);
     }
 
-    /// @dev Accepts a pending admin transfer. Callable only by the proposed admin.
-    /// @param registryId The id of the registry.
     function _acceptRegistryAdmin(uint256 registryId) internal virtual {
         if (pendingRegistryAdmins[registryId] != msg.sender) revert CallerIsNotThePendingRegistryAdmin();
 
@@ -94,70 +97,43 @@ abstract contract RevocationRegistries is IRevocationRegistries {
         emit RegistryAdminUpdated(registryId, oldAdmin, msg.sender);
     }
 
-    /// @dev Revokes a credential by inserting its commitment.
-    /// @param registryId The id of the registry.
-    /// @param revocationCommitment The revocation commitment of the credential.
-    /// @param lowLeafIndex The physical index of the commitment's predecessor, found off chain and
-    /// validated here. Ignored for the first revocation in a registry, which creates the sentinel.
-    /// @return revocationRoot The new root of the registry.
+    /// @param lowLeafIndex Ignored for the registry's first revocation, which creates the sentinel.
     function _revoke(uint256 registryId, uint256 revocationCommitment, uint256 lowLeafIndex)
         internal
         virtual
         onlyRegistryAdmin(registryId)
         returns (uint256 revocationRoot)
     {
-        uint256 index = revocationTrees[registryId]._insert(revocationCommitment, lowLeafIndex);
-        revocationRoot = revocationTrees[registryId]._root();
+        uint256 index;
+        (index, revocationRoot) = _treeInsert(registryId, revocationCommitment, lowLeafIndex);
 
         emit CredentialRevoked(registryId, index, revocationCommitment, revocationRoot);
     }
 
-    /// @dev Revokes several credentials in one call. Cheaper than one {_revoke} per commitment,
-    /// because every affected internal node is rehashed at most once.
-    /// @param registryId The id of the registry.
-    /// @param revocationCommitments The commitments to revoke, in insertion order.
-    /// @param lowLeafIndices For each commitment, the physical index of its predecessor in the tree
-    /// state after the earlier commitments in this batch have been inserted.
-    /// @return revocationRoot The new root of the registry.
     function _revokeMany(
         uint256 registryId,
         uint256[] calldata revocationCommitments,
         uint256[] calldata lowLeafIndices
     ) internal virtual onlyRegistryAdmin(registryId) returns (uint256 revocationRoot) {
-        revocationTrees[registryId]._insertMany(revocationCommitments, lowLeafIndices);
-        revocationRoot = revocationTrees[registryId]._root();
+        revocationRoot = _treeInsertMany(registryId, revocationCommitments, lowLeafIndices);
 
         emit CredentialsRevoked(registryId, revocationCommitments, revocationRoot);
     }
 
-    /// @dev Undoes a revocation, tombstoning the commitment's slot.
-    /// @param registryId The id of the registry.
-    /// @param revocationCommitment The revoked commitment.
-    /// @param predecessorIndex The physical index of the leaf whose `nextValue` is the commitment.
-    /// @return revocationRoot The new root of the registry.
+    /// @dev Tombstones the commitment's slot.
     function _unrevoke(uint256 registryId, uint256 revocationCommitment, uint256 predecessorIndex)
         internal
         virtual
         onlyRegistryAdmin(registryId)
         returns (uint256 revocationRoot)
     {
-        uint256 index = revocationTrees[registryId]._indexOf(revocationCommitment);
-
-        revocationTrees[registryId]._remove(revocationCommitment, predecessorIndex);
-        revocationRoot = revocationTrees[registryId]._root();
+        uint256 index;
+        (index, revocationRoot) = _treeRemove(registryId, revocationCommitment, predecessorIndex);
 
         emit CredentialUnrevoked(registryId, index, revocationCommitment, revocationRoot);
     }
 
-    /// @dev Replaces a revoked commitment with another one, reusing its physical slot. Cheaper than
-    /// an un-revocation followed by a revocation, which would tombstone a slot and append a new one.
-    /// @param registryId The id of the registry.
-    /// @param oldRevocationCommitment The revoked commitment to replace.
-    /// @param newRevocationCommitment The commitment to put in its place.
-    /// @param oldPredecessorIndex The physical index of the old commitment's predecessor.
-    /// @param newPredecessorIndex The physical index of the new commitment's predecessor in the
-    /// tree state after the old commitment has been unlinked.
-    /// @return revocationRoot The new root of the registry.
+    /// @dev Reuses the commitment's slot instead of tombstoning it and appending a new one.
     function _updateRevocationCommitment(
         uint256 registryId,
         uint256 oldRevocationCommitment,
@@ -165,12 +141,10 @@ abstract contract RevocationRegistries is IRevocationRegistries {
         uint256 oldPredecessorIndex,
         uint256 newPredecessorIndex
     ) internal virtual onlyRegistryAdmin(registryId) returns (uint256 revocationRoot) {
-        uint256 index = revocationTrees[registryId]._indexOf(oldRevocationCommitment);
-
-        revocationTrees[registryId]._update(
-            oldRevocationCommitment, newRevocationCommitment, oldPredecessorIndex, newPredecessorIndex
+        uint256 index;
+        (index, revocationRoot) = _treeUpdate(
+            registryId, oldRevocationCommitment, newRevocationCommitment, oldPredecessorIndex, newPredecessorIndex
         );
-        revocationRoot = revocationTrees[registryId]._root();
 
         emit RevocationCommitmentUpdated(
             registryId, index, oldRevocationCommitment, newRevocationCommitment, revocationRoot
@@ -188,43 +162,11 @@ abstract contract RevocationRegistries is IRevocationRegistries {
     }
 
     /// @inheritdoc IRevocationRegistries
-    function isRevoked(uint256 registryId, uint256 revocationCommitment) public view virtual override returns (bool) {
-        return revocationTrees[registryId]._has(revocationCommitment);
-    }
+    function isRevoked(uint256 registryId, uint256 revocationCommitment) public view virtual override returns (bool);
 
     /// @inheritdoc IRevocationRegistries
-    function indexOf(uint256 registryId, uint256 revocationCommitment) public view virtual override returns (uint256) {
-        return revocationTrees[registryId]._indexOf(revocationCommitment);
-    }
+    function indexOf(uint256 registryId, uint256 revocationCommitment) public view virtual override returns (uint256);
 
     /// @inheritdoc IRevocationRegistries
-    function getLeaf(uint256 registryId, uint256 index)
-        public
-        view
-        virtual
-        override
-        returns (uint256 value, uint256 nextValue)
-    {
-        return (revocationTrees[registryId].leaves[index].value, revocationTrees[registryId].leaves[index].nextValue);
-    }
-
-    /// @inheritdoc IRevocationRegistries
-    function getRevocationRoot(uint256 registryId) public view virtual override returns (uint256) {
-        return revocationTrees[registryId]._root();
-    }
-
-    /// @inheritdoc IRevocationRegistries
-    function getRevocationTreeDepth(uint256 registryId) public view virtual override returns (uint256) {
-        return revocationTrees[registryId].depth;
-    }
-
-    /// @inheritdoc IRevocationRegistries
-    function getRevocationTreeSize(uint256 registryId) public view virtual override returns (uint256) {
-        return revocationTrees[registryId].size;
-    }
-
-    /// @inheritdoc IRevocationRegistries
-    function getRevocationTreeLeafCount(uint256 registryId) public view virtual override returns (uint256) {
-        return revocationTrees[registryId].leaves.length;
-    }
+    function getRevocationRoot(uint256 registryId) public view virtual override returns (uint256);
 }

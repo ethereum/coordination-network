@@ -224,7 +224,7 @@ contract RevocationRegistriesTest is RevocationTestBase {
     /// @dev The leaf commitment is what a rebuilt off-chain tree hashes, so this pins that the
     /// contract stores leaves the revocation-registry package can reproduce. The roots themselves are
     /// compared across languages in test/integration/CrossLanguageRoot.t.sol.
-    function test_leavesCommitToTheDomainSeparatedLeafHash() public {
+    function test_leavesCommitToTheDomainSeparatedLeafHash() public virtual {
         revoke(registryId, A);
 
         (uint256 value, uint256 nextValue) = revocation.getLeaf(registryId, 0);
