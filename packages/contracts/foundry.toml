@@ -26,6 +26,7 @@ remappings = [
     "@semaphore-protocol/=node_modules/@semaphore-protocol/",
     "@zk-kit/lean-imt.sol=node_modules/@zk-kit/lean-imt.sol",
     "@zk-kit/lean-imt-plus.sol=node_modules/@zk-kit/lean-imt-plus.sol",
+    "@zk-kit/lean-imt-sha256.sol=node_modules/@zk-kit/lean-imt-sha256.sol",
     "poseidon-solidity/=node_modules/poseidon-solidity/",
     "@safe-global/safe-smart-account/=node_modules/@safe-global/safe-smart-account/",
 ]
